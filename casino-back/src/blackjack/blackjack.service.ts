@@ -51,7 +51,44 @@ export class BlackjackService {
     private readonly prisma: PrismaService,
     private readonly betService: BetService,
     private readonly gameConfigService: GameConfigService,
-  ) {}
+  ) { }
+
+
+  private getVisibleDealerCards(
+    status: BlackjackGameStatus,
+    dealerCards: BlackjackCard[],
+  ): BlackjackCard[] {
+    if (status !== BlackjackGameStatus.PLAYER_TURN) {
+      return dealerCards;
+    }
+
+    if (dealerCards.length <= 1) {
+      return dealerCards;
+    }
+
+    return [
+      dealerCards[0],
+      { rank: 'HIDDEN', suit: 'HIDDEN' },
+    ];
+  }
+
+  private getVisibleDealerScore(
+    status: BlackjackGameStatus,
+    dealerCards: BlackjackCard[],
+    realDealerScore: number,
+  ): number | null {
+    if (status !== BlackjackGameStatus.PLAYER_TURN) {
+      return realDealerScore;
+    }
+
+    if (dealerCards.length === 0) {
+      return null;
+    }
+
+    const visibleCardResult = this.calculateHandValue([dealerCards[0]]);
+    return visibleCardResult.score;
+  }
+
   async startGame(userId: string, role: UserRole, betAmount: number) {
     this.gameConfigService.assertBetAmountAllowed('BLACKJACK', role, betAmount);
 
@@ -64,7 +101,7 @@ export class BlackjackService {
       },
     });
 
-  
+
 
     const playerCards = [this.drawCard(), this.drawCard()];
     const dealerCards = [this.drawCard(), this.drawCard()];
@@ -215,7 +252,7 @@ export class BlackjackService {
 
       return this.formatGameResponse({
         id: game.id,
-        status: BlackjackGameStatus.FINISHED,
+        status: BlackjackGameStatus.PLAYER_BUST,
         betAmount: game.betAmount,
         playerCards,
         dealerCards,
@@ -326,7 +363,7 @@ export class BlackjackService {
 
     return this.formatGameResponse({
       id: game.id,
-      status: BlackjackGameStatus.FINISHED,
+      status: finalStatus,
       betAmount: game.betAmount,
       playerCards,
       dealerCards,
@@ -406,7 +443,7 @@ export class BlackjackService {
 
     return this.formatGameResponse({
       id: gameId,
-      status: BlackjackGameStatus.FINISHED,
+      status,
       betAmount: BigInt(betAmount),
       playerCards,
       dealerCards,
@@ -474,14 +511,25 @@ export class BlackjackService {
     playerScore: number;
     dealerScore: number;
   }) {
+    const visibleDealerCards = this.getVisibleDealerCards(
+      data.status,
+      data.dealerCards,
+    );
+
+    const visibleDealerScore = this.getVisibleDealerScore(
+      data.status,
+      data.dealerCards,
+      data.dealerScore,
+    );
+
     return {
       gameId: data.id,
       status: data.status,
       betAmount: data.betAmount.toString(),
       playerCards: data.playerCards,
-      dealerCards: data.dealerCards,
+      dealerCards: visibleDealerCards,
       playerScore: data.playerScore,
-      dealerScore: data.dealerScore,
+      dealerScore: visibleDealerScore,
     };
   }
 }

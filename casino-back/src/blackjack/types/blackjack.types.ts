@@ -2,7 +2,7 @@ export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonValue[];
 export type JsonObject = { [key: string]: JsonValue };
 
-export type CardSuit = 'HEARTS' | 'DIAMONDS' | 'CLUBS' | 'SPADES';
+export type CardSuit = 'HEARTS' | 'DIAMONDS' | 'CLUBS' | 'SPADES' | 'HIDDEN';
 
 export type CardRank =
   | 'A'
@@ -17,7 +17,8 @@ export type CardRank =
   | '10'
   | 'J'
   | 'Q'
-  | 'K';
+  | 'K'
+  | 'HIDDEN';
 
 export interface BlackjackCard {
   rank: CardRank;
