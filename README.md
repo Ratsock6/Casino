@@ -346,7 +346,7 @@ model BlackjackGame {
 ### Cloner le repo
 
 ```
-git clone https://github.com/yourrepo/diamond-casino-backend.git
+git clone https://github.com/Ratsock6/diamond-casino-backend.git
 ```
 
 ---
@@ -423,4 +423,4 @@ Aucun argent réel impliqué.
 
 # 👨‍💻 Auteur
 
-**Antoine Allou‑Vincheneux**
+**Antoine**
