@@ -57,3 +57,12 @@ export const GameRoundStatus = {
 } as const
 
 export type GameRoundStatus = (typeof GameRoundStatus)[keyof typeof GameRoundStatus]
+
+
+export const IdempotencyStatus = {
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type IdempotencyStatus = (typeof IdempotencyStatus)[keyof typeof IdempotencyStatus]

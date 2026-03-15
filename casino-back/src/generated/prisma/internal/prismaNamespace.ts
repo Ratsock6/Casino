@@ -389,7 +389,8 @@ export const ModelName = {
   WalletTransaction: 'WalletTransaction',
   RefreshToken: 'RefreshToken',
   AdminAction: 'AdminAction',
-  GameRound: 'GameRound'
+  GameRound: 'GameRound',
+  IdempotencyRequest: 'IdempotencyRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    IdempotencyRequest: {
+      payload: Prisma.$IdempotencyRequestPayload<ExtArgs>
+      fields: Prisma.IdempotencyRequestFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IdempotencyRequestFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IdempotencyRequestFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>
+        }
+        findFirst: {
+          args: Prisma.IdempotencyRequestFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IdempotencyRequestFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>
+        }
+        findMany: {
+          args: Prisma.IdempotencyRequestFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>[]
+        }
+        create: {
+          args: Prisma.IdempotencyRequestCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>
+        }
+        createMany: {
+          args: Prisma.IdempotencyRequestCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IdempotencyRequestCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>[]
+        }
+        delete: {
+          args: Prisma.IdempotencyRequestDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>
+        }
+        update: {
+          args: Prisma.IdempotencyRequestUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>
+        }
+        deleteMany: {
+          args: Prisma.IdempotencyRequestDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IdempotencyRequestUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IdempotencyRequestUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>[]
+        }
+        upsert: {
+          args: Prisma.IdempotencyRequestUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdempotencyRequestPayload>
+        }
+        aggregate: {
+          args: Prisma.IdempotencyRequestAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIdempotencyRequest>
+        }
+        groupBy: {
+          args: Prisma.IdempotencyRequestGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IdempotencyRequestGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IdempotencyRequestCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IdempotencyRequestCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -981,6 +1056,21 @@ export const GameRoundScalarFieldEnum = {
 } as const
 
 export type GameRoundScalarFieldEnum = (typeof GameRoundScalarFieldEnum)[keyof typeof GameRoundScalarFieldEnum]
+
+
+export const IdempotencyRequestScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  userId: 'userId',
+  route: 'route',
+  requestHash: 'requestHash',
+  status: 'status',
+  responseBody: 'responseBody',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IdempotencyRequestScalarFieldEnum = (typeof IdempotencyRequestScalarFieldEnum)[keyof typeof IdempotencyRequestScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1183,6 +1273,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
+
+/**
+ * Reference to a field of type 'IdempotencyStatus'
+ */
+export type EnumIdempotencyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IdempotencyStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'IdempotencyStatus[]'
+ */
+export type ListEnumIdempotencyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IdempotencyStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1284,6 +1388,7 @@ export type GlobalOmitConfig = {
   refreshToken?: Prisma.RefreshTokenOmit
   adminAction?: Prisma.AdminActionOmit
   gameRound?: Prisma.GameRoundOmit
+  idempotencyRequest?: Prisma.IdempotencyRequestOmit
 }
 
 /* Types for Logging */

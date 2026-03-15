@@ -4,9 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {
+  Prisma,
   WalletTransactionType,
 } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+
 
 @Injectable()
 export class WalletService {
@@ -40,61 +42,65 @@ export class WalletService {
       throw new BadRequestException('Amount must be greater than 0');
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({
-        where: { userId },
-      });
+    return this.prisma.$transaction(
+      async (tx) => {
+        const wallet = await tx.wallet.findUnique({
+          where: { userId },
+        });
 
-      if (!wallet) {
-        throw new NotFoundException('Wallet not found');
-      }
+        if (!wallet) {
+          throw new NotFoundException('Wallet not found');
+        }
 
-      const balanceBefore = wallet.balance;
-      const balanceAfter = balanceBefore + BigInt(amount);
+        const balanceBefore = wallet.balance;
+        const balanceAfter = balanceBefore + BigInt(amount);
 
-      await tx.wallet.update({
-        where: { userId },
-        data: {
-          balance: balanceAfter,
-        },
-      });
-
-      const transaction = await tx.walletTransaction.create({
-        data: {
-          userId,
-          type: WalletTransactionType.ADMIN_CREDIT,
-          amount: BigInt(amount),
-          balanceBefore,
-          balanceAfter,
-          reason: reason ?? 'Admin credit',
-          adminId,
-        },
-      });
-
-      await tx.adminAction.create({
-        data: {
-          adminId,
-          action: 'ADMIN_CREDIT',
-          targetType: 'WALLET',
-          targetId: wallet.id,
-          metadata: {
-            userId,
-            amount,
-            reason: reason ?? 'Admin credit',
-            walletTransactionId: transaction.id,
+        await tx.wallet.update({
+          where: { userId },
+          data: {
+            balance: balanceAfter,
           },
-        },
-      });
+        });
 
-      return {
-        message: 'Wallet credited successfully',
-        transactionId: transaction.id,
-        userId,
-        amount,
-        balanceBefore: balanceBefore.toString(),
-        balanceAfter: balanceAfter.toString(),
-      };
-    });
+        const transaction = await tx.walletTransaction.create({
+          data: {
+            userId,
+            type: WalletTransactionType.ADMIN_CREDIT,
+            amount: BigInt(amount),
+            balanceBefore,
+            balanceAfter,
+            reason: reason ?? 'Admin credit',
+            adminId,
+          },
+        });
+
+        await tx.adminAction.create({
+          data: {
+            adminId,
+            action: 'ADMIN_CREDIT',
+            targetType: 'WALLET',
+            targetId: wallet.id,
+            metadata: {
+              userId,
+              amount,
+              reason: reason ?? 'Admin credit',
+              walletTransactionId: transaction.id,
+            },
+          },
+        });
+
+        return {
+          message: 'Wallet credited successfully',
+          transactionId: transaction.id,
+          userId,
+          amount,
+          balanceBefore: balanceBefore.toString(),
+          balanceAfter: balanceAfter.toString(),
+        };
+      },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      });
   }
 
   async adminDebit(
@@ -107,70 +113,74 @@ export class WalletService {
       throw new BadRequestException('Amount must be greater than 0');
     }
 
-    return this.prisma.$transaction(async (tx) => {
-      const wallet = await tx.wallet.findUnique({
-        where: { userId },
-      });
+    return this.prisma.$transaction(
+      async (tx) => {
+        const wallet = await tx.wallet.findUnique({
+          where: { userId },
+        });
 
-      if (!wallet) {
-        throw new NotFoundException('Wallet not found');
-      }
+        if (!wallet) {
+          throw new NotFoundException('Wallet not found');
+        }
 
-      const balanceBefore = wallet.balance;
+        const balanceBefore = wallet.balance;
 
-      if (balanceBefore < BigInt(amount)) {
-        throw new BadRequestException('Insufficient wallet balance');
-      }
+        if (balanceBefore < BigInt(amount)) {
+          throw new BadRequestException('Insufficient wallet balance');
+        }
 
-      const balanceAfter = balanceBefore - BigInt(amount);
+        const balanceAfter = balanceBefore - BigInt(amount);
 
-      await tx.wallet.update({
-        where: { userId },
-        data: {
-          balance: balanceAfter,
-        },
-      });
-
-      const transaction = await tx.walletTransaction.create({
-        data: {
-          userId,
-          type: WalletTransactionType.ADMIN_DEBIT,
-          amount: BigInt(amount),
-          balanceBefore,
-          balanceAfter,
-          reason: reason ?? 'Admin debit',
-          adminId,
-        },
-      });
-
-      await tx.adminAction.create({
-        data: {
-          adminId,
-          action: 'ADMIN_DEBIT',
-          targetType: 'WALLET',
-          targetId: wallet.id,
-          metadata: {
-            userId,
-            amount,
-            reason: reason ?? 'Admin debit',
-            walletTransactionId: transaction.id,
+        await tx.wallet.update({
+          where: { userId },
+          data: {
+            balance: balanceAfter,
           },
-        },
-      });
+        });
 
-      return {
-        message: 'Wallet debited successfully',
-        transactionId: transaction.id,
-        userId,
-        amount,
-        balanceBefore: balanceBefore.toString(),
-        balanceAfter: balanceAfter.toString(),
-      };
-    });
+        const transaction = await tx.walletTransaction.create({
+          data: {
+            userId,
+            type: WalletTransactionType.ADMIN_DEBIT,
+            amount: BigInt(amount),
+            balanceBefore,
+            balanceAfter,
+            reason: reason ?? 'Admin debit',
+            adminId,
+          },
+        });
+
+        await tx.adminAction.create({
+          data: {
+            adminId,
+            action: 'ADMIN_DEBIT',
+            targetType: 'WALLET',
+            targetId: wallet.id,
+            metadata: {
+              userId,
+              amount,
+              reason: reason ?? 'Admin debit',
+              walletTransactionId: transaction.id,
+            },
+          },
+        });
+
+        return {
+          message: 'Wallet debited successfully',
+          transactionId: transaction.id,
+          userId,
+          amount,
+          balanceBefore: balanceBefore.toString(),
+          balanceAfter: balanceAfter.toString(),
+        };
+      },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
+      });
   }
 
   async getWalletHistory(userId: string, limit = 20) {
-    const safeLimit = Math.min(limit, 100);
+    const safeLimit = Math.max(1, Math.min(limit, 100));
 
     const transactions = await this.prisma.walletTransaction.findMany({
       where: { userId },

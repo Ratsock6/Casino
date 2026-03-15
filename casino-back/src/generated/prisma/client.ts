@@ -69,3 +69,8 @@ export type AdminAction = Prisma.AdminActionModel
  * 
  */
 export type GameRound = Prisma.GameRoundModel
+/**
+ * Model IdempotencyRequest
+ * 
+ */
+export type IdempotencyRequest = Prisma.IdempotencyRequestModel

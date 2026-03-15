@@ -56,7 +56,8 @@ export const ModelName = {
   WalletTransaction: 'WalletTransaction',
   RefreshToken: 'RefreshToken',
   AdminAction: 'AdminAction',
-  GameRound: 'GameRound'
+  GameRound: 'GameRound',
+  IdempotencyRequest: 'IdempotencyRequest'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -164,6 +165,21 @@ export const GameRoundScalarFieldEnum = {
 } as const
 
 export type GameRoundScalarFieldEnum = (typeof GameRoundScalarFieldEnum)[keyof typeof GameRoundScalarFieldEnum]
+
+
+export const IdempotencyRequestScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  userId: 'userId',
+  route: 'route',
+  requestHash: 'requestHash',
+  status: 'status',
+  responseBody: 'responseBody',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type IdempotencyRequestScalarFieldEnum = (typeof IdempotencyRequestScalarFieldEnum)[keyof typeof IdempotencyRequestScalarFieldEnum]
 
 
 export const SortOrder = {

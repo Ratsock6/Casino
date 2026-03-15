@@ -8,6 +8,7 @@ import { WalletModule } from './wallet/wallet.module';
 import { AdminModule } from './admin/admin.module';
 import { BetModule } from './bet/bet.module';
 import { SlotsModule } from './slots/slots.module';
+import { IdempotencyModule } from './idempotency/idempotency.module';
 
 
 @Module({
@@ -28,6 +29,7 @@ import { SlotsModule } from './slots/slots.module';
     AdminModule,
     BetModule,
     SlotsModule,
+    IdempotencyModule,
   ],
 })
 export class AppModule {}
