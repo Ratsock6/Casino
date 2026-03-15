@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { BetModule } from '../bet/bet.module';
 import { IdempotencyModule } from '../idempotency/idempotency.module';
 import { GameConfigModule } from '../game-config/game-config.module';
-import { SlotsController } from './slots.controller';
-import { SlotsService } from './slots.service';
+import { RouletteController } from './roulette.controller';
+import { RouletteService } from './roulette.service';
 
 @Module({
   imports: [BetModule, IdempotencyModule, GameConfigModule],
-  controllers: [SlotsController],
-  providers: [SlotsService],
+  controllers: [RouletteController],
+  providers: [RouletteService],
 })
-export class SlotsModule {}
+export class RouletteModule {}

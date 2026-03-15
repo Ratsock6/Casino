@@ -9,21 +9,21 @@ import {
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { IdempotencyService } from '../idempotency/idempotency.service';
-import { SpinSlotsDto } from './dto/spin-slots.dto';
-import { SlotsService } from './slots.service';
+import { PlaceRouletteBetsDto } from './dto/place-roulette-bets.dto';
+import { RouletteService } from './roulette.service';
 
-@Controller('slots')
+@Controller('roulette')
 @UseGuards(JwtAuthGuard)
-export class SlotsController {
+export class RouletteController {
   constructor(
-    private readonly slotsService: SlotsService,
+    private readonly rouletteService: RouletteService,
     private readonly idempotencyService: IdempotencyService,
-  ) { }
+  ) {}
 
   @Post('spin')
   async spin(
     @CurrentUser() user: { userId: string; role: 'PLAYER' | 'VIP' | 'ADMIN' | 'SUPER_ADMIN' },
-    @Body() dto: SpinSlotsDto,
+    @Body() dto: PlaceRouletteBetsDto,
     @Headers('x-idempotency-key') idempotencyKey?: string,
   ) {
     if (!idempotencyKey) {
@@ -34,7 +34,7 @@ export class SlotsController {
 
     const { record, isNew } = await this.idempotencyService.begin(
       user.userId,
-      'POST:/slots/spin',
+      'POST:/roulette/spin',
       idempotencyKey,
       requestHash,
     );
@@ -48,10 +48,8 @@ export class SlotsController {
     }
 
     try {
-      const result = await this.slotsService.spin(user.userId, user.role, dto.bet);
-
+      const result = await this.rouletteService.spin(user.userId, user.role, dto.bets);
       await this.idempotencyService.complete(idempotencyKey, result);
-
       return result;
     } catch (error) {
       await this.idempotencyService.fail(idempotencyKey);

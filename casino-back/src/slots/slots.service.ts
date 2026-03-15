@@ -1,17 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { BetService } from '../bet/bet.service';
 import { GameType } from '../generated/prisma/client';
+import { UserRole } from '../generated/prisma/client';
+import { GameConfigService } from '../game-config/game-config.service';
 import {
   SLOT_SYMBOLS,
   SlotSymbol,
   SlotSymbolConfig,
 } from './config/slots.config';
 
+
 @Injectable()
 export class SlotsService {
-  constructor(private readonly betService: BetService) {}
+  constructor(
+    private readonly betService: BetService,
+    private readonly gameConfigService: GameConfigService
+  ) {}
 
-  async spin(userId: string, betAmount: number) {
+  async spin(userId: string, role: UserRole, betAmount: number) {
+    this.gameConfigService.assertBetAmountAllowed('SLOTS', role, betAmount);
+    
     const placedBet = await this.betService.placeBet({
       userId,
       gameType: GameType.SLOTS,

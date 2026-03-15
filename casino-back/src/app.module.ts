@@ -9,6 +9,8 @@ import { AdminModule } from './admin/admin.module';
 import { BetModule } from './bet/bet.module';
 import { SlotsModule } from './slots/slots.module';
 import { IdempotencyModule } from './idempotency/idempotency.module';
+import { RouletteModule } from './roulette/roulette.module';
+import { GameConfigModule } from './game-config/game-config.module';
 
 
 @Module({
@@ -30,6 +32,8 @@ import { IdempotencyModule } from './idempotency/idempotency.module';
     BetModule,
     SlotsModule,
     IdempotencyModule,
+    RouletteModule,
+    GameConfigModule,
   ],
 })
 export class AppModule {}
