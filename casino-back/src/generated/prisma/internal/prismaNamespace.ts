@@ -390,7 +390,8 @@ export const ModelName = {
   RefreshToken: 'RefreshToken',
   AdminAction: 'AdminAction',
   GameRound: 'GameRound',
-  IdempotencyRequest: 'IdempotencyRequest'
+  IdempotencyRequest: 'IdempotencyRequest',
+  BlackjackGame: 'BlackjackGame'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +929,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BlackjackGame: {
+      payload: Prisma.$BlackjackGamePayload<ExtArgs>
+      fields: Prisma.BlackjackGameFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BlackjackGameFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BlackjackGameFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>
+        }
+        findFirst: {
+          args: Prisma.BlackjackGameFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BlackjackGameFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>
+        }
+        findMany: {
+          args: Prisma.BlackjackGameFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>[]
+        }
+        create: {
+          args: Prisma.BlackjackGameCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>
+        }
+        createMany: {
+          args: Prisma.BlackjackGameCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BlackjackGameCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>[]
+        }
+        delete: {
+          args: Prisma.BlackjackGameDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>
+        }
+        update: {
+          args: Prisma.BlackjackGameUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>
+        }
+        deleteMany: {
+          args: Prisma.BlackjackGameDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BlackjackGameUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BlackjackGameUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>[]
+        }
+        upsert: {
+          args: Prisma.BlackjackGameUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BlackjackGamePayload>
+        }
+        aggregate: {
+          args: Prisma.BlackjackGameAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBlackjackGame>
+        }
+        groupBy: {
+          args: Prisma.BlackjackGameGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlackjackGameGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BlackjackGameCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BlackjackGameCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1073,6 +1148,26 @@ export const IdempotencyRequestScalarFieldEnum = {
 export type IdempotencyRequestScalarFieldEnum = (typeof IdempotencyRequestScalarFieldEnum)[keyof typeof IdempotencyRequestScalarFieldEnum]
 
 
+export const BlackjackGameScalarFieldEnum = {
+  id: 'id',
+  gameRoundId: 'gameRoundId',
+  userId: 'userId',
+  status: 'status',
+  betAmount: 'betAmount',
+  playerCards: 'playerCards',
+  dealerCards: 'dealerCards',
+  playerScore: 'playerScore',
+  dealerScore: 'dealerScore',
+  playerSoft: 'playerSoft',
+  dealerSoft: 'dealerSoft',
+  canDouble: 'canDouble',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlackjackGameScalarFieldEnum = (typeof BlackjackGameScalarFieldEnum)[keyof typeof BlackjackGameScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1087,6 +1182,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1287,6 +1389,27 @@ export type EnumIdempotencyStatusFieldRefInput<$PrismaModel> = FieldRefInputType
 export type ListEnumIdempotencyStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IdempotencyStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'BlackjackGameStatus'
+ */
+export type EnumBlackjackGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlackjackGameStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BlackjackGameStatus[]'
+ */
+export type ListEnumBlackjackGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlackjackGameStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -1389,6 +1512,7 @@ export type GlobalOmitConfig = {
   adminAction?: Prisma.AdminActionOmit
   gameRound?: Prisma.GameRoundOmit
   idempotencyRequest?: Prisma.IdempotencyRequestOmit
+  blackjackGame?: Prisma.BlackjackGameOmit
 }
 
 /* Types for Logging */

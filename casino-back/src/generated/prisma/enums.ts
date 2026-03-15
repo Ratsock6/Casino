@@ -67,3 +67,18 @@ export const IdempotencyStatus = {
 } as const
 
 export type IdempotencyStatus = (typeof IdempotencyStatus)[keyof typeof IdempotencyStatus]
+
+
+export const BlackjackGameStatus = {
+  PLAYER_TURN: 'PLAYER_TURN',
+  DEALER_TURN: 'DEALER_TURN',
+  PLAYER_BUST: 'PLAYER_BUST',
+  DEALER_BUST: 'DEALER_BUST',
+  PLAYER_BLACKJACK: 'PLAYER_BLACKJACK',
+  PLAYER_WIN: 'PLAYER_WIN',
+  DEALER_WIN: 'DEALER_WIN',
+  PUSH: 'PUSH',
+  FINISHED: 'FINISHED'
+} as const
+
+export type BlackjackGameStatus = (typeof BlackjackGameStatus)[keyof typeof BlackjackGameStatus]

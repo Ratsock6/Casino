@@ -74,3 +74,8 @@ export type GameRound = Prisma.GameRoundModel
  * 
  */
 export type IdempotencyRequest = Prisma.IdempotencyRequestModel
+/**
+ * Model BlackjackGame
+ * 
+ */
+export type BlackjackGame = Prisma.BlackjackGameModel

@@ -57,7 +57,8 @@ export const ModelName = {
   RefreshToken: 'RefreshToken',
   AdminAction: 'AdminAction',
   GameRound: 'GameRound',
-  IdempotencyRequest: 'IdempotencyRequest'
+  IdempotencyRequest: 'IdempotencyRequest',
+  BlackjackGame: 'BlackjackGame'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -182,6 +183,26 @@ export const IdempotencyRequestScalarFieldEnum = {
 export type IdempotencyRequestScalarFieldEnum = (typeof IdempotencyRequestScalarFieldEnum)[keyof typeof IdempotencyRequestScalarFieldEnum]
 
 
+export const BlackjackGameScalarFieldEnum = {
+  id: 'id',
+  gameRoundId: 'gameRoundId',
+  userId: 'userId',
+  status: 'status',
+  betAmount: 'betAmount',
+  playerCards: 'playerCards',
+  dealerCards: 'dealerCards',
+  playerScore: 'playerScore',
+  dealerScore: 'dealerScore',
+  playerSoft: 'playerSoft',
+  dealerSoft: 'dealerSoft',
+  canDouble: 'canDouble',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BlackjackGameScalarFieldEnum = (typeof BlackjackGameScalarFieldEnum)[keyof typeof BlackjackGameScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -196,6 +217,13 @@ export const NullableJsonNullValueInput = {
 } as const
 
 export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {

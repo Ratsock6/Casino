@@ -287,6 +287,7 @@ export type UserWhereInput = {
   adminActionsMade?: Prisma.AdminActionListRelationFilter
   gameRounds?: Prisma.GameRoundListRelationFilter
   idempotencyRequests?: Prisma.IdempotencyRequestListRelationFilter
+  blackjackGames?: Prisma.BlackjackGameListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -310,6 +311,7 @@ export type UserOrderByWithRelationInput = {
   adminActionsMade?: Prisma.AdminActionOrderByRelationAggregateInput
   gameRounds?: Prisma.GameRoundOrderByRelationAggregateInput
   idempotencyRequests?: Prisma.IdempotencyRequestOrderByRelationAggregateInput
+  blackjackGames?: Prisma.BlackjackGameOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -336,6 +338,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   adminActionsMade?: Prisma.AdminActionListRelationFilter
   gameRounds?: Prisma.GameRoundListRelationFilter
   idempotencyRequests?: Prisma.IdempotencyRequestListRelationFilter
+  blackjackGames?: Prisma.BlackjackGameListRelationFilter
 }, "id" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -399,6 +402,7 @@ export type UserCreateInput = {
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -422,6 +426,7 @@ export type UserUncheckedCreateInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -445,6 +450,7 @@ export type UserUpdateInput = {
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -468,6 +474,7 @@ export type UserUncheckedUpdateInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -712,6 +719,20 @@ export type UserUpdateOneRequiredWithoutIdempotencyRequestsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutIdempotencyRequestsInput, Prisma.UserUpdateWithoutIdempotencyRequestsInput>, Prisma.UserUncheckedUpdateWithoutIdempotencyRequestsInput>
 }
 
+export type UserCreateNestedOneWithoutBlackjackGamesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlackjackGamesInput, Prisma.UserUncheckedCreateWithoutBlackjackGamesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlackjackGamesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutBlackjackGamesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutBlackjackGamesInput, Prisma.UserUncheckedCreateWithoutBlackjackGamesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutBlackjackGamesInput
+  upsert?: Prisma.UserUpsertWithoutBlackjackGamesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBlackjackGamesInput, Prisma.UserUpdateWithoutBlackjackGamesInput>, Prisma.UserUncheckedUpdateWithoutBlackjackGamesInput>
+}
+
 export type UserCreateWithoutWalletInput = {
   id?: string
   username: string
@@ -732,6 +753,7 @@ export type UserCreateWithoutWalletInput = {
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutWalletInput = {
@@ -754,6 +776,7 @@ export type UserUncheckedCreateWithoutWalletInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutWalletInput = {
@@ -792,6 +815,7 @@ export type UserUpdateWithoutWalletInput = {
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutWalletInput = {
@@ -814,6 +838,7 @@ export type UserUncheckedUpdateWithoutWalletInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutTransactionsInput = {
@@ -836,6 +861,7 @@ export type UserCreateWithoutTransactionsInput = {
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutTransactionsInput = {
@@ -858,6 +884,7 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutTransactionsInput = {
@@ -885,6 +912,7 @@ export type UserCreateWithoutAdminWalletActionsInput = {
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
@@ -907,6 +935,7 @@ export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAdminWalletActionsInput = {
@@ -945,6 +974,7 @@ export type UserUpdateWithoutTransactionsInput = {
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTransactionsInput = {
@@ -967,6 +997,7 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAdminWalletActionsInput = {
@@ -1000,6 +1031,7 @@ export type UserUpdateWithoutAdminWalletActionsInput = {
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
@@ -1022,6 +1054,7 @@ export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRefreshTokensInput = {
@@ -1044,6 +1077,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -1066,6 +1100,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -1104,6 +1139,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -1126,6 +1162,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAdminActionsMadeInput = {
@@ -1148,6 +1185,7 @@ export type UserCreateWithoutAdminActionsMadeInput = {
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
@@ -1170,6 +1208,7 @@ export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAdminActionsMadeInput = {
@@ -1208,6 +1247,7 @@ export type UserUpdateWithoutAdminActionsMadeInput = {
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
@@ -1230,6 +1270,7 @@ export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutGameRoundsInput = {
@@ -1252,6 +1293,7 @@ export type UserCreateWithoutGameRoundsInput = {
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutGameRoundsInput = {
@@ -1274,6 +1316,7 @@ export type UserUncheckedCreateWithoutGameRoundsInput = {
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutGameRoundsInput = {
@@ -1312,6 +1355,7 @@ export type UserUpdateWithoutGameRoundsInput = {
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutGameRoundsInput = {
@@ -1334,6 +1378,7 @@ export type UserUncheckedUpdateWithoutGameRoundsInput = {
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutIdempotencyRequestsInput = {
@@ -1356,6 +1401,7 @@ export type UserCreateWithoutIdempotencyRequestsInput = {
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
   adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
@@ -1378,6 +1424,7 @@ export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
   adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
   gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutIdempotencyRequestsInput = {
@@ -1416,6 +1463,7 @@ export type UserUpdateWithoutIdempotencyRequestsInput = {
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
   adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
@@ -1438,6 +1486,115 @@ export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
   adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
   gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutBlackjackGamesInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutBlackjackGamesInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutBlackjackGamesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlackjackGamesInput, Prisma.UserUncheckedCreateWithoutBlackjackGamesInput>
+}
+
+export type UserUpsertWithoutBlackjackGamesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutBlackjackGamesInput, Prisma.UserUncheckedUpdateWithoutBlackjackGamesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutBlackjackGamesInput, Prisma.UserUncheckedCreateWithoutBlackjackGamesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutBlackjackGamesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutBlackjackGamesInput, Prisma.UserUncheckedUpdateWithoutBlackjackGamesInput>
+}
+
+export type UserUpdateWithoutBlackjackGamesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1452,6 +1609,7 @@ export type UserCountOutputType = {
   adminActionsMade: number
   gameRounds: number
   idempotencyRequests: number
+  blackjackGames: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1461,6 +1619,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   adminActionsMade?: boolean | UserCountOutputTypeCountAdminActionsMadeArgs
   gameRounds?: boolean | UserCountOutputTypeCountGameRoundsArgs
   idempotencyRequests?: boolean | UserCountOutputTypeCountIdempotencyRequestsArgs
+  blackjackGames?: boolean | UserCountOutputTypeCountBlackjackGamesArgs
 }
 
 /**
@@ -1515,6 +1674,13 @@ export type UserCountOutputTypeCountIdempotencyRequestsArgs<ExtArgs extends runt
   where?: Prisma.IdempotencyRequestWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountBlackjackGamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.BlackjackGameWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1537,6 +1703,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   adminActionsMade?: boolean | Prisma.User$adminActionsMadeArgs<ExtArgs>
   gameRounds?: boolean | Prisma.User$gameRoundsArgs<ExtArgs>
   idempotencyRequests?: boolean | Prisma.User$idempotencyRequestsArgs<ExtArgs>
+  blackjackGames?: boolean | Prisma.User$blackjackGamesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1597,6 +1764,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   adminActionsMade?: boolean | Prisma.User$adminActionsMadeArgs<ExtArgs>
   gameRounds?: boolean | Prisma.User$gameRoundsArgs<ExtArgs>
   idempotencyRequests?: boolean | Prisma.User$idempotencyRequestsArgs<ExtArgs>
+  blackjackGames?: boolean | Prisma.User$blackjackGamesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1612,6 +1780,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     adminActionsMade: Prisma.$AdminActionPayload<ExtArgs>[]
     gameRounds: Prisma.$GameRoundPayload<ExtArgs>[]
     idempotencyRequests: Prisma.$IdempotencyRequestPayload<ExtArgs>[]
+    blackjackGames: Prisma.$BlackjackGamePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2028,6 +2197,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   adminActionsMade<T extends Prisma.User$adminActionsMadeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$adminActionsMadeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AdminActionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   gameRounds<T extends Prisma.User$gameRoundsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$gameRoundsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GameRoundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   idempotencyRequests<T extends Prisma.User$idempotencyRequestsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$idempotencyRequestsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IdempotencyRequestPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  blackjackGames<T extends Prisma.User$blackjackGamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$blackjackGamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BlackjackGamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2623,6 +2793,30 @@ export type User$idempotencyRequestsArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.IdempotencyRequestScalarFieldEnum | Prisma.IdempotencyRequestScalarFieldEnum[]
+}
+
+/**
+ * User.blackjackGames
+ */
+export type User$blackjackGamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the BlackjackGame
+   */
+  select?: Prisma.BlackjackGameSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the BlackjackGame
+   */
+  omit?: Prisma.BlackjackGameOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.BlackjackGameInclude<ExtArgs> | null
+  where?: Prisma.BlackjackGameWhereInput
+  orderBy?: Prisma.BlackjackGameOrderByWithRelationInput | Prisma.BlackjackGameOrderByWithRelationInput[]
+  cursor?: Prisma.BlackjackGameWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.BlackjackGameScalarFieldEnum | Prisma.BlackjackGameScalarFieldEnum[]
 }
 
 /**
