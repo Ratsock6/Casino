@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { BetService } from '../bet/bet.service';
+import { GameConfigService } from '../game-config/game-config.service';
+import { UserRole } from '../generated/prisma/client';
 import {
   BlackjackGameStatus,
   GameType,
@@ -17,6 +19,8 @@ import {
   CardSuit,
   JsonObject,
 } from './types/blackjack.types';
+
+
 
 @Injectable()
 export class BlackjackService {
@@ -46,9 +50,11 @@ export class BlackjackService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly betService: BetService,
+    private readonly gameConfigService: GameConfigService,
   ) {}
+  async startGame(userId: string, role: UserRole, betAmount: number) {
+    this.gameConfigService.assertBetAmountAllowed('BLACKJACK', role, betAmount);
 
-  async startGame(userId: string, betAmount: number) {
     const placedBet = await this.betService.placeBet({
       userId,
       gameType: GameType.BLACKJACK,
@@ -57,6 +63,8 @@ export class BlackjackService {
         mode: 'classic',
       },
     });
+
+  
 
     const playerCards = [this.drawCard(), this.drawCard()];
     const dealerCards = [this.drawCard(), this.drawCard()];

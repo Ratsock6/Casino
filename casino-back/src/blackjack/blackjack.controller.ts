@@ -21,11 +21,14 @@ export class BlackjackController {
   constructor(
     private readonly blackjackService: BlackjackService,
     private readonly idempotencyService: IdempotencyService,
-  ) {}
+  ) { }
 
   @Post('start')
   async start(
-    @CurrentUser() user: { userId: string },
+    @CurrentUser() user: {
+      userId: string;
+      role: 'PLAYER' | 'VIP' | 'ADMIN' | 'SUPER_ADMIN';
+    },
     @Body() dto: StartBlackjackDto,
     @Headers('x-idempotency-key') idempotencyKey?: string,
   ) {
@@ -51,7 +54,11 @@ export class BlackjackController {
     }
 
     try {
-      const result = await this.blackjackService.startGame(user.userId, dto.bet);
+      const result = await this.blackjackService.startGame(
+        user.userId,
+        user.role,
+        dto.bet,
+      );
       await this.idempotencyService.complete(idempotencyKey, result);
       return result;
     } catch (error) {

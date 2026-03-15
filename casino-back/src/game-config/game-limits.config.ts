@@ -1,4 +1,4 @@
-export type CasinoGameKey = 'ROULETTE' | 'SLOTS';
+export type CasinoGameKey = 'ROULETTE' | 'SLOTS' | 'BLACKJACK';
 
 export interface GameBetLimitConfig {
   standardMaxBet: number;
@@ -13,5 +13,9 @@ export const GAME_BET_LIMITS: Record<CasinoGameKey, GameBetLimitConfig> = {
   SLOTS: {
     standardMaxBet: 20_000,
     vipMaxBet: 100_000,
+  },
+  BLACKJACK: {
+    standardMaxBet: 10_000,
+    vipMaxBet: 50_000,
   },
 };
