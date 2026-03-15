@@ -30,6 +30,19 @@ enum WalletTransactionType {
   ADJUSTMENT
 }
 
+enum GameType {
+  ROULETTE
+  BLACKJACK
+  SLOTS
+}
+
+enum GameRoundStatus {
+  PENDING
+  WON
+  LOST
+  REFUNDED
+}
+
 model User {
   id               String     @id @default(cuid())
   username         String     @unique
@@ -50,6 +63,7 @@ model User {
   transactions       WalletTransaction[]
   adminWalletActions WalletTransaction[] @relation("AdminWalletActions")
   adminActionsMade   AdminAction[]       @relation("AdminActionsMade")
+  gameRounds         GameRound[]
 
   @@index([username])
   @@index([role, status])
@@ -114,4 +128,23 @@ model AdminAction {
 
   @@index([adminId, createdAt])
   @@index([targetType, targetId])
+}
+
+model GameRound {
+  id         String          @id @default(cuid())
+  userId     String
+  gameType   GameType
+  status     GameRoundStatus @default(PENDING)
+  stake      BigInt
+  payout     BigInt          @default(0)
+  multiplier Float?
+  metadata   Json?
+  settledAt  DateTime?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([gameType, status, createdAt])
 }

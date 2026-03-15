@@ -388,7 +388,8 @@ export const ModelName = {
   Wallet: 'Wallet',
   WalletTransaction: 'WalletTransaction',
   RefreshToken: 'RefreshToken',
-  AdminAction: 'AdminAction'
+  AdminAction: 'AdminAction',
+  GameRound: 'GameRound'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -404,7 +405,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -778,6 +779,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    GameRound: {
+      payload: Prisma.$GameRoundPayload<ExtArgs>
+      fields: Prisma.GameRoundFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.GameRoundFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.GameRoundFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>
+        }
+        findFirst: {
+          args: Prisma.GameRoundFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.GameRoundFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>
+        }
+        findMany: {
+          args: Prisma.GameRoundFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>[]
+        }
+        create: {
+          args: Prisma.GameRoundCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>
+        }
+        createMany: {
+          args: Prisma.GameRoundCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.GameRoundCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>[]
+        }
+        delete: {
+          args: Prisma.GameRoundDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>
+        }
+        update: {
+          args: Prisma.GameRoundUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>
+        }
+        deleteMany: {
+          args: Prisma.GameRoundDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.GameRoundUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.GameRoundUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>[]
+        }
+        upsert: {
+          args: Prisma.GameRoundUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$GameRoundPayload>
+        }
+        aggregate: {
+          args: Prisma.GameRoundAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateGameRound>
+        }
+        groupBy: {
+          args: Prisma.GameRoundGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameRoundGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.GameRoundCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.GameRoundCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -889,6 +964,23 @@ export const AdminActionScalarFieldEnum = {
 } as const
 
 export type AdminActionScalarFieldEnum = (typeof AdminActionScalarFieldEnum)[keyof typeof AdminActionScalarFieldEnum]
+
+
+export const GameRoundScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  gameType: 'gameType',
+  status: 'status',
+  stake: 'stake',
+  payout: 'payout',
+  multiplier: 'multiplier',
+  metadata: 'metadata',
+  settledAt: 'settledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GameRoundScalarFieldEnum = (typeof GameRoundScalarFieldEnum)[keyof typeof GameRoundScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1051,6 +1143,34 @@ export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
 
 
 /**
+ * Reference to a field of type 'GameType'
+ */
+export type EnumGameTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameType'>
+    
+
+
+/**
+ * Reference to a field of type 'GameType[]'
+ */
+export type ListEnumGameTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GameRoundStatus'
+ */
+export type EnumGameRoundStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameRoundStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'GameRoundStatus[]'
+ */
+export type ListEnumGameRoundStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GameRoundStatus[]'>
+    
+
+
+/**
  * Reference to a field of type 'Float'
  */
 export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -1163,6 +1283,7 @@ export type GlobalOmitConfig = {
   walletTransaction?: Prisma.WalletTransactionOmit
   refreshToken?: Prisma.RefreshTokenOmit
   adminAction?: Prisma.AdminActionOmit
+  gameRound?: Prisma.GameRoundOmit
 }
 
 /* Types for Logging */

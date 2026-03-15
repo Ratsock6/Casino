@@ -55,7 +55,8 @@ export const ModelName = {
   Wallet: 'Wallet',
   WalletTransaction: 'WalletTransaction',
   RefreshToken: 'RefreshToken',
-  AdminAction: 'AdminAction'
+  AdminAction: 'AdminAction',
+  GameRound: 'GameRound'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -146,6 +147,23 @@ export const AdminActionScalarFieldEnum = {
 } as const
 
 export type AdminActionScalarFieldEnum = (typeof AdminActionScalarFieldEnum)[keyof typeof AdminActionScalarFieldEnum]
+
+
+export const GameRoundScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  gameType: 'gameType',
+  status: 'status',
+  stake: 'stake',
+  payout: 'payout',
+  multiplier: 'multiplier',
+  metadata: 'metadata',
+  settledAt: 'settledAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type GameRoundScalarFieldEnum = (typeof GameRoundScalarFieldEnum)[keyof typeof GameRoundScalarFieldEnum]
 
 
 export const SortOrder = {

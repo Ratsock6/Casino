@@ -38,3 +38,22 @@ export const WalletTransactionType = {
 } as const
 
 export type WalletTransactionType = (typeof WalletTransactionType)[keyof typeof WalletTransactionType]
+
+
+export const GameType = {
+  ROULETTE: 'ROULETTE',
+  BLACKJACK: 'BLACKJACK',
+  SLOTS: 'SLOTS'
+} as const
+
+export type GameType = (typeof GameType)[keyof typeof GameType]
+
+
+export const GameRoundStatus = {
+  PENDING: 'PENDING',
+  WON: 'WON',
+  LOST: 'LOST',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type GameRoundStatus = (typeof GameRoundStatus)[keyof typeof GameRoundStatus]

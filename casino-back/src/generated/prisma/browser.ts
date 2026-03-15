@@ -42,3 +42,8 @@ export type RefreshToken = Prisma.RefreshTokenModel
  * 
  */
 export type AdminAction = Prisma.AdminActionModel
+/**
+ * Model GameRound
+ * 
+ */
+export type GameRound = Prisma.GameRoundModel
