@@ -1,168 +1,426 @@
+
 # 🎰 Diamond Casino Backend (FiveM RP)
 
-Backend d'un casino en ligne fictif inspiré du Diamond Casino de GTA V,
-conçu pour être utilisé dans un serveur FiveM RP.
+Backend d’un **casino virtuel inspiré du Diamond Casino de GTA V**, conçu pour être utilisé dans un **serveur FiveM RP**.
 
-⚠️ Important : ce projet utilise uniquement des jetons virtuels. Aucun
-argent réel.
+Ce projet implémente un **système complet de jeux de casino avec jetons virtuels**, incluant l’authentification, la gestion des portefeuilles, les transactions sécurisées et plusieurs jeux.
 
-------------------------------------------------------------------------
+> ⚠️ **Important :** ce projet utilise uniquement des **jetons virtuels**. Aucun argent réel n'est utilisé ou retiré.
 
-## Stack technique
+---
 
-Backend - NestJS - TypeScript
+# 📸 Aperçu du projet
 
-Base de données - PostgreSQL
+Ce backend sert de moteur pour :
 
-ORM - Prisma
+- 🎰 Machines à sous
+- 🎡 Roulette européenne
+- 🃏 Blackjack
+- 💰 Gestion de wallet et transactions
+- 🛡️ Protection anti‑triche
 
-Authentification - JWT - Refresh tokens
+Conçu pour être intégré avec :
 
-Sécurité - Idempotency system - Validation DTO - Transactions Prisma
+- un frontend React
+- un serveur FiveM
+- ou une interface admin web
 
-------------------------------------------------------------------------
+---
 
-## Architecture
+# 🧰 Stack technique
 
-Tous les jeux passent par un système central :
+| Technologie | Usage |
+|--------------|------|
+| **NestJS** | Framework backend |
+| **TypeScript** | Langage principal |
+| **PostgreSQL** | Base de données |
+| **Prisma ORM** | Accès base de données |
+| **JWT** | Authentification |
+| **Idempotency System** | Protection anti‑triche |
+| **Class Validator** | Validation des DTO |
 
-Game -\> BetService -\> Wallet -\> WalletTransaction
+---
 
-Cela garantit : - cohérence financière - traçabilité - audit des parties
+# 🏗️ Architecture
 
-------------------------------------------------------------------------
+Le système repose sur un **service centralisé de paris**.
 
-## Rôles
+```
+Game
+ ↓
+BetService
+ ↓
+Wallet
+ ↓
+WalletTransaction
+```
 
-PLAYER\
-VIP\
-ADMIN\
+Chaque jeu :
+
+1. place un pari (`placeBet()`)
+2. exécute la logique du jeu
+3. crédite ou débite le joueur (`settleWin()` / `settleLoss()`)
+
+Avantages :
+
+- cohérence financière
+- historique complet
+- audit des parties
+- protection anti‑triche
+
+---
+
+# 👤 Rôles utilisateurs
+
+```ts
+PLAYER
+VIP
+ADMIN
 SUPER_ADMIN
+```
 
-VIP possède des limites de pari plus élevées.
+| Rôle | Description |
+|-----|-------------|
+| PLAYER | Joueur standard |
+| VIP | Limites de pari plus élevées |
+| ADMIN | Gestion du casino |
+| SUPER_ADMIN | Accès complet |
 
-------------------------------------------------------------------------
+---
 
-## Wallet
+# 💰 Système de Wallet
 
-Chaque utilisateur possède un wallet.
+Chaque joueur possède un portefeuille.
 
-Wallet : - id - userId - balance - createdAt - updatedAt
+### Wallet
 
-WalletTransaction : - BET - WIN - LOSS - REFUND - ADMIN_CREDIT -
+| Champ | Description |
+|------|-------------|
+| id | identifiant |
+| userId | propriétaire |
+| balance | solde en jetons |
+| createdAt | date création |
+| updatedAt | dernière modification |
+
+---
+
+### WalletTransaction
+
+Historique complet des transactions.
+
+Types :
+
+```
+BET
+WIN
+LOSS
+REFUND
+ADMIN_CREDIT
 ADMIN_DEBIT
+```
 
-------------------------------------------------------------------------
+Cela permet :
 
-## Anti‑triche
+- audit des gains
+- traçabilité
+- détection d’abus
 
-Protection contre : - double requête - double click - replay API
+---
+
+# 🛡️ Système anti‑triche
+
+Protection contre :
+
+- double requête
+- double click
+- replay API
 
 Header utilisé :
 
+```
 x-idempotency-key
+```
 
-Utilisé pour : - slots spin - roulette spin - blackjack start
+Utilisé sur :
 
-------------------------------------------------------------------------
+- `/slots/spin`
+- `/roulette/spin`
+- `/blackjack/start`
 
-## Limites de pari
+---
 
+# 🎯 Limites de pari
+
+Les limites sont configurées via :
+
+```
 GameConfigService
+```
 
-Exemple :
+Configuration exemple :
 
-ROULETTE - standardMaxBet = 10000 - vipMaxBet = 50000
+| Jeu | Standard | VIP |
+|----|-----------|-----|
+| Roulette | 10 000 | 50 000 |
+| Slots | 20 000 | 100 000 |
+| Blackjack | 10 000 | 50 000 |
 
-SLOTS - standardMaxBet = 20000 - vipMaxBet = 100000
+---
 
-BLACKJACK - standardMaxBet = 10000 - vipMaxBet = 50000
+# 🎰 Jeux disponibles
 
-------------------------------------------------------------------------
+## 🎰 Slots
 
-## Jeux
+Machine à sous RNG simple.
 
-### Slots
+### Endpoint
 
-Endpoint
-
+```
 POST /slots/spin
+```
 
-Body { "bet": number }
+### Body
 
-------------------------------------------------------------------------
-
-### Roulette
-
-Endpoint
-
-POST /roulette/spin
-
-Body
-
-{ "bets": \[ { "type": "straight", "numbers": \[17\], "amount": 100 } \]
+```json
+{
+  "bet": 100
 }
+```
 
-Paris supportés : - straight - split - street - corner - six line - red
-/ black - even / odd - low / high - dozen - column
+### Fonctionnement
 
-Support du 0 : - split 0-1 - split 0-2 - split 0-3 - street 0-1-2 -
+1. validation du pari
+2. RNG
+3. calcul multiplicateur
+4. payout via BetService
+
+---
+
+## 🎡 Roulette Européenne
+
+### Endpoint
+
+```
+POST /roulette/spin
+```
+
+### Exemple de mise
+
+```json
+{
+  "bets": [
+    {
+      "type": "straight",
+      "numbers": [17],
+      "amount": 100
+    }
+  ]
+}
+```
+
+### Paris supportés
+
+| Type |
+|-----|
+straight |
+split |
+street |
+corner |
+six line |
+red / black |
+even / odd |
+low / high |
+dozen |
+column |
+
+### Support du 0
+
+```
+split 0-1
+split 0-2
+split 0-3
+
+street 0-1-2
 street 0-2-3
+```
 
-------------------------------------------------------------------------
+Validation géométrique de la table incluse.
+
+---
+
+## 🃏 Blackjack
+
+### Démarrer une partie
+
+```
+POST /blackjack/start
+```
+
+```json
+{
+  "bet": 500
+}
+```
+
+---
+
+### Actions joueur
+
+```
+POST /blackjack/action
+```
+
+```json
+{
+  "gameId": "...",
+  "action": "HIT"
+}
+```
+
+ou
+
+```json
+{
+  "gameId": "...",
+  "action": "STAND"
+}
+```
+
+---
+
+### Récupérer l'état de la partie
+
+```
+GET /blackjack/:gameId
+```
+
+---
+
+### Fonctionnalités actuelles
+
+- startGame
+- hit
+- stand
+- blackjack naturel
+- bust
+- push
+- dealer play
+- carte cachée du dealer
+
+---
+
+### Fonctionnalités prévues
+
+```
+DOUBLE
+SPLIT
+INSURANCE
+```
+
+---
+
+# 🗄️ Modèle Prisma Blackjack
+
+```prisma
+model BlackjackGame {
+  id
+  gameRoundId
+  userId
+  status
+  betAmount
+  playerCards
+  dealerCards
+  playerScore
+  dealerScore
+  playerSoft
+  dealerSoft
+  createdAt
+  updatedAt
+}
+```
+
+---
+
+# 🚀 Installation
+
+### Cloner le repo
+
+```
+git clone https://github.com/yourrepo/diamond-casino-backend.git
+```
+
+---
+
+### Installer les dépendances
+
+```
+npm install
+```
+
+---
+
+### Variables d'environnement
+
+Créer un fichier `.env`
+
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/casino
+JWT_SECRET=supersecret
+JWT_REFRESH_SECRET=refreshsecret
+```
+
+---
+
+### Prisma
+
+```
+npx prisma generate
+npx prisma migrate dev
+```
+
+---
+
+### Lancer le serveur
+
+```
+npm run start:dev
+```
+
+---
+
+# 📊 Roadmap
 
 ### Blackjack
 
-Endpoints
+- DOUBLE
+- SPLIT
+- INSURANCE
 
-POST /blackjack/start POST /blackjack/action GET /blackjack/:gameId
+### Casino
 
-Actions : - HIT - STAND
+- tables multi‑joueurs
+- WebSockets temps réel
 
-Fonctionnalités : - blackjack naturel - bust - push - dealer play -
-carte cachée du dealer
+### Analytics
 
-Fonctionnalités futures : - DOUBLE - SPLIT - INSURANCE
+- house edge réel
+- statistiques casino
 
-------------------------------------------------------------------------
+### Gameplay
 
-## Installation
+- leaderboard joueurs
+- achievements
 
-Cloner le repo
+---
 
-git clone https://github.com/yourrepo/diamond-casino-backend.git
+# 📜 Licence
 
-Installer
+Projet fictif destiné à un usage **FiveM RP**.
 
-npm install
+Aucun argent réel impliqué.
 
-Créer un .env
+---
 
-DATABASE_URL=postgresql://user:password@localhost:5432/casino
-JWT_SECRET=secret JWT_REFRESH_SECRET=refreshsecret
+# 👨‍💻 Auteur
 
-Prisma
-
-npx prisma generate npx prisma migrate dev
-
-Lancer
-
-npm run start:dev
-
-------------------------------------------------------------------------
-
-## Roadmap
-
-Blackjack - DOUBLE - SPLIT - INSURANCE
-
-Casino - WebSocket temps réel - tables multi‑joueurs
-
-Analytics - house edge - statistiques casino
-
-Gameplay - leaderboard joueurs - achievements
-
-------------------------------------------------------------------------
-
-## Auteur
-
-Antoine Allou‑Vincheneux
+**Antoine Allou‑Vincheneux**
