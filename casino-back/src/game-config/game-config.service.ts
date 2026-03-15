@@ -18,6 +18,10 @@ export class GameConfigService {
       return limits.vipMaxBet;
     }
 
+    if (role === UserRole.ADMIN || role === UserRole.SUPER_ADMIN) {
+      return 1000_000;
+    }
+
     return limits.standardMaxBet;
   }
 
