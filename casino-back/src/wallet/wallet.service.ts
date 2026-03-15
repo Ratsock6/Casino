@@ -10,7 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class WalletService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async getWalletByUserId(userId: string) {
     const wallet = await this.prisma.wallet.findUnique({
@@ -169,10 +169,13 @@ export class WalletService {
     });
   }
 
-  async getWalletHistory(userId: string) {
+  async getWalletHistory(userId: string, limit = 20) {
+    const safeLimit = Math.min(limit, 100);
+
     const transactions = await this.prisma.walletTransaction.findMany({
       where: { userId },
       orderBy: { createdAt: 'desc' },
+      take: safeLimit,
     });
 
     return transactions.map((tx) => ({
