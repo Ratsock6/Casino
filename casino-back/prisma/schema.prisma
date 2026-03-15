@@ -1,0 +1,117 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  PLAYER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BANNED
+  SUSPENDED
+}
+
+enum WalletTransactionType {
+  ADMIN_CREDIT
+  ADMIN_DEBIT
+  BET
+  WIN
+  LOSS
+  REFUND
+  ADJUSTMENT
+}
+
+model User {
+  id               String     @id @default(cuid())
+  username         String     @unique
+  firstName        String
+  lastName         String
+  birthDate        DateTime
+  passwordHash     String
+  role             UserRole   @default(PLAYER)
+  status           UserStatus @default(ACTIVE)
+  failedLoginCount Int        @default(0)
+  lockedUntil      DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+
+  wallet             Wallet?
+  refreshTokens      RefreshToken[]
+  transactions       WalletTransaction[]
+  adminWalletActions WalletTransaction[] @relation("AdminWalletActions")
+  adminActionsMade   AdminAction[]       @relation("AdminActionsMade")
+
+  @@index([username])
+  @@index([role, status])
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   BigInt   @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WalletTransaction {
+  id            String                @id @default(cuid())
+  userId        String
+  type          WalletTransactionType
+  amount        BigInt
+  balanceBefore BigInt
+  balanceAfter  BigInt
+  reason        String?
+  gameType      String?
+  gameRoundId   String?
+  adminId       String?
+  createdAt     DateTime              @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  admin User? @relation("AdminWalletActions", fields: [adminId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([type, createdAt])
+  @@index([gameType, gameRoundId])
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String
+  userAgent String?
+  ipAddress String?
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model AdminAction {
+  id         String   @id @default(cuid())
+  adminId    String
+  action     String
+  targetType String
+  targetId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  admin User @relation("AdminActionsMade", fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId, createdAt])
+  @@index([targetType, targetId])
+}
