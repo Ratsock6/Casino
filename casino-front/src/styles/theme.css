@@ -1,0 +1,40 @@
+body {
+  background:
+    radial-gradient(circle at top left, rgba(110, 75, 198, 0.18), transparent 28%),
+    radial-gradient(circle at top right, rgba(201, 168, 93, 0.16), transparent 24%),
+    linear-gradient(180deg, #0f1014 0%, #11141b 100%);
+}
+
+.casino-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.casino-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.casino-content {
+  padding: 24px 28px 32px;
+}
+
+.casino-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(10px);
+}
+
+.gold-text {
+  color: var(--gold-soft);
+}
+
+.page-width {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
