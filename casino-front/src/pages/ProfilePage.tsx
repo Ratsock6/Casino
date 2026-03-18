@@ -6,7 +6,7 @@ import {
 import type { UserProfile, UserTransaction, UserGameRound, UserStats } from '../api/profile.api';
 import '../styles/pages/profile.scss';
 
-const ENABLE_STATS = false;
+const ENABLE_STATS = true;
 
 type Tab = 'info' | 'transactions' | 'games' | 'stats';
 

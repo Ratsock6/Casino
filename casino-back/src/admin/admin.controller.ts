@@ -99,4 +99,9 @@ export class AdminController {
   ) {
     return this.adminService.updateUserStatus(userId, dto.status);
   }
+
+  @Get('users/:userId/stats')
+  getUserStats(@Param('userId') userId: string) {
+    return this.adminService.getUserStats(userId);
+  }
 }

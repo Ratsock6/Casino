@@ -1,0 +1,418 @@
+@import '../variables';
+
+.blackjack {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: 800px;
+  margin: 0 auto;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__balance {
+    font-size: 14px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-gold;
+    }
+  }
+
+  &__error {
+    font-size: 13px;
+    color: $color-error;
+    text-align: center;
+  }
+
+  // Écran de mise
+  &__start {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-xl;
+    align-items: start;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__start-card {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    text-align: center;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    p {
+      font-size: 14px;
+      color: $color-text-muted;
+    }
+  }
+
+  &__bet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+
+    label {
+      font-size: 13px;
+      color: $color-text-muted;
+      font-weight: 500;
+    }
+  }
+
+  &__bet-inputs {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    button {
+      width: 36px;
+      height: 36px;
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      color: $color-text;
+      font-size: 18px;
+      transition: all $transition-fast;
+
+      &:hover {
+        border-color: $color-gold;
+        color: $color-gold;
+      }
+    }
+
+    input {
+      width: 100px;
+      text-align: center;
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      padding: 8px;
+      color: $color-text;
+      font-size: 15px;
+      font-weight: 600;
+
+      &:focus {
+        border-color: $color-gold;
+      }
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+  }
+
+  &__bet-presets {
+    display: flex;
+    gap: $spacing-sm;
+
+    button {
+      padding: 6px $spacing-md;
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      color: $color-text-muted;
+      font-size: 13px;
+      transition: all $transition-fast;
+
+      &:hover,
+      &.active {
+        border-color: $color-gold;
+        color: $color-gold;
+      }
+    }
+  }
+
+  &__deal-btn {
+    width: 100%;
+    padding: 14px;
+    background: $color-gold;
+    color: #0d0d0d;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: $radius-sm;
+    transition: background $transition-fast;
+
+    &:hover:not(:disabled) {
+      background: $color-gold-light;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // Règles
+  &__rules {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: $color-text;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+
+  &__rule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: $spacing-xs 0;
+    border-bottom: 1px solid rgba($color-border, 0.5);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__rule-label {
+    color: $color-text-muted;
+    font-weight: 500;
+  }
+
+  &__rule-value {
+    color: $color-text;
+    font-weight: 600;
+    text-align: right;
+  }
+
+  // Table de jeu
+  &__table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xl;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+  }
+
+  // Côtés joueur/croupier
+  &__side {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    &--dealer {
+      opacity: 0.9;
+    }
+  }
+
+  &__side-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__side-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: $color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__side-score {
+    font-size: 20px;
+    font-weight: 800;
+    color: $color-gold;
+  }
+
+  // Cartes
+  &__cards {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+
+  // Statut
+  &__status {
+    font-size: 18px;
+    font-weight: 700;
+    padding: $spacing-sm $spacing-xl;
+    border-radius: $radius-sm;
+    border: 1px solid currentColor;
+    background: transparent;
+    text-align: center;
+  }
+
+  &__status-bet {
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: $spacing-sm;
+    opacity: 0.8;
+  }
+
+  // Mise affichée
+  &__bet-display {
+    font-size: 14px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-gold;
+    }
+  }
+
+  // Boutons d'action
+  &__actions {
+    display: flex;
+    gap: $spacing-md;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  &__action-btn {
+    flex: 1;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    border-radius: $radius-sm;
+    transition: all $transition-fast;
+
+    &--hit {
+      background: rgba($color-success, 0.15);
+      color: $color-success;
+      border: 1px solid rgba($color-success, 0.3);
+
+      &:hover:not(:disabled) {
+        background: rgba($color-success, 0.25);
+      }
+    }
+
+    &--stand {
+      background: rgba($color-error, 0.15);
+      color: $color-error;
+      border: 1px solid rgba($color-error, 0.3);
+
+      &:hover:not(:disabled) {
+        background: rgba($color-error, 0.25);
+      }
+    }
+
+    &--new {
+      background: $color-gold;
+      color: #0d0d0d;
+      border: none;
+
+      &:hover {
+        background: $color-gold-light;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ── Carte CSS ───────────────────────────────────────────────
+.bj-card {
+  width: 70px;
+  height: 100px;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px 8px;
+  position: relative;
+  animation: dealCard 0.3s ease both;
+  flex-shrink: 0;
+
+  &--red {
+    background: #fff;
+    color: #c0392b;
+    border-color: #ddd;
+  }
+
+  &--black {
+    background: #fff;
+    color: #1a1a1a;
+    border-color: #ddd;
+  }
+
+  &--hidden {
+    background: linear-gradient(135deg, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%);
+    border-color: $color-gold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__back {
+    font-size: 48px;
+    line-height: 1;
+  }
+
+  &__rank-top {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    align-self: flex-start;
+  }
+
+  &__suit {
+    font-size: 28px;
+    line-height: 1;
+    text-align: center;
+    align-self: center;
+  }
+
+  &__rank-bottom {
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1;
+    align-self: flex-end;
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes dealCard {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

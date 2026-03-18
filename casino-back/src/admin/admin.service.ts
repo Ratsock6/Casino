@@ -120,6 +120,41 @@ export class AdminService {
     }));
   }
 
+  async getUserStats(userId: string) {
+    const rounds = await this.prisma.gameRound.findMany({
+      where: { userId },
+    });
+
+    const totalRounds = rounds.length;
+    const totalWon = rounds.filter(r => r.status === 'WON').length;
+    const totalLost = rounds.filter(r => r.status === 'LOST').length;
+    const totalStake = rounds.reduce((acc, r) => acc + Number(r.stake), 0);
+    const totalPayout = rounds.reduce((acc, r) => acc + Number(r.payout), 0);
+
+    const byGame = ['SLOTS', 'ROULETTE', 'BLACKJACK'].map((game) => {
+      const gameRounds = rounds.filter(r => r.gameType === game);
+      return {
+        gameType: game,
+        total: gameRounds.length,
+        won: gameRounds.filter(r => r.status === 'WON').length,
+        lost: gameRounds.filter(r => r.status === 'LOST').length,
+        stake: gameRounds.reduce((acc, r) => acc + Number(r.stake), 0),
+        payout: gameRounds.reduce((acc, r) => acc + Number(r.payout), 0),
+      };
+    });
+
+    return {
+      totalRounds,
+      totalWon,
+      totalLost,
+      winRate: totalRounds > 0 ? Math.round((totalWon / totalRounds) * 100) : 0,
+      totalStake,
+      totalPayout,
+      netResult: totalPayout - totalStake,
+      byGame,
+    };
+  }
+
   async getLeaderboard() {
     // Top par balance
     const wallets = await this.prisma.wallet.findMany({

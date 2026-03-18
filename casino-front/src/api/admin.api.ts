@@ -101,3 +101,26 @@ export const updateUserStatusApi = async (
 ): Promise<void> => {
   await axiosInstance.patch(`/admin/users/${userId}/status`, { status });
 };
+
+export const getUserStatsApi = async (userId: string): Promise<UserStats> => {
+  const res = await axiosInstance.get(`/admin/users/${userId}/stats`);
+  return res.data;
+};
+
+export interface UserStats {
+  totalRounds: number;
+  totalWon: number;
+  totalLost: number;
+  winRate: number;
+  totalStake: number;
+  totalPayout: number;
+  netResult: number;
+  byGame: {
+    gameType: string;
+    total: number;
+    won: number;
+    lost: number;
+    stake: number;
+    payout: number;
+  }[];
+}

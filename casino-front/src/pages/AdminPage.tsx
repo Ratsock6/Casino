@@ -10,6 +10,7 @@ import type {
 } from '../api/admin.api';
 import '../styles/pages/admin.scss';
 import { updateUserStatusApi } from '../api/admin.api';
+import { getUserStatsApi, type UserStats } from '../api/admin.api';
 
 type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players';
 
@@ -51,9 +52,11 @@ const AdminPage = () => {
       u.phoneNumber?.toLowerCase().includes(q)
     );
   });
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
 
   // Loading
   const [loading, setLoading] = useState(false);
+
 
   useEffect(() => {
     loadTab(activeTab);
@@ -91,6 +94,8 @@ const AdminPage = () => {
     setDebitAmount('');
     const txs = await getUserTransactionsApi(user.id, 30);
     setUserTransactions(txs);
+    const stats = await getUserStatsApi(user.id);
+    setUserStats(stats);
   };
 
   const handleUpdateStatus = async (status: 'ACTIVE' | 'BANNED' | 'SUSPENDED') => {
@@ -544,6 +549,72 @@ const AdminPage = () => {
 
               {actionMsg && (
                 <p className="admin__action-msg">{actionMsg}</p>
+              )}
+
+              {userStats && (
+                <div className="admin__user-stats">
+                  <h3 className="admin__section-title" style={{ marginTop: '24px' }}>
+                    Statistiques
+                  </h3>
+
+                  <div className="admin__kpis">
+                    {[
+                      { label: 'Parties', value: userStats.totalRounds, color: '#5cc8e0' },
+                      { label: 'Victoires', value: userStats.totalWon, color: '#4caf7d' },
+                      { label: 'Défaites', value: userStats.totalLost, color: '#e05c5c' },
+                      { label: 'Taux victoire', value: `${userStats.winRate}%`, color: '#c9a84c' },
+                      { label: 'Total misé', value: `${userStats.totalStake.toLocaleString()} 🪙`, color: '#e0a85c' },
+                      { label: 'Total gagné', value: `${userStats.totalPayout.toLocaleString()} 🪙`, color: '#4caf7d' },
+                      { label: 'Résultat net', value: `${userStats.netResult >= 0 ? '+' : ''}${userStats.netResult.toLocaleString()} 🪙`, color: userStats.netResult >= 0 ? '#4caf7d' : '#e05c5c' },
+                    ].map((kpi) => (
+                      <div key={kpi.label} className="admin__kpi">
+                        <span className="admin__kpi-label">{kpi.label}</span>
+                        <span className="admin__kpi-value" style={{ color: kpi.color }}>{kpi.value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="admin__bygame">
+                    {userStats.byGame.filter(g => g.total > 0).map((g) => {
+                      const GAME_COLORS: Record<string, string> = {
+                        SLOTS: '#c9a84c', ROULETTE: '#e05c5c', BLACKJACK: '#4caf7d',
+                      };
+                      const GAME_ICONS: Record<string, string> = {
+                        SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏',
+                      };
+                      return (
+                        <div key={g.gameType} className="admin__bygame-card">
+                          <div className="admin__bygame-header">
+                            <span style={{ color: GAME_COLORS[g.gameType] }}>
+                              {GAME_ICONS[g.gameType]} {g.gameType}
+                            </span>
+                            <span className="admin__table-muted">{g.total} parties</span>
+                          </div>
+                          <div className="admin__bygame-rows">
+                            {[
+                              { label: 'Victoires', value: g.won, color: '#4caf7d', pct: Math.round((g.won / g.total) * 100) },
+                              { label: 'Défaites', value: g.lost, color: '#e05c5c', pct: Math.round((g.lost / g.total) * 100) },
+                            ].map((row) => (
+                              <div key={row.label} className="admin__bygame-row">
+                                <span>{row.label}</span>
+                                <div className="admin__bygame-track">
+                                  <div className="admin__bygame-fill" style={{ width: `${row.pct}%`, background: row.color }} />
+                                </div>
+                                <span>{row.value}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="admin__bygame-financial">
+                            <span>Misé : <strong>{g.stake.toLocaleString()} 🪙</strong></span>
+                            <span style={{ color: (g.payout - g.stake) >= 0 ? '#4caf7d' : '#e05c5c' }}>
+                              Net : <strong>{(g.payout - g.stake) >= 0 ? '+' : ''}{(g.payout - g.stake).toLocaleString()} 🪙</strong>
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
 
               {/* Transactions du joueur */}
