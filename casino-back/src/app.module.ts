@@ -12,6 +12,8 @@ import { IdempotencyModule } from './idempotency/idempotency.module';
 import { RouletteModule } from './roulette/roulette.module';
 import { GameConfigModule } from './game-config/game-config.module';
 import { BlackjackModule } from './blackjack/blackjack.module';
+import { GameRoundsModule } from './game-rounds/game-rounds.module';
+
 
 
 @Module({
@@ -36,6 +38,7 @@ import { BlackjackModule } from './blackjack/blackjack.module';
     RouletteModule,
     GameConfigModule,
     BlackjackModule,
+    GameRoundsModule,
   ],
 })
 export class AppModule {}
