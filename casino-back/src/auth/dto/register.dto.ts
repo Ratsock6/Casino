@@ -20,6 +20,12 @@ export class RegisterDto {
   birthDate: string;
 
   @IsString()
+  @Matches(/^\d{5}-\d{5}$/, {
+    message: 'phoneNumber must follow the format 00000-00000',
+  })
+  phoneNumber: string;
+
+  @IsString()
   @Length(8, 128)
   password: string;
 }

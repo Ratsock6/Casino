@@ -23,6 +23,7 @@ export class UsersService {
       firstName: user.firstName,
       lastName: user.lastName,
       birthDate: user.birthDate,
+      phoneNumber: user.phoneNumber,
       role: user.role,
       status: user.status,
       balance: user.wallet?.balance.toString() ?? '0',

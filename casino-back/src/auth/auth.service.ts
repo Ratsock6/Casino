@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto) {
     const existingUser = await this.prisma.user.findUnique({
@@ -24,6 +24,14 @@ export class AuthService {
 
     if (existingUser) {
       throw new BadRequestException('Username already taken');
+    }
+
+    const existingPhone = await this.prisma.user.findUnique({
+      where: { phoneNumber: dto.phoneNumber },
+    });
+
+    if (existingPhone) {
+      throw new BadRequestException('Phone number already taken');
     }
 
     const passwordHash = await argon2.hash(dto.password);
@@ -35,6 +43,7 @@ export class AuthService {
           firstName: dto.firstName,
           lastName: dto.lastName,
           birthDate: new Date(dto.birthDate),
+          phoneNumber: dto.phoneNumber,
           passwordHash,
         },
       });

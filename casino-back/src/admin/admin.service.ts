@@ -12,6 +12,7 @@ export class AdminService {
         username: true,
         firstName: true,
         lastName: true,
+        phoneNumber: true,
         role: true,
         status: true,
         createdAt: true,
