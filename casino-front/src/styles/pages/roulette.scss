@@ -1,0 +1,815 @@
+@import '../variables';
+
+.roulette {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__balance {
+    font-size: 14px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-gold;
+    }
+  }
+
+  // Roue + résumé
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xl;
+  }
+
+  &__wheel-area {
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__wheel-container {
+    position: relative;
+    width: 260px;
+    height: 260px;
+  }
+
+  &__wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    border: 4px solid $color-gold;
+    overflow: hidden;
+    background: #1a1a1a;
+  }
+
+  &__segment {
+    position: absolute;
+    width: 50%;
+    height: 2px;
+    top: 50%;
+    left: 50%;
+    transform-origin: left center;
+
+    &--red {
+      background: #c0392b;
+    }
+
+    &--black {
+      background: #2c2c2c;
+    }
+
+    &--green {
+      background: #27ae60;
+    }
+  }
+
+  &__segment-number {
+    position: absolute;
+    right: -18px;
+    top: -8px;
+    font-size: 9px;
+    color: $color-text;
+    font-weight: 600;
+    width: 16px;
+    text-align: center;
+  }
+
+  &__wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: $color-surface;
+    border-radius: 50%;
+    border: 3px solid $color-gold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  &__wheel-logo {
+    font-size: 28px;
+    color: $color-gold;
+  }
+
+  &__winning {
+    font-size: 28px;
+    font-weight: 800;
+
+    &--red {
+      color: #e05c5c;
+    }
+
+    &--black {
+      color: $color-text;
+    }
+
+    &--green {
+      color: $color-success;
+    }
+  }
+
+  &__wheel-marker {
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 16px solid $color-gold;
+    z-index: 20;
+  }
+
+  &__side {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__side-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 260px;
+    border: 1px dashed $color-border;
+    border-radius: $radius-lg;
+    color: $color-text-muted;
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  // Jetons
+  &__chips {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+
+    &-label {
+      font-size: 13px;
+      color: $color-text-muted;
+    }
+
+    &-list {
+      display: flex;
+      gap: $spacing-sm;
+    }
+  }
+
+  &__chip {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: $color-surface-2;
+    border: 2px solid $color-border;
+    color: $color-text-muted;
+    font-size: 12px;
+    font-weight: 700;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-gold;
+    }
+
+    &--active {
+      border-color: $color-gold;
+      background: rgba($color-gold, 0.15);
+      color: $color-gold;
+    }
+  }
+
+  // Table
+  &__table {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    display: grid;
+    grid-template-columns: 48px 1fr 56px;
+    gap: $spacing-sm;
+    align-items: stretch;
+  }
+
+  &__cell {
+    position: relative;
+    flex: 1;
+    height: 40px;
+    border-radius: $radius-sm;
+    font-size: 13px;
+    font-weight: 600;
+    color: $color-text;
+    border: 1px solid transparent;
+    transition: all $transition-fast;
+
+    &--red {
+      background: #8b2020;
+
+      &:hover {
+        background: #a52828;
+        border-color: $color-gold;
+      }
+    }
+
+    &--black {
+      background: #2a2a2a;
+
+      &:hover {
+        background: #383838;
+        border-color: $color-gold;
+      }
+    }
+
+    &--green {
+      background: #1a5c2a;
+
+      &:hover {
+        background: #226b33;
+        border-color: $color-gold;
+      }
+    }
+
+    &--zero {
+      height: 100%;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 18px;
+      font-weight: 800;
+      flex: none;
+      width: 48px;
+    }
+  }
+
+  &__chip-on {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: $color-gold;
+    color: #0d0d0d;
+    font-size: 9px;
+    font-weight: 800;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    pointer-events: none;
+  }
+
+  // Grille CSS Grid
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__grid-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__row {
+    display: flex;
+    gap: 4px;
+    align-items: stretch;
+  }
+
+
+
+  &__row-spacer {
+    height: 8px;
+  }
+
+  &__street-btn {
+    width: 24px;
+    flex-shrink: 0;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    font-size: 10px;
+    position: relative;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-gold;
+    }
+  }
+
+  &__split-h {
+    width: 10px;
+    flex-shrink: 0;
+    height: 40px;
+    background: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    z-index: 3;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba($color-gold, 0);
+      border: 1px solid rgba($color-gold, 0);
+      transition: all $transition-fast;
+    }
+
+    &:hover::after {
+      background: rgba($color-gold, 0.6);
+      border-color: $color-gold;
+    }
+  }
+
+  &__between-rows {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 10px;
+    position: relative;
+  }
+
+  &__split-v {
+    flex: 1;
+    height: 10px;
+    background: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba($color-gold, 0);
+      border: 1px solid rgba($color-gold, 0);
+      transition: all $transition-fast;
+    }
+
+    &:hover::after {
+      background: rgba($color-gold, 0.6);
+      border-color: $color-gold;
+    }
+  }
+
+  &__corner-btn {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba($color-gold, 0);
+      border: 1px solid rgba($color-gold, 0);
+      transition: all $transition-fast;
+    }
+
+    &:hover::after {
+      background: rgba($color-gold, 0.9);
+      border-color: $color-gold;
+    }
+  }
+
+  &__between-spacer {
+    width: 24px;
+    flex-shrink: 0;
+  }
+
+  &__sixline-row {
+    display: none; // remplacé par between-rows
+  }
+
+  &__sixline-btn {
+    position: absolute;
+    right: 3px;
+    top: -6px;
+    width: 18px;
+    height: 18px;
+    background: $color-surface;
+    border: 1px solid $color-gold;
+    border-radius: 50%;
+    color: $color-gold;
+    font-size: 7px;
+    z-index: 5;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: rgba($color-gold, 0.2);
+    }
+  }
+
+  // Colonnes
+  &__columns {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__col-btn {
+    position: relative;
+    flex: 1;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    font-size: 11px;
+    font-weight: 600;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transition: all $transition-fast;
+    padding: $spacing-sm 6px;
+    min-height: 60px;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-text;
+    }
+  }
+
+  // Paris extérieurs bas
+  &__outside {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__outside-row {
+    display: flex;
+    gap: 4px;
+  }
+
+  &__outside-btn {
+    position: relative;
+    flex: 1;
+    padding: $spacing-sm;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all $transition-fast;
+    text-align: center;
+    min-height: 40px;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-text;
+    }
+
+    &--red {
+      background: rgba(#8b2020, 0.4);
+      color: #e05c5c;
+
+      &:hover {
+        background: rgba(#8b2020, 0.7);
+      }
+    }
+
+    &--black {
+      background: rgba(#2a2a2a, 0.8);
+      color: $color-text;
+
+      &:hover {
+        background: #383838;
+      }
+    }
+  }
+
+  // Résumé paris
+  &__bets {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h3 {
+        font-size: 14px;
+        color: $color-text-muted;
+        font-weight: 400;
+
+        strong {
+          color: $color-gold;
+          font-weight: 700;
+        }
+      }
+    }
+
+    &-clear {
+      font-size: 13px;
+      color: $color-error;
+      border: 1px solid rgba($color-error, 0.3);
+      border-radius: $radius-sm;
+      padding: 4px $spacing-md;
+      transition: all $transition-fast;
+
+      &:hover {
+        background: rgba($color-error, 0.1);
+      }
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+  }
+
+  &__bet-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-xs $spacing-md;
+    background: $color-surface-2;
+    border-radius: $radius-sm;
+    font-size: 13px;
+  }
+
+  &__bet-type {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 700;
+    color: $color-gold;
+    min-width: 80px;
+  }
+
+  &__bet-numbers {
+    flex: 1;
+    color: $color-text-muted;
+    font-size: 12px;
+  }
+
+  &__bet-multiplier {
+    font-size: 12px;
+    color: $color-success;
+    font-weight: 600;
+    min-width: 30px;
+  }
+
+  &__bet-amount {
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__bet-remove {
+    color: $color-text-muted;
+    font-size: 12px;
+
+    &:hover {
+      color: $color-error;
+    }
+  }
+
+  &__error {
+    text-align: center;
+    font-size: 13px;
+    color: $color-error;
+  }
+
+  &__spin-btn {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 16px;
+    background: $color-gold;
+    color: #0d0d0d;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: $radius-sm;
+    transition: background $transition-fast;
+    display: block;
+
+    &:hover:not(:disabled) {
+      background: $color-gold-light;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Résumé résultats
+.roulette__summary {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &-winning {
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    padding: $spacing-sm;
+    border-radius: $radius-sm;
+
+    &--red {
+      color: #e05c5c;
+      background: rgba(#e05c5c, 0.1);
+      border: 1px solid rgba(#e05c5c, 0.3);
+    }
+
+    &--black {
+      color: $color-text;
+      background: rgba(#fff, 0.05);
+      border: 1px solid $color-border;
+    }
+
+    &--green {
+      color: $color-success;
+      background: rgba($color-success, 0.1);
+      border: 1px solid rgba($color-success, 0.3);
+    }
+
+    strong {
+      font-size: 20px;
+      margin-left: $spacing-sm;
+    }
+  }
+
+  &-bets {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-sm;
+    font-size: 12px;
+
+    &--win {
+      background: rgba($color-success, 0.08);
+      border: 1px solid rgba($color-success, 0.2);
+    }
+
+    &--loss {
+      background: rgba($color-error, 0.08);
+      border: 1px solid rgba($color-error, 0.2);
+    }
+  }
+
+  &-type {
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 700;
+    color: $color-gold;
+    min-width: 70px;
+  }
+
+  &-mise {
+    flex: 1;
+    color: $color-text-muted;
+  }
+
+  &-result {
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  &-total {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 700;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $radius-sm;
+
+    &--win {
+      color: $color-success;
+      background: rgba($color-success, 0.1);
+      border: 1px solid rgba($color-success, 0.3);
+    }
+
+    &--loss {
+      color: $color-error;
+      background: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+    }
+
+    &--push {
+      color: $color-text-muted;
+      background: rgba(#fff, 0.05);
+      border: 1px solid $color-border;
+    }
+  }
+
+  &-replay {
+    font-size: 13px;
+    color: $color-gold;
+    border: 1px solid rgba($color-gold, 0.3);
+    border-radius: $radius-sm;
+    padding: 4px $spacing-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      background: rgba($color-gold, 0.1);
+    }
+  }
+
+}
+
+.roulette__history {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  overflow: hidden;
+
+  &-label {
+    font-size: 12px;
+    color: $color-text-muted;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  &-list {
+    display: flex;
+    gap: $spacing-xs;
+    overflow-x: auto;
+    padding-bottom: 2px;
+
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  &-ball {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: $color-text;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid transparent;
+
+    &--red   { background: #8b2020; border-color: #c0392b; }
+    &--black { background: #2a2a2a; border-color: #444; }
+    &--green { background: #1a5c2a; border-color: #27ae60; }
+
+    &:first-child {
+      border-color: $color-gold;
+      box-shadow: 0 0 8px rgba($color-gold, 0.4);
+    }
+  }
+}

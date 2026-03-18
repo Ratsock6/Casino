@@ -1,0 +1,38 @@
+// Couleurs principales
+$color-bg:          #0d0d0d;
+$color-surface:     #1a1a1a;
+$color-surface-2:   #242424;
+$color-border:      #2e2e2e;
+
+// Accent
+$color-gold:        #c9a84c;
+$color-gold-light:  #e2c47a;
+
+// Texte
+$color-text:        #f0f0f0;
+$color-text-muted:  #888888;
+
+// États
+$color-success:     #4caf7d;
+$color-error:       #e05c5c;
+$color-warning:     #e0a85c;
+
+// Typographie
+$font-primary:      'Inter', sans-serif;
+$font-size-base:    16px;
+
+// Espacements
+$spacing-xs:        4px;
+$spacing-sm:        8px;
+$spacing-md:        16px;
+$spacing-lg:        24px;
+$spacing-xl:        40px;
+
+// Bordures
+$radius-sm:         6px;
+$radius-md:         12px;
+$radius-lg:         20px;
+
+// Transitions
+$transition-fast:   0.15s ease;
+$transition-base:   0.25s ease;

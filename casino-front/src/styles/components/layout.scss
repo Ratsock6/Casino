@@ -1,0 +1,16 @@
+@import '../variables';
+
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: $color-bg;
+
+  &__content {
+    flex: 1;
+    padding: $spacing-xl;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+}

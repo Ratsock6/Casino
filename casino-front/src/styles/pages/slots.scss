@@ -1,0 +1,443 @@
+@import '../variables';
+
+.slots {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: 600px;
+  margin: 0 auto;
+
+  &__header {
+    text-align: center;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__balance {
+    font-size: 14px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-gold;
+    }
+  }
+
+  &__machine {
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  &__reels {
+    display: flex;
+    gap: $spacing-md;
+  }
+
+  &__reel {
+    width: 100px;
+    height: 100px;
+    background-color: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    transition: transform $transition-base;
+
+    &--spinning {
+      animation: spin 0.4s ease infinite alternate;
+    }
+  }
+
+  &__result {
+    font-size: 16px;
+    font-weight: 600;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $radius-sm;
+
+    &--win {
+      color: $color-success;
+      background-color: rgba($color-success, 0.1);
+      border: 1px solid rgba($color-success, 0.3);
+    }
+
+    &--loss {
+      color: $color-error;
+      background-color: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+    }
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    align-items: center;
+  }
+
+  &__bet {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+    width: 100%;
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: $color-text-muted;
+    }
+  }
+
+  &__bet-inputs {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    button {
+      width: 36px;
+      height: 36px;
+      background-color: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      color: $color-text;
+      font-size: 18px;
+      transition: border-color $transition-fast;
+
+      &:hover {
+        border-color: $color-gold;
+        color: $color-gold;
+      }
+    }
+
+    input {
+      width: 100px;
+      text-align: center;
+      background-color: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      padding: 8px;
+      color: $color-text;
+      font-size: 15px;
+      font-weight: 600;
+
+      &:focus {
+        border-color: $color-gold;
+      }
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+  }
+
+  &__bet-presets {
+    display: flex;
+    gap: $spacing-sm;
+
+    button {
+      padding: 6px $spacing-md;
+      background-color: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      color: $color-text-muted;
+      font-size: 13px;
+      transition: all $transition-fast;
+
+      &:hover, &.active {
+        border-color: $color-gold;
+        color: $color-gold;
+      }
+    }
+  }
+
+  &__error {
+    font-size: 13px;
+    color: $color-error;
+  }
+
+  &__spin-btn {
+    width: 100%;
+    max-width: 300px;
+    padding: 16px;
+    background-color: $color-gold;
+    color: #0d0d0d;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: $radius-sm;
+    transition: background-color $transition-fast;
+    letter-spacing: 0.5px;
+
+    &:hover:not(:disabled) {
+      background-color: $color-gold-light;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+@keyframes spin {
+  from { transform: translateY(-4px); }
+  to   { transform: translateY(4px); }
+}
+
+
+.slots__rules {
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-lg $spacing-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &-desc {
+    font-size: 13px;
+    color: $color-text-muted;
+    line-height: 1.6;
+
+    strong {
+      color: $color-text;
+    }
+  }
+
+  &-table {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+}
+
+.slots__rule-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-sm $spacing-md;
+  background-color: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+}
+
+.slots__rule-symbols {
+  display: flex;
+  gap: $spacing-sm;
+  font-size: 20px;
+}
+
+.slots__rule-info {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.slots__rule-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.slots__rule-multiplier {
+  font-size: 14px;
+  font-weight: 700;
+  color: $color-gold;
+  background-color: rgba($color-gold, 0.1);
+  border: 1px solid rgba($color-gold, 0.3);
+  padding: 2px 10px;
+  border-radius: $radius-sm;
+}
+
+.slots__spincount {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+  width: 100%;
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: $color-text-muted;
+  }
+
+  &-inputs {
+    display: flex;
+    gap: $spacing-sm;
+
+    button {
+      padding: 8px $spacing-lg;
+      background-color: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      color: $color-text-muted;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all $transition-fast;
+
+      &:hover, &.active {
+        border-color: $color-gold;
+        color: $color-gold;
+      }
+    }
+  }
+
+  &-total {
+    font-size: 13px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-text;
+    }
+  }
+}
+
+.slots__skip-btn {
+  padding: 8px $spacing-lg;
+  background-color: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  color: $color-text-muted;
+  font-size: 13px;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: $color-text-muted;
+    color: $color-text;
+  }
+}
+
+.slots__summary {
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-lg $spacing-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &-stats {
+    display: flex;
+    gap: $spacing-md;
+  }
+
+  &-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-md;
+    border-radius: $radius-sm;
+    border: 1px solid $color-border;
+
+    span {
+      font-size: 12px;
+      color: $color-text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    strong {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    &--win strong { color: $color-success; }
+    &--loss strong { color: $color-error; }
+  }
+}
+
+.slots__history {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+
+  &-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-sm;
+    font-size: 14px;
+
+    &--win {
+      background-color: rgba($color-success, 0.08);
+      border: 1px solid rgba($color-success, 0.2);
+    }
+
+    &--loss {
+      background-color: rgba($color-error, 0.08);
+      border: 1px solid rgba($color-error, 0.2);
+    }
+  }
+
+  &-reels {
+    font-size: 18px;
+    letter-spacing: 4px;
+  }
+
+  &-result {
+    font-weight: 600;
+  }
+}
+
+.slots__live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-sm;
+
+  &-counter {
+    font-size: 13px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-text;
+      font-weight: 600;
+    }
+  }
+
+  &-result {
+    font-size: 15px;
+    font-weight: 600;
+    padding: $spacing-xs $spacing-lg;
+    border-radius: $radius-sm;
+
+    &--win {
+      color: $color-success;
+      background-color: rgba($color-success, 0.1);
+      border: 1px solid rgba($color-success, 0.3);
+    }
+
+    &--loss {
+      color: $color-error;
+      background-color: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+    }
+  }
+}

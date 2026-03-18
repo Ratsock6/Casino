@@ -1,0 +1,88 @@
+@import '../variables';
+
+.home {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+
+  &__hero {
+    padding: $spacing-xl 0;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: $spacing-sm;
+
+    span {
+      color: $color-gold;
+    }
+  }
+
+  &__subtitle {
+    font-size: 16px;
+    color: $color-text-muted;
+
+    strong {
+      color: $color-text;
+      font-weight: 600;
+    }
+  }
+
+  &__games {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+}
+
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: $spacing-lg $spacing-xl;
+  cursor: pointer;
+  transition: border-color $transition-base, transform $transition-base;
+
+  &:hover {
+    border-color: $color-gold;
+    transform: translateX(4px);
+  }
+
+  &__icon {
+    font-size: 40px;
+    min-width: 56px;
+    text-align: center;
+  }
+
+  &__content {
+    flex: 1;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: $color-text;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__description {
+    font-size: 14px;
+    color: $color-text-muted;
+  }
+
+  &__arrow {
+    font-size: 20px;
+    color: $color-text-muted;
+    transition: color $transition-fast;
+  }
+
+  &:hover &__arrow {
+    color: $color-gold;
+  }
+}

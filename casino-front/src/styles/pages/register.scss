@@ -1,0 +1,120 @@
+@import '../variables';
+
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $color-bg;
+  padding: $spacing-xl;
+}
+
+.register-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+
+  &__header {
+    text-align: center;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__icon {
+    font-size: 48px;
+    color: $color-gold;
+    display: block;
+    margin-bottom: $spacing-md;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 700;
+    color: $color-text;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: $color-text-muted;
+  }
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $spacing-md;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: $color-text-muted;
+    }
+
+    input {
+      background-color: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      padding: 12px $spacing-md;
+      color: $color-text;
+      font-size: 14px;
+      transition: border-color $transition-fast;
+
+      &:focus { border-color: $color-gold; }
+      &::placeholder { color: $color-text-muted; }
+
+      &[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.5);
+      }
+    }
+  }
+
+  &__error {
+    font-size: 13px;
+    color: $color-error;
+    text-align: center;
+  }
+
+  &__submit {
+    margin-top: $spacing-sm;
+    background-color: $color-gold;
+    color: #0d0d0d;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px;
+    border-radius: $radius-sm;
+    transition: background-color $transition-fast;
+
+    &:hover:not(:disabled) { background-color: $color-gold-light; }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  &__login {
+    text-align: center;
+    font-size: 13px;
+    color: $color-text-muted;
+
+    a {
+      color: $color-gold;
+      font-weight: 500;
+      &:hover { color: $color-gold-light; }
+    }
+  }
+}
