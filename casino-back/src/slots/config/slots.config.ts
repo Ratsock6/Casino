@@ -9,27 +9,27 @@ export interface SlotSymbolConfig {
 export const SLOT_SYMBOLS: SlotSymbolConfig[] = [
   {
     symbol: 'CHERRY',
-    weight: 30,
+    weight: 35,       // était 30
     payoutMultiplier: 2,
   },
   {
     symbol: 'LEMON',
-    weight: 25,
+    weight: 28,       // était 25
     payoutMultiplier: 3,
   },
   {
     symbol: 'BAR',
-    weight: 20,
+    weight: 22,       // était 20
     payoutMultiplier: 5,
   },
   {
     symbol: 'SEVEN',
-    weight: 10,
+    weight: 12,       // était 10
     payoutMultiplier: 10,
   },
   {
     symbol: 'DIAMOND',
-    weight: 5,
+    weight: 6,        // était 5
     payoutMultiplier: 20,
   },
 ];
