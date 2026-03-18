@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth.store';
 import { useWalletStore } from '../../store/wallet.store';
 import { getWalletApi } from '../../api/wallet.api';
 import '../../styles/components/navbar.scss';
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -88,10 +89,10 @@ const Navbar = () => {
             {balance.toLocaleString()} jetons
           </span>
         </div>
-        <div className="navbar__user">
-          <span className="navbar__username">{user?.firstName}</span>
+        <Link to="/profile" className="navbar__user">
+          <span className="navbar__username">{user?.username}</span>
           <span className="navbar__role">{user?.role}</span>
-        </div>
+        </Link>
         <button className="navbar__logout" onClick={handleLogout}>
           Déconnexion
         </button>

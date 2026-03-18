@@ -1,0 +1,338 @@
+@import '../variables';
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  &__header {
+    border-bottom: 1px solid $color-border;
+    padding-bottom: $spacing-lg;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__loading {
+    text-align: center;
+    color: $color-text-muted;
+    padding: $spacing-xl;
+    font-size: 14px;
+  }
+
+  // Tabs
+  &__tabs {
+    display: flex;
+    gap: $spacing-sm;
+    border-bottom: 1px solid $color-border;
+    padding-bottom: $spacing-md;
+  }
+
+  &__tab {
+    padding: 8px $spacing-lg;
+    border-radius: $radius-sm;
+    font-size: 14px;
+    font-weight: 500;
+    color: $color-text-muted;
+    border: 1px solid transparent;
+    transition: all $transition-fast;
+
+    &:hover { color: $color-text; border-color: $color-border; }
+
+    &--active {
+      color: $color-gold;
+      border-color: $color-gold;
+      background: rgba($color-gold, 0.08);
+    }
+  }
+
+  // Info
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+  }
+
+  &__info-card {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+  }
+
+  &__avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba($color-gold, 0.15);
+    border: 2px solid $color-gold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: $color-gold;
+    flex-shrink: 0;
+  }
+
+  &__info-main {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__username {
+    font-size: 22px;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__role {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 3px 10px;
+    border-radius: $radius-sm;
+
+    &--player      { color: $color-text-muted; background: rgba($color-text-muted, 0.1); }
+    &--vip         { color: $color-gold; background: rgba($color-gold, 0.1); }
+    &--admin       { color: #5cc8e0; background: rgba(#5cc8e0, 0.1); }
+    &--super_admin { color: #e05c5c; background: rgba(#e05c5c, 0.1); }
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: $spacing-md;
+
+    @media (max-width: 600px) { grid-template-columns: 1fr; }
+  }
+
+  &__field {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-md $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    &-label {
+      font-size: 12px;
+      color: $color-text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    &-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: $color-text;
+    }
+  }
+
+  // Section
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  &__section-hint {
+    font-size: 13px;
+    color: $color-text-muted;
+  }
+
+  &__empty {
+    color: $color-text-muted;
+    font-size: 14px;
+    text-align: center;
+    padding: $spacing-xl;
+  }
+
+  // Table
+  &__table-wrapper {
+    overflow-x: auto;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+
+    th {
+      background: $color-surface;
+      color: $color-text-muted;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: $spacing-sm $spacing-md;
+      text-align: left;
+      border-bottom: 1px solid $color-border;
+    }
+
+    td {
+      padding: $spacing-sm $spacing-md;
+      border-bottom: 1px solid rgba($color-border, 0.5);
+      color: $color-text;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba($color-surface, 0.5); }
+  }
+
+  &__table-muted { color: $color-text-muted !important; }
+  &__table-date  { color: $color-text-muted !important; font-size: 12px !important; }
+
+  // Badge
+  &__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: $radius-sm;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid currentColor;
+    text-transform: uppercase;
+
+    &--win     { color: $color-success; border-color: $color-success; }
+    &--loss    { color: $color-error;   border-color: $color-error; }
+    &--neutral { color: $color-text-muted; border-color: $color-border; }
+  }
+
+  // KPIs
+  &__kpis {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  &__kpi {
+    flex: 1;
+    min-width: 130px;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    &-label {
+      font-size: 12px;
+      color: $color-text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    &-value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+  }
+
+  // Stats par jeu
+  &__stats {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+  }
+
+  &__bygame {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    &-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: $color-text;
+    }
+
+    &-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: $spacing-lg;
+
+      @media (max-width: 800px) { grid-template-columns: 1fr; }
+    }
+
+    &-card {
+      background: $color-surface;
+      border: 1px solid $color-border;
+      border-radius: $radius-md;
+      padding: $spacing-lg;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-md;
+    }
+
+    &-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    &-total {
+      font-size: 12px;
+      color: $color-text-muted;
+      font-weight: 400;
+    }
+
+    &-stats {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+
+    &-bar-row {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      font-size: 12px;
+      color: $color-text-muted;
+
+      span:first-child { min-width: 60px; }
+      span:last-child  { min-width: 20px; text-align: right; }
+    }
+
+    &-track {
+      flex: 1;
+      height: 8px;
+      background: $color-surface-2;
+      border-radius: $radius-sm;
+      overflow: hidden;
+    }
+
+    &-fill {
+      height: 100%;
+      border-radius: $radius-sm;
+      transition: width 0.6s ease;
+    }
+
+    &-financial {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: $color-text-muted;
+      padding-top: $spacing-sm;
+      border-top: 1px solid $color-border;
+
+      strong { color: $color-text; }
+    }
+  }
+}

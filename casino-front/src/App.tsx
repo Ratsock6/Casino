@@ -10,6 +10,7 @@ import RoulettePage from './pages/RoulettePage';
 import BlackjackPage from './pages/BlackjackPage';
 import AdminPage from './pages/AdminPage';
 import RegisterPage from './pages/RegisterPage';
+import ProfilePage from './pages/ProfilePage';
 
 // Route protégée : redirige vers /login si non connecté
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -37,6 +38,7 @@ function App() {
           <Route path="roulette" element={<RoulettePage />} />
           <Route path="blackjack" element={<BlackjackPage />} />
           <Route path="admin" element={<AdminPage />} />
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         {/* Fallback */}
