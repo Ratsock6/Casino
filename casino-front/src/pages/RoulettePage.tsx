@@ -465,7 +465,7 @@ const RoulettePage = () => {
 
       <button
         className="roulette__spin-btn"
-        onClick={handleSpin}
+        onClick={() => handleSpin()}
         disabled={spinning || bets.length === 0}
       >
         {spinning ? '🎡 La roue tourne...' : '🎡 Lancer la roue'}
