@@ -164,7 +164,7 @@ const BlackjackPage = () => {
                 { label: 'Égalité',     value: 'Mise remboursée' },
                 { label: 'As',          value: 'Vaut 1 ou 11' },
                 { label: 'Figures',     value: 'Valent 10' },
-                { label: 'Croupier',    value: 'Tire jusqu\'à 17 minimum' },
+                { label: 'Croupier',    value: 'Tir à 16 et reste à 17' },
               ].map((rule) => (
                 <div key={rule.label} className="blackjack__rule-row">
                   <span className="blackjack__rule-label">{rule.label}</span>
