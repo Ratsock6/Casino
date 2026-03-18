@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AdminService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async getAllUsers() {
     const users = await this.prisma.user.findMany({
@@ -29,6 +29,18 @@ export class AdminService {
         ? { balance: Number(u.wallet.balance) }
         : { balance: 0 },
     }));
+  }
+
+  async updateUserStatus(userId: string, status: 'ACTIVE' | 'BANNED' | 'SUSPENDED') {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { status },
+      select: {
+        id: true,
+        username: true,
+        status: true,
+      },
+    });
   }
 
   async getGlobalStats() {

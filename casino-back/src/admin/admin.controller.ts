@@ -1,7 +1,3 @@
-import {
-  Body, Controller, Get, Param,
-  Patch, Query, UseGuards
-} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -9,6 +5,9 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminWalletActionDto } from './dto/admin-wallet-action.dto';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { AdminUpdateStatusDto } from './dto/admin-update-status.dto';
+
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -17,7 +16,7 @@ export class AdminController {
   constructor(
     private readonly walletService: WalletService,
     private readonly adminService: AdminService,
-  ) {}
+  ) { }
 
   // ── Wallet existant ──────────────────────────────────────
   @Patch('wallet/credit')
@@ -91,5 +90,13 @@ export class AdminController {
   @Get('leaderboard')
   getLeaderboard() {
     return this.adminService.getLeaderboard();
+  }
+
+  @Patch('users/:userId/status')
+  updateUserStatus(
+    @Param('userId') userId: string,
+    @Body() dto: AdminUpdateStatusDto,
+  ) {
+    return this.adminService.updateUserStatus(userId, dto.status);
   }
 }
