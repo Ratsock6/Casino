@@ -1,5 +1,5 @@
 import axiosInstance from '../utils/axios.instance';
-import type { RouletteBet, RouletteSpinResponse } from '../types/game.types';
+import type { RouletteBet, RouletteBetType, RouletteSpinResponse } from '../types/game.types';
 
 export const spinRouletteApi = async (
   bets: RouletteBet[],

@@ -5,6 +5,7 @@ export interface AdminUser {
   username: string;
   firstName: string;
   lastName: string;
+  phoneNumber: string;
   role: 'PLAYER' | 'VIP' | 'ADMIN' | 'SUPER_ADMIN';
   status: 'ACTIVE' | 'BANNED' | 'SUSPENDED';
   createdAt: string;
