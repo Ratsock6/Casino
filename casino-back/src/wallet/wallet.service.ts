@@ -179,8 +179,11 @@ export class WalletService {
       });
   }
 
-  async getWalletHistory(userId: string, limit = 20) {
-    const safeLimit = Math.max(1, Math.min(limit, 100));
+  async getWalletHistory(userId: string, limit = 20, isAdmin = false) {
+    let safeLimit = Math.max(1, Math.min(limit, 1000));
+    if (isAdmin) {
+      safeLimit = limit;
+    }
 
     const transactions = await this.prisma.walletTransaction.findMany({
       where: { userId },
