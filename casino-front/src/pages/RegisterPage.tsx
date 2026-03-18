@@ -53,7 +53,7 @@ const RegisterPage = () => {
       <div className="register-card">
         <div className="register-card__header">
           <span className="register-card__icon">♠</span>
-          <h1 className="register-card__title">Diamond Casino</h1>
+          <h1 className="register-card__title">Bellagio Casino</h1>
           <p className="register-card__subtitle">Créez votre compte</p>
         </div>
 

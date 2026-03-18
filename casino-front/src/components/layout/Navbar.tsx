@@ -32,7 +32,7 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar__brand">
         <span className="navbar__icon">♠</span>
-        <span className="navbar__title">Diamond Casino</span>
+        <span className="navbar__title">Bellagio Casino</span>
       </div>
 
       <div className="navbar__links">

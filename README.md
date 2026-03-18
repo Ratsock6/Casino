@@ -1,7 +1,7 @@
 
-# 🎰 Diamond Casino Backend (FiveM RP)
+# 🎰 Casino Backend
 
-Backend d’un **casino virtuel inspiré du Diamond Casino de GTA V**, conçu pour être utilisé dans un **serveur FiveM RP**.
+Backend d’un **casino virtuel inspiré du Casino de GTA V**, conçu pour être utilisé dans un **serveur FiveM RP**.
 
 Ce projet implémente un **système complet de jeux de casino avec jetons virtuels**, incluant l’authentification, la gestion des portefeuilles, les transactions sécurisées et plusieurs jeux.
 
