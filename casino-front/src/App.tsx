@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/auth.store';
+import { useEffect } from 'react';
+import axiosInstance from './utils/axios.instance';
 
 import Layout from './components/layout/Layout';
 import LoginPage from './pages/LoginPage';
@@ -19,6 +21,28 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const { token, login, logout } = useAuthStore();
+
+  useEffect(() => {
+    const restoreUser = async () => {
+      if (!token) return;
+      try {
+        const res = await axiosInstance.get('/users/me');
+        const data = res.data;
+        login({
+          id: data.id,
+          username: data.username,
+          firstName: data.firstName,
+          phoneNumber: data.phoneNumber,
+          role: data.role,
+        }, token);
+      } catch {
+        logout();
+      }
+    };
+    restoreUser();
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
