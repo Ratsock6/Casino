@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
+import { CasinoGateway } from '../gateway/casino.gateway';
 
 export type AlertType =
   | 'HIGH_BET'
@@ -41,6 +42,7 @@ export class AlertsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly casinoConfigService: CasinoConfigService,
+    private readonly gateway: CasinoGateway,
   ) { }
 
   async trigger(payload: AlertPayload): Promise<void> {
@@ -59,7 +61,14 @@ export class AlertsService {
       },
     });
 
-    // Envoi Discord
+    this.gateway.notifyAdmins('alert:new', {
+      type: payload.type,
+      message: payload.message,
+      username: payload.username,
+      metadata: payload.metadata,
+      createdAt: new Date().toISOString(),
+    });
+
     await this.sendDiscordAlert(payload);
   }
 
@@ -114,8 +123,6 @@ export class AlertsService {
       isRead: false,
     }));
   }
-
-  // ── Vérifications ─────────────────────────────────────────
 
   async checkHighBet(userId: string, username: string, amount: number): Promise<void> {
     const threshold = await this.casinoConfigService.get('ALERT_HIGH_BET_THRESHOLD');

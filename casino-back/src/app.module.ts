@@ -14,6 +14,7 @@ import { GameConfigModule } from './game-config/game-config.module';
 import { BlackjackModule } from './blackjack/blackjack.module';
 import { GameRoundsModule } from './game-rounds/game-rounds.module';
 import { PublicModule } from './public/public.module';
+import { GatewayModule } from './gateway/gateway.module';
 
 
 
@@ -42,6 +43,7 @@ import { PublicModule } from './public/public.module';
     BlackjackModule,
     GameRoundsModule,
     PublicModule,
+    GatewayModule,
   ],
 })
 export class AppModule {}

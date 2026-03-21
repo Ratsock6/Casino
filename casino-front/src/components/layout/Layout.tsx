@@ -1,10 +1,19 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import '../../styles/components/layout.scss';
 import WinnersTicker from '../ui/WinnersTicker';
+import Notifications from '../ui/Notifications';
+import { useSocket } from '../../hooks/useSocket';
+import { useEffect } from 'react';
 
 const Layout = () => {
+
+  const { connect } = useSocket();
+
+  useEffect(() => {
+    connect();
+  }, []);
+
   return (
     <div className="layout">
       <Navbar />
@@ -12,6 +21,7 @@ const Layout = () => {
         <Outlet />
       </main>
       <WinnersTicker />
+      <Notifications />
     </div>
   );
 };

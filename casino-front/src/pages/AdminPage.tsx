@@ -367,6 +367,22 @@ const AdminPage = () => {
       label: 'Solde casino minimum',
       description: 'Seuil critique du solde du casino en jetons.',
     },
+    MAINTENANCE_GLOBAL: {
+      label: '🔧 Maintenance globale',
+      description: 'Désactive tous les jeux pour tous les joueurs.',
+    },
+    MAINTENANCE_SLOTS: {
+      label: '🎰 Maintenance Slots',
+      description: 'Désactive les machines à sous.',
+    },
+    MAINTENANCE_ROULETTE: {
+      label: '🎡 Maintenance Roulette',
+      description: 'Désactive la roulette.',
+    },
+    MAINTENANCE_BLACKJACK: {
+      label: '🃏 Maintenance Blackjack',
+      description: 'Désactive le blackjack.',
+    },
   };
 
   const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
@@ -385,7 +401,14 @@ const AdminPage = () => {
     FAILED_LOGIN: { label: 'Connexion échouée', color: '#ff6b6b', icon: '🔐' },
   };
 
-  const BOOL_CONFIGS = ['ENABLE_PLAYER_STATS', 'ENABLE_PUBLIC_STATS'];
+  const BOOL_CONFIGS = [
+    'ENABLE_PLAYER_STATS',
+    'ENABLE_PUBLIC_STATS',
+    'MAINTENANCE_SLOTS',
+    'MAINTENANCE_ROULETTE',
+    'MAINTENANCE_BLACKJACK',
+    'MAINTENANCE_GLOBAL',
+  ];
 
   return (
     <div className="admin">
