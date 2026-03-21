@@ -369,7 +369,7 @@ export class AdminService {
       targetId: log.targetId,
       metadata: log.metadata,
       createdAt: log.createdAt,
-      admin: log.admin,
+      admin: log.admin ?? { id: 'system', username: 'Système' },
     }));
   }
 

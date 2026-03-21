@@ -9,7 +9,6 @@ import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/c
 import { AdminUpdateStatusDto } from './dto/admin-update-status.dto';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
 
-
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('ADMIN', 'SUPER_ADMIN')
@@ -18,7 +17,7 @@ export class AdminController {
     private readonly walletService: WalletService,
     private readonly adminService: AdminService,
     private readonly casinoConfigService: CasinoConfigService,
-  ) { }
+  ) {}
 
   @Patch('wallet/credit')
   async creditWallet(
@@ -50,6 +49,11 @@ export class AdminController {
     return result;
   }
 
+  @Get('wallet/:userId')
+  getWallet(@Param('userId') userId: string) {
+    return this.walletService.getWalletByUserId(userId);
+  }
+
   @Get('wallet/:userId/history')
   getWalletHistory(
     @Param('userId') userId: string,
@@ -63,6 +67,36 @@ export class AdminController {
   @Get('users')
   getAllUsers() {
     return this.adminService.getAllUsers();
+  }
+
+  @Patch('users/:userId/status')
+  async updateUserStatus(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+    @Body() dto: AdminUpdateStatusDto,
+  ) {
+    const result = await this.adminService.updateUserStatus(userId, dto.status);
+    await this.adminService.createAuditLog(
+      admin.userId, 'USER_STATUS_CHANGE', 'USER', userId,
+      { newStatus: dto.status },
+    );
+    return result;
+  }
+
+  @Get('users/:userId/stats')
+  getUserStats(@Param('userId') userId: string) {
+    return this.adminService.getUserStats(userId);
+  }
+
+  @Get('users/:userId/login-history')
+  getUserLoginHistory(
+    @Param('userId') userId: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getUserLoginHistory(
+      userId,
+      limit ? parseInt(limit) : 20,
+    );
   }
 
   @Get('stats')
@@ -99,25 +133,6 @@ export class AdminController {
     return this.adminService.getLeaderboard();
   }
 
-  @Patch('users/:userId/status')
-  async updateUserStatus(
-    @CurrentUser() admin: { userId: string },
-    @Param('userId') userId: string,
-    @Body() dto: AdminUpdateStatusDto,
-  ) {
-    const result = await this.adminService.updateUserStatus(userId, dto.status);
-    await this.adminService.createAuditLog(
-      admin.userId, 'USER_STATUS_CHANGE', 'USER', userId,
-      { newStatus: dto.status },
-    );
-    return result;
-  }
-
-  @Get('users/:userId/stats')
-  getUserStats(@Param('userId') userId: string) {
-    return this.adminService.getUserStats(userId);
-  }
-
   @Get('config')
   getConfig() {
     return this.casinoConfigService.getAll();
@@ -133,17 +148,6 @@ export class AdminController {
     await this.adminService.createAuditLog(
       admin.userId, 'CONFIG_UPDATE', 'CONFIG', key,
       { key, newValue: value },
-    );
-  }
-
-  @Get('users/:userId/login-history')
-  getUserLoginHistory(
-    @Param('userId') userId: string,
-    @Query('limit') limit?: string,
-  ) {
-    return this.adminService.getUserLoginHistory(
-      userId,
-      limit ? parseInt(limit) : 20,
     );
   }
 
@@ -170,6 +174,8 @@ export class AdminController {
 
   @Get('alerts')
   getAlerts(@Query('limit') limit?: string) {
-    return this.adminService.getAlerts(limit ? parseInt(limit) : 50);
+    return this.adminService.getAlerts(
+      limit ? parseInt(limit) : 50,
+    );
   }
 }
