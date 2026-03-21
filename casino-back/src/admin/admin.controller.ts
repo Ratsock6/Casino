@@ -20,30 +20,34 @@ export class AdminController {
     private readonly casinoConfigService: CasinoConfigService,
   ) { }
 
-  // ── Wallet existant ──────────────────────────────────────
   @Patch('wallet/credit')
-  creditWallet(
+  async creditWallet(
     @CurrentUser() admin: { userId: string },
     @Body() dto: AdminWalletActionDto,
   ) {
-    return this.walletService.adminCredit(
+    const result = await this.walletService.adminCredit(
       admin.userId, dto.userId, dto.amount, dto.reason,
     );
+    await this.adminService.createAuditLog(
+      admin.userId, 'WALLET_CREDIT', 'USER', dto.userId,
+      { amount: dto.amount, reason: dto.reason },
+    );
+    return result;
   }
 
   @Patch('wallet/debit')
-  debitWallet(
+  async debitWallet(
     @CurrentUser() admin: { userId: string },
     @Body() dto: AdminWalletActionDto,
   ) {
-    return this.walletService.adminDebit(
+    const result = await this.walletService.adminDebit(
       admin.userId, dto.userId, dto.amount, dto.reason,
     );
-  }
-
-  @Get('wallet/:userId')
-  getWallet(@Param('userId') userId: string) {
-    return this.walletService.getWalletByUserId(userId);
+    await this.adminService.createAuditLog(
+      admin.userId, 'WALLET_DEBIT', 'USER', dto.userId,
+      { amount: dto.amount, reason: dto.reason },
+    );
+    return result;
   }
 
   @Get('wallet/:userId/history')
@@ -56,7 +60,6 @@ export class AdminController {
     );
   }
 
-  // ── Nouveaux endpoints ───────────────────────────────────
   @Get('users')
   getAllUsers() {
     return this.adminService.getAllUsers();
@@ -97,11 +100,17 @@ export class AdminController {
   }
 
   @Patch('users/:userId/status')
-  updateUserStatus(
+  async updateUserStatus(
+    @CurrentUser() admin: { userId: string },
     @Param('userId') userId: string,
     @Body() dto: AdminUpdateStatusDto,
   ) {
-    return this.adminService.updateUserStatus(userId, dto.status);
+    const result = await this.adminService.updateUserStatus(userId, dto.status);
+    await this.adminService.createAuditLog(
+      admin.userId, 'USER_STATUS_CHANGE', 'USER', userId,
+      { newStatus: dto.status },
+    );
+    return result;
   }
 
   @Get('users/:userId/stats')
@@ -115,12 +124,16 @@ export class AdminController {
   }
 
   @Patch('config/:key')
-  updateConfig(
+  async updateConfig(
     @CurrentUser() admin: { userId: string },
     @Param('key') key: string,
     @Body('value') value: string,
   ) {
-    return this.casinoConfigService.set(key, value, admin.userId);
+    await this.casinoConfigService.set(key, value, admin.userId);
+    await this.adminService.createAuditLog(
+      admin.userId, 'CONFIG_UPDATE', 'CONFIG', key,
+      { key, newValue: value },
+    );
   }
 
   @Get('users/:userId/login-history')
@@ -142,5 +155,16 @@ export class AdminController {
   @Get('charts/games')
   getGamesHistory(@Query('days') days?: string) {
     return this.adminService.getGameRoundsHistory(days ? parseInt(days) : 30);
+  }
+
+  @Get('audit-logs')
+  getAuditLogs(
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.adminService.getAuditLogs(
+      limit ? parseInt(limit) : 50,
+      offset ? parseInt(offset) : 0,
+    );
   }
 }

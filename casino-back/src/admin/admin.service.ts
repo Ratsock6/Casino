@@ -331,4 +331,45 @@ export class AdminService {
 
     return result;
   }
+  
+  async createAuditLog(
+    adminId: string,
+    action: string,
+    targetType: string,
+    targetId: string,
+    metadata?: object,
+  ) {
+    await this.prisma.adminAction.create({
+      data: {
+        adminId,
+        action,
+        targetType,
+        targetId,
+        metadata: metadata ?? {},
+      },
+    });
+  }
+
+  async getAuditLogs(limit = 50, offset = 0) {
+    const logs = await this.prisma.adminAction.findMany({
+      take: limit,
+      skip: offset,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        admin: {
+          select: { id: true, username: true },
+        },
+      },
+    });
+
+    return logs.map((log) => ({
+      id: log.id,
+      action: log.action,
+      targetType: log.targetType,
+      targetId: log.targetId,
+      metadata: log.metadata,
+      createdAt: log.createdAt,
+      admin: log.admin,
+    }));
+  }
 }

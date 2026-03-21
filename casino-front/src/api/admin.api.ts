@@ -100,6 +100,21 @@ export interface GamesHistoryEntry {
   total: number;
 }
 
+export interface AuditLog {
+  id: string;
+  action: string;
+  targetType: string;
+  targetId: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  admin: { id: string; username: string };
+}
+
+export const getAuditLogsApi = async (limit = 50, offset = 0): Promise<AuditLog[]> => {
+  const res = await axiosInstance.get(`/admin/audit-logs?limit=${limit}&offset=${offset}`);
+  return res.data;
+};
+
 export const getBalanceHistoryApi = async (days = 30): Promise<BalanceHistoryEntry[]> => {
   const res = await axiosInstance.get(`/admin/charts/balance?days=${days}`);
   return res.data;

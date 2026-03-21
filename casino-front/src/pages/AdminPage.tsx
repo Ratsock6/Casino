@@ -1,37 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import {
-  getAdminUsersApi, getGlobalStatsApi, getAdminTransactionsApi,
-  getAdminGameRoundsApi, getLeaderboardApi, getUserTransactionsApi,
-  creditWalletApi, debitWalletApi,
-} from '../api/admin.api';
-import type {
-  AdminUser, GlobalStats, AdminTransaction,
-  AdminGameRound, Leaderboard,
-} from '../api/admin.api';
-import '../styles/pages/admin.scss';
-import { updateUserStatusApi } from '../api/admin.api';
-import { getUserStatsApi, type UserStats } from '../api/admin.api';
-import { getCasinoConfigApi, updateCasinoConfigApi, type CasinoConfig } from '../api/admin.api';
-import { getUserLoginHistoryApi, type LoginHistoryEntry } from '../api/admin.api';
-import { exportToCsv } from '../utils/csv.utils';
-import {
-  getAllTransactionsForExportApi,
-  getAllGameRoundsForExportApi,
-} from '../api/admin.api';
-import {
-  getBalanceHistoryApi,
-  getGamesHistoryApi,
-  type BalanceHistoryEntry,
-  type GamesHistoryEntry,
-} from '../api/admin.api';
+import { useState, useEffect } from 'react';
 import {
   LineChart, Line, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer,
 } from 'recharts';
 
+import {
+  getAdminUsersApi,
+  getGlobalStatsApi,
+  getAdminTransactionsApi,
+  getAdminGameRoundsApi,
+  getLeaderboardApi,
+  getUserTransactionsApi,
+  getUserStatsApi,
+  getUserLoginHistoryApi,
+  getCasinoConfigApi,
+  updateCasinoConfigApi,
+  updateUserStatusApi,
+  creditWalletApi,
+  debitWalletApi,
+  getAllTransactionsForExportApi,
+  getAllGameRoundsForExportApi,
+  getBalanceHistoryApi,
+  getGamesHistoryApi,
+  getAuditLogsApi,
+} from '../api/admin.api';
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts';
+import type {
+  AdminUser,
+  GlobalStats,
+  AdminTransaction,
+  AdminGameRound,
+  Leaderboard,
+  UserStats,
+  LoginHistoryEntry,
+  CasinoConfig,
+  BalanceHistoryEntry,
+  GamesHistoryEntry,
+  AuditLog,
+} from '../api/admin.api';
+
+import { exportToCsv } from '../utils/csv.utils';
+import '../styles/pages/admin.scss';
+
+
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -81,6 +94,7 @@ const AdminPage = () => {
   const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryEntry[]>([]);
   const [gamesHistory, setGamesHistory] = useState<GamesHistoryEntry[]>([]);
   const [chartDays, setChartDays] = useState(30);
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
 
 
   // Loading
@@ -121,6 +135,9 @@ const AdminPage = () => {
         setBalanceHistory(b);
         setGamesHistory(g);
       }
+      if (tab === 'audit' && auditLogs.length === 0) {
+        setAuditLogs(await getAuditLogsApi());
+      }
     } catch (err) {
       console.error(err);
     } finally {
@@ -144,6 +161,7 @@ const AdminPage = () => {
       setLoading(false);
     }
   };
+
 
   const handleExportTransactions = async (userId?: string) => {
     setExportLoading(true);
@@ -298,6 +316,7 @@ const AdminPage = () => {
     { key: 'players', label: '👥 Joueurs' },
     { key: 'config', label: '⚙️ Configuration' },
     { key: 'charts', label: '📈 Graphiques' },
+    { key: 'audit', label: '📋 Logs d\'audit' },
   ];
 
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
@@ -309,6 +328,13 @@ const AdminPage = () => {
       label: 'Statistiques publiques du casino',
       description: 'Affiche les statistiques globales du casino (joueurs inscrits, parties jouées, total distribué) sur la page d\'accueil.',
     },
+  };
+
+  const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
+    WALLET_CREDIT: { label: 'Crédit wallet', color: '#4caf7d', icon: '💰' },
+    WALLET_DEBIT: { label: 'Débit wallet', color: '#e05c5c', icon: '💸' },
+    USER_STATUS_CHANGE: { label: 'Changement statut', color: '#e0a85c', icon: '🔄' },
+    CONFIG_UPDATE: { label: 'Config modifiée', color: '#5cc8e0', icon: '⚙️' },
   };
 
   return (
@@ -612,10 +638,10 @@ const AdminPage = () => {
           {selectedUser && (
             <div className="admin__player-detail">
               <h2 className="admin__section-title">
-                {selectedUser.username}
+                {selectedUser.username} - {selectedUser.firstName} {selectedUser.lastName}
                 <span className={`admin__player-role admin__player-role--${selectedUser.role.toLowerCase()}`}>
                   {selectedUser.role}
-                </span>
+                </span>  
               </h2>
 
               <div className="admin__player-stats">
@@ -665,7 +691,7 @@ const AdminPage = () => {
               </div>
 
               <div className="admin__kpi">
-                <span className="admin__kpi-label">Téléphone RP</span>
+                <span className="admin__kpi-label">Téléphone</span>
                 <span className="admin__kpi-value" style={{ color: '#5cc8e0' }}>
                   {selectedUser.phoneNumber}
                 </span>
@@ -1049,6 +1075,81 @@ const AdminPage = () => {
             </ResponsiveContainer>
           </div>
 
+        </div>
+      )}
+
+      {/* AUDIT */}
+      {activeTab === 'audit' && (
+        <div className="admin__section">
+          <div className="admin__section-title-row">
+            <h2 className="admin__section-title">📋 Logs d'audit</h2>
+            <button
+              className="admin__export-btn"
+              onClick={() => {
+                const rows = auditLogs.map((log) => ({
+                  Date: formatDate(log.createdAt),
+                  Admin: log.admin.username,
+                  Action: ACTION_LABELS[log.action]?.label || log.action,
+                  Cible: log.targetType,
+                  'ID Cible': log.targetId,
+                  Détails: JSON.stringify(log.metadata),
+                }));
+                exportToCsv('audit_logs', rows);
+              }}
+            >
+              📥 Exporter CSV
+            </button>
+          </div>
+
+          <div className="admin__table-wrapper">
+            <table className="admin__table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Cible</th>
+                  <th>Détails</th>
+                </tr>
+              </thead>
+              <tbody>
+                {auditLogs.map((log) => {
+                  const meta = ACTION_LABELS[log.action];
+                  return (
+                    <tr key={log.id}>
+                      <td className="admin__table-date">{formatDate(log.createdAt)}</td>
+                      <td className="admin__table-username">{log.admin.username}</td>
+                      <td>
+                        <span
+                          className="admin__badge"
+                          style={{
+                            color: meta?.color || '#888',
+                            borderColor: meta?.color || '#888',
+                          }}
+                        >
+                          {meta?.icon} {meta?.label || log.action}
+                        </span>
+                      </td>
+                      <td className="admin__table-muted">
+                        {log.targetType} — <code style={{ fontSize: 11, color: '#888' }}>
+                          {log.targetId.slice(0, 12)}...
+                        </code>
+                      </td>
+                      <td>
+                        <div className="admin__audit-meta">
+                          {Object.entries(log.metadata || {}).map(([k, v]) => (
+                            <span key={k} className="admin__audit-tag">
+                              <strong>{k}</strong> : {String(v)}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div >
