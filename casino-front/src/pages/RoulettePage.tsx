@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWalletStore } from '../store/wallet.store';
 import { spinRouletteApi } from '../api/roulette.api';
 import type { RouletteBet, RouletteBetType } from '../types/game.types';
 import { getNumberColor, WHEEL_ORDER } from '../utils/roulette.utils';
+import axiosInstance from '../utils/axios.instance';
+import MaintenanceScreen from '../components/ui/MaintenanceScreen';
 import '../styles/pages/roulette.scss';
 
 const CHIP_VALUES = [50, 100, 500, 1000, 5000];
@@ -25,6 +27,8 @@ type RouletteSpinResponse = import('../types/game.types').RouletteSpinResponse;
 const RoulettePage = () => {
   const { balance, setBalance } = useWalletStore();
 
+  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [maintenanceLoading, setMaintenanceLoading] = useState(true);
   const [selectedChip, setSelectedChip] = useState<number>(100);
   const [bets, setBets] = useState<RouletteBet[]>([]);
   const [spinning, setSpinning] = useState(false);
@@ -39,6 +43,21 @@ const RoulettePage = () => {
   const [history, setHistory] = useState<{ number: number; color: string }[]>([]);
 
   const totalBetAmount = bets.reduce((acc, b) => acc + b.amount, 0);
+
+  useEffect(() => {
+    axiosInstance.get('/public/maintenance')
+      .then((res) => {
+        setIsMaintenance(res.data.global || res.data.ROULETTE);
+      })
+      .catch(() => setIsMaintenance(false))
+      .finally(() => setMaintenanceLoading(false));
+  }, []);
+
+  if (maintenanceLoading) return null;
+
+  if (isMaintenance) {
+    return <MaintenanceScreen game="La roulette" />;
+  }
 
   const placeBet = (type: RouletteBetType, numbers?: number[]) => {
     setBets((prev) => {

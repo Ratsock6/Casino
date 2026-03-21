@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import { useWalletStore } from '../store/wallet.store';
+import axiosInstance from '../utils/axios.instance';
 import {
   getRecentWinnersApi,
   getPublicStatsApi,
@@ -22,7 +23,7 @@ const games = [
   {
     key: 'slots',
     title: 'Machines à Sous',
-    description: 'Tentez votre chance sur nos machines à sous. Jusqu\'à x20 votre mise.',
+    description: "Tentez votre chance sur nos machines à sous. Jusqu'à x20 votre mise.",
     icon: '🎰',
     path: '/slots',
     color: '#c9a84c',
@@ -52,8 +53,19 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
   const { balance } = useWalletStore();
+
+  // 👇 useState DANS le composant
   const [winners, setWinners] = useState<RecentWinner[]>([]);
   const [stats, setStats] = useState<PublicStats | null>(null);
+  const [maintenanceStatus, setMaintenanceStatus] = useState({
+    global: false, SLOTS: false, ROULETTE: false, BLACKJACK: false,
+  });
+
+  useEffect(() => {
+    axiosInstance.get('/public/maintenance')
+      .then((res) => setMaintenanceStatus(res.data))
+      .catch(() => { });
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -70,6 +82,12 @@ const HomePage = () => {
     };
     load();
   }, []);
+
+  const maintenanceMap: Record<string, boolean> = {
+    slots: maintenanceStatus.global || maintenanceStatus.SLOTS,
+    roulette: maintenanceStatus.global || maintenanceStatus.ROULETTE,
+    blackjack: maintenanceStatus.global || maintenanceStatus.BLACKJACK,
+  };
 
   return (
     <div className="home">
@@ -113,28 +131,28 @@ const HomePage = () => {
       )}
 
       {/* ── JEUX ── */}
-      <div className="home__section">
-        <h2 className="home__section-title">Nos jeux</h2>
-        <div className="home__games">
-          {games.map((game) => (
-            <div
-              key={game.key}
-              className="game-card"
-              onClick={() => navigate(game.path)}
-              style={{ '--game-color': game.color } as React.CSSProperties}
-            >
-              <div className="game-card__icon">{game.icon}</div>
-              <div className="game-card__content">
-                <h2 className="game-card__title">{game.title}</h2>
-                <p className="game-card__description">{game.description}</p>
-              </div>
-              <div className="game-card__right">
-                <span className="game-card__multiplier">{game.multiplier}</span>
-                <span className="game-card__arrow">→</span>
-              </div>
+      <div className="home__games">
+        {games.map((game) => (
+          <div
+            key={game.key}
+            className={`game-card ${maintenanceMap[game.key] ? 'game-card--maintenance' : ''}`}
+            onClick={() => !maintenanceMap[game.key] && navigate(game.path)}
+            style={{ '--game-color': game.color } as React.CSSProperties}
+          >
+            {maintenanceMap[game.key] && (
+              <div className="game-card__maintenance-badge">🔧 Maintenance</div>
+            )}
+            <div className="game-card__icon">{game.icon}</div>
+            <div className="game-card__content">
+              <h2 className="game-card__title">{game.title}</h2>
+              <p className="game-card__description">{game.description}</p>
             </div>
-          ))}
-        </div>
+            <div className="game-card__right">
+              <span className="game-card__multiplier">{game.multiplier}</span>
+              <span className="game-card__arrow">→</span>
+            </div>
+          </div>
+        ))}
       </div>
 
     </div>

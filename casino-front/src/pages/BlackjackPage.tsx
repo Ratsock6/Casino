@@ -6,6 +6,8 @@ import {
   SUIT_SYMBOLS, isRed, getCardLabel,
   STATUS_LABELS, isGameOver,
 } from '../utils/blackjack.utils';
+import MaintenanceScreen from '../components/ui/MaintenanceScreen';
+import axiosInstance from '../utils/axios.instance';
 import '../styles/pages/blackjack.scss';
 
 // Composant carte
@@ -38,12 +40,15 @@ const Card = ({ card, hidden = false, index = 0 }: {
 const BlackjackPage = () => {
   const { balance, setBalance } = useWalletStore();
 
+  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [maintenanceLoading, setMaintenanceLoading] = useState(true);
   const [bet, setBet] = useState<number>(100);
   const [game, setGame] = useState<BlackjackGame | null>(null);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
   const [loadingActive, setLoadingActive] = useState(true);
+
 
   const handleStart = async () => {
     if (loading) return;
@@ -102,6 +107,16 @@ const BlackjackPage = () => {
   const statusInfo = game ? STATUS_LABELS[game.status] : null;
 
   useEffect(() => {
+    axiosInstance.get('/public/maintenance')
+      .then((res) => {
+        setIsMaintenance(res.data.global || res.data.BLACKJACK);
+      })
+      .catch(() => setIsMaintenance(false))
+      .finally(() => setMaintenanceLoading(false));
+  }, []);
+
+
+  useEffect(() => {
     const checkActiveGame = async () => {
       try {
         const activeGame = await getActiveBlackjackApi();
@@ -116,6 +131,12 @@ const BlackjackPage = () => {
     };
     checkActiveGame();
   }, []);
+
+  if (maintenanceLoading) return null;
+
+  if (isMaintenance) {
+    return <MaintenanceScreen game="Le blackjack" />;
+  }
 
 
   if (loadingActive) {

@@ -11,9 +11,10 @@ import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { IdempotencyService } from '../idempotency/idempotency.service';
 import { PlaceRouletteBetsDto } from './dto/place-roulette-bets.dto';
 import { RouletteService } from './roulette.service';
+import { MaintenanceGuard, Maintenance } from '../common/guards/maintenance.guard';
 
 @Controller('roulette')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, MaintenanceGuard)
 export class RouletteController {
   constructor(
     private readonly rouletteService: RouletteService,
@@ -21,6 +22,7 @@ export class RouletteController {
   ) {}
 
   @Post('spin')
+  @Maintenance('MAINTENANCE_ROULETTE')
   async spin(
     @CurrentUser() user: { userId: string; role: 'PLAYER' | 'VIP' | 'ADMIN' | 'SUPER_ADMIN' },
     @Body() dto: PlaceRouletteBetsDto,

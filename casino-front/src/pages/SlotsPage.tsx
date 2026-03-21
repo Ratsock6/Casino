@@ -1,8 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useWalletStore } from '../store/wallet.store';
 import { spinSlotsApi } from '../api/slots.api';
 import type { SlotSpinResponse } from '../api/slots.api';
 import { SYMBOL_DISPLAY } from '../utils/slots.utils';
+import MaintenanceScreen from '../components/ui/MaintenanceScreen';
+import axiosInstance from '../utils/axios.instance';
 import '../styles/pages/slots.scss';
 
 const SYMBOLS_LIST = ['🍒', '🍋', '🎰', '7️⃣', '💎'];
@@ -25,10 +27,14 @@ interface SpinResult {
 }
 
 const SlotsPage = () => {
+  // ── Tous les hooks en premier ──
   const { balance, setBalance } = useWalletStore();
 
+  const [isMaintenance, setIsMaintenance] = useState(false);
+  const [maintenanceLoading, setMaintenanceLoading] = useState(true);
   const [bet, setBet] = useState<number>(100);
   const [spinCount, setSpinCount] = useState<number>(1);
+  const [currentSpinIndex, setCurrentSpinIndex] = useState<number>(0);
   const [reels, setReels] = useState<string[]>(['❓', '❓', '❓']);
   const [spinning, setSpinning] = useState<boolean[]>([false, false, false]);
   const [loading, setLoading] = useState(false);
@@ -41,7 +47,23 @@ const SlotsPage = () => {
   const [skipped, setSkipped] = useState(false);
   const skipRef = useRef(false);
 
-  // Anime un rouleau avec défilement de symboles
+  useEffect(() => {
+    axiosInstance.get('/public/maintenance')
+      .then((res) => {
+        setIsMaintenance(res.data.global || res.data.SLOTS);
+      })
+      .catch(() => setIsMaintenance(false))
+      .finally(() => setMaintenanceLoading(false));
+  }, []);
+
+  // ── Returns conditionnels après tous les hooks ──
+  if (maintenanceLoading) return null;
+
+  if (isMaintenance) {
+    return <MaintenanceScreen game="Les machines à sous" />;
+  }
+
+  // ── Fonctions ──
   const animateReel = (reelIndex: number, finalSymbol: string, delay: number, duration: number): Promise<void> => {
     return new Promise((resolve) => {
       setSpinning((prev) => {
@@ -104,11 +126,9 @@ const SlotsPage = () => {
     setCurrentMultiplier(null);
     setReels(['🔄', '🔄', '🔄']);
 
-
     const idempotencyKey = crypto.randomUUID();
     const data: SlotSpinResponse = await spinSlotsApi(bet, idempotencyKey);
 
-    // Lance les 3 rouleaux en décalé
     await Promise.all([
       animateReel(0, data.reels[0], 0, 2000),
       animateReel(1, data.reels[1], 200, 2300),
@@ -138,8 +158,6 @@ const SlotsPage = () => {
     return newBalance;
   };
 
-  const [currentSpinIndex, setCurrentSpinIndex] = useState<number>(0);
-
   const handleSpin = async () => {
     if (loading) return;
     if (bet <= 0) return setError('La mise doit être supérieure à 0.');
@@ -156,7 +174,6 @@ const SlotsPage = () => {
       try {
         currentBalance = await runSpin(currentBalance);
         if (i < spinCount - 1 && !skipRef.current) {
-          // Pause visible entre chaque spin pour voir le résultat
           await new Promise((r) => setTimeout(r, 1500));
         }
       } catch (err: any) {
@@ -179,7 +196,6 @@ const SlotsPage = () => {
 
   return (
     <div className="slots">
-
       <div className="slots__header">
         <h1 className="slots__title">Machines à Sous</h1>
         <p className="slots__balance">
@@ -294,7 +310,6 @@ const SlotsPage = () => {
         </button>
       </div>
 
-      {/* Résumé rafale */}
       {spinHistory.length > 1 && !loading && (
         <div className="slots__summary">
           <h3 className="slots__summary-title">Résumé de la rafale</h3>
@@ -329,7 +344,6 @@ const SlotsPage = () => {
         </div>
       )}
 
-      {/* Règles */}
       <div className="slots__rules">
         <h3 className="slots__rules-title">Règles & Gains</h3>
         <p className="slots__rules-desc">
@@ -353,7 +367,6 @@ const SlotsPage = () => {
           ))}
         </div>
       </div>
-
     </div>
   );
 };

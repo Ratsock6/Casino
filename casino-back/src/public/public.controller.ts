@@ -2,12 +2,13 @@ import { Controller, Get, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
 
+
 @Controller('public')
 export class PublicController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly casinoConfigService: CasinoConfigService,
-  ) { }
+  ) {}
 
   @Get('recent-winners')
   async getRecentWinners() {
@@ -49,4 +50,17 @@ export class PublicController {
       totalPaidOut: Number(totalWinAgg._sum.amount || 0),
     };
   }
+
+  @Get('maintenance')
+  async getMaintenance() {
+    const [global, slots, roulette, blackjack] = await Promise.all([
+      this.casinoConfigService.getBoolean('MAINTENANCE_GLOBAL', false),
+      this.casinoConfigService.getBoolean('MAINTENANCE_SLOTS', false),
+      this.casinoConfigService.getBoolean('MAINTENANCE_ROULETTE', false),
+      this.casinoConfigService.getBoolean('MAINTENANCE_BLACKJACK', false),
+    ]);
+
+    return { global, SLOTS: slots, ROULETTE: roulette, BLACKJACK: blackjack };
+  }
+  
 }

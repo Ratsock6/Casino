@@ -14,16 +14,18 @@ import { IdempotencyService } from '../idempotency/idempotency.service';
 import { BlackjackService } from './blackjack.service';
 import { BlackjackActionDto } from './dto/blackjack-action.dto';
 import { StartBlackjackDto } from './dto/start-blackjack.dto';
+import { MaintenanceGuard, Maintenance } from '../common/guards/maintenance.guard';
 
 @Controller('blackjack')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, MaintenanceGuard)
 export class BlackjackController {
   constructor(
     private readonly blackjackService: BlackjackService,
     private readonly idempotencyService: IdempotencyService,
-  ) { }
+  ) {}
 
   @Post('start')
+  @Maintenance('MAINTENANCE_BLACKJACK')
   async start(
     @CurrentUser() user: {
       userId: string;
@@ -68,6 +70,7 @@ export class BlackjackController {
   }
 
   @Post('action')
+  @Maintenance('MAINTENANCE_BLACKJACK')
   action(
     @CurrentUser() user: { userId: string },
     @Body() dto: BlackjackActionDto,
@@ -87,6 +90,4 @@ export class BlackjackController {
   ) {
     return this.blackjackService.getGame(user.userId, gameId);
   }
-
-
 }
