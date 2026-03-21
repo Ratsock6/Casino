@@ -852,4 +852,66 @@
     margin-top: $spacing-lg;
     margin-bottom: $spacing-sm;
   }
+
+  &__charts {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+
+    &-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    &-period {
+      display: flex;
+      gap: $spacing-xs;
+    }
+  }
+
+  &__chart-card {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  &__chart-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__chart-subtitle {
+    font-size: 13px;
+    color: $color-text-muted;
+    margin-top: -$spacing-sm;
+  }
+
+  &__period-btn {
+    padding: 6px $spacing-md;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all $transition-fast;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-gold;
+    }
+
+    &--active {
+      border-color: $color-gold;
+      color: $color-gold;
+      background: rgba($color-gold, 0.08);
+    }
+  }
 }

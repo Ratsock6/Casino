@@ -133,4 +133,14 @@ export class AdminController {
       limit ? parseInt(limit) : 20,
     );
   }
+
+  @Get('charts/balance')
+  getBalanceHistory(@Query('days') days?: string) {
+    return this.adminService.getCasinoBalanceHistory(days ? parseInt(days) : 30);
+  }
+
+  @Get('charts/games')
+  getGamesHistory(@Query('days') days?: string) {
+    return this.adminService.getGameRoundsHistory(days ? parseInt(days) : 30);
+  }
 }

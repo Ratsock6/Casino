@@ -18,9 +18,20 @@ import {
   getAllTransactionsForExportApi,
   getAllGameRoundsForExportApi,
 } from '../api/admin.api';
+import {
+  getBalanceHistoryApi,
+  getGamesHistoryApi,
+  type BalanceHistoryEntry,
+  type GamesHistoryEntry,
+} from '../api/admin.api';
+import {
+  LineChart, Line, BarChart, Bar,
+  XAxis, YAxis, CartesianGrid, Tooltip,
+  Legend, ResponsiveContainer,
+} from 'recharts';
 
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config';
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -67,6 +78,9 @@ const AdminPage = () => {
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [userLoginHistory, setUserLoginHistory] = useState<LoginHistoryEntry[]>([]);
   const [exportLoading, setExportLoading] = useState(false);
+  const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryEntry[]>([]);
+  const [gamesHistory, setGamesHistory] = useState<GamesHistoryEntry[]>([]);
+  const [chartDays, setChartDays] = useState(30);
 
 
   // Loading
@@ -99,6 +113,31 @@ const AdminPage = () => {
         const data = await getCasinoConfigApi();
         setConfig(data);
       }
+      if (tab === 'charts') {
+        const [b, g] = await Promise.all([
+          getBalanceHistoryApi(chartDays),
+          getGamesHistoryApi(chartDays),
+        ]);
+        setBalanceHistory(b);
+        setGamesHistory(g);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChartDaysChange = async (days: number) => {
+    setChartDays(days);
+    setLoading(true);
+    try {
+      const [b, g] = await Promise.all([
+        getBalanceHistoryApi(days),
+        getGamesHistoryApi(days),
+      ]);
+      setBalanceHistory(b);
+      setGamesHistory(g);
     } catch (err) {
       console.error(err);
     } finally {
@@ -258,6 +297,7 @@ const AdminPage = () => {
     { key: 'transactions', label: '💳 Transactions' },
     { key: 'players', label: '👥 Joueurs' },
     { key: 'config', label: '⚙️ Configuration' },
+    { key: 'charts', label: '📈 Graphiques' },
   ];
 
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
@@ -888,7 +928,129 @@ const AdminPage = () => {
         </div>
       )}
 
-      {/* Historique de connexion du joueur */}
+      {/* ── CHARTS ── */}
+      {activeTab === 'charts' && (
+        <div className="admin__charts">
+
+          {/* Sélecteur de période */}
+          <div className="admin__charts-header">
+            <h2 className="admin__section-title">📈 Graphiques d'évolution</h2>
+            <div className="admin__charts-period">
+              {[7, 14, 30, 60].map((d) => (
+                <button
+                  key={d}
+                  className={`admin__period-btn ${chartDays === d ? 'admin__period-btn--active' : ''}`}
+                  onClick={() => handleChartDaysChange(d)}
+                >
+                  {d}j
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Graphique revenus */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Revenus du casino</h3>
+            <p className="admin__chart-subtitle">Mises, gains reversés et revenu net par jour</p>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={balanceHistory}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: '#888', fontSize: 11 }}
+                  tickFormatter={(v) => v.slice(5)}
+                />
+                <YAxis tick={{ fill: '#888', fontSize: 11 }} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="bets"
+                  name="Mises"
+                  stroke="#e0a85c"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="wins"
+                  name="Gains reversés"
+                  stroke="#e05c5c"
+                  strokeWidth={2}
+                  dot={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  name="Revenu net"
+                  stroke="#c9a84c"
+                  strokeWidth={2}
+                  dot={false}
+                  strokeDasharray="4 4"
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Graphique parties par jeu */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Parties jouées par jeu</h3>
+            <p className="admin__chart-subtitle">Nombre de parties par jour et par jeu</p>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={gamesHistory}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: '#888', fontSize: 11 }}
+                  tickFormatter={(v) => v.slice(5)}
+                />
+                <YAxis tick={{ fill: '#888', fontSize: 11 }} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                />
+                <Legend />
+                <Bar dataKey="SLOTS" name="Slots" fill="#c9a84c" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="ROULETTE" name="Roulette" fill="#e05c5c" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="BLACKJACK" name="Blackjack" fill="#4caf7d" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Graphique total parties */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Total des parties</h3>
+            <p className="admin__chart-subtitle">Évolution du nombre total de parties jouées par jour</p>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={gamesHistory}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
+                <XAxis
+                  dataKey="date"
+                  tick={{ fill: '#888', fontSize: 11 }}
+                  tickFormatter={(v) => v.slice(5)}
+                />
+                <YAxis tick={{ fill: '#888', fontSize: 11 }} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="total"
+                  name="Total parties"
+                  stroke="#5cc8e0"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+        </div>
+      )}
     </div >
   );
 };

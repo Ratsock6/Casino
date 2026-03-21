@@ -85,6 +85,31 @@ export interface LoginHistoryEntry {
   createdAt: string;
 }
 
+export interface BalanceHistoryEntry {
+  date: string;
+  bets: number;
+  wins: number;
+  revenue: number;
+}
+
+export interface GamesHistoryEntry {
+  date: string;
+  SLOTS: number;
+  ROULETTE: number;
+  BLACKJACK: number;
+  total: number;
+}
+
+export const getBalanceHistoryApi = async (days = 30): Promise<BalanceHistoryEntry[]> => {
+  const res = await axiosInstance.get(`/admin/charts/balance?days=${days}`);
+  return res.data;
+};
+
+export const getGamesHistoryApi = async (days = 30): Promise<GamesHistoryEntry[]> => {
+  const res = await axiosInstance.get(`/admin/charts/games?days=${days}`);
+  return res.data;
+};
+
 export const getUserLoginHistoryApi = async (userId: string, limit = 20): Promise<LoginHistoryEntry[]> => {
   const res = await axiosInstance.get(`/admin/users/${userId}/login-history?limit=${limit}`);
   return res.data;
@@ -170,3 +195,5 @@ export const getMyGameRoundsForExportApi = async (userId: string): Promise<Admin
   const res = await axiosInstance.get(`/admin/games?limit=100000&userId=${userId}`);
   return res.data;
 };
+
+

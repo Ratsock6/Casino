@@ -255,4 +255,80 @@ export class AdminService {
       settledAt: w.settledAt,
     }));
   }
+
+  async getCasinoBalanceHistory(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const transactions = await this.prisma.walletTransaction.findMany({
+      where: {
+        createdAt: { gte: since },
+      },
+      orderBy: { createdAt: 'asc' },
+      select: {
+        type: true,
+        amount: true,
+        createdAt: true,
+      },
+    });
+
+    // Groupe par jour
+    const byDay: Record<string, { bets: number; wins: number; revenue: number }> = {};
+
+    transactions.forEach((t) => {
+      const day = t.createdAt.toISOString().split('T')[0];
+      if (!byDay[day]) byDay[day] = { bets: 0, wins: 0, revenue: 0 };
+
+      if (t.type === 'BET') byDay[day].bets += Number(t.amount);
+      if (t.type === 'WIN') byDay[day].wins += Number(t.amount);
+    });
+
+    // Remplit les jours manquants
+    const result = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = date.toISOString().split('T')[0];
+      const data = byDay[day] || { bets: 0, wins: 0, revenue: 0 };
+      result.push({
+        date: day,
+        bets: data.bets,
+        wins: data.wins,
+        revenue: data.bets - data.wins,
+      });
+    }
+
+    return result;
+  }
+
+  async getGameRoundsHistory(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const rounds = await this.prisma.gameRound.findMany({
+      where: { createdAt: { gte: since } },
+      select: { gameType: true, status: true, createdAt: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const byDay: Record<string, { SLOTS: number; ROULETTE: number; BLACKJACK: number; total: number }> = {};
+
+    rounds.forEach((r) => {
+      const day = r.createdAt.toISOString().split('T')[0];
+      if (!byDay[day]) byDay[day] = { SLOTS: 0, ROULETTE: 0, BLACKJACK: 0, total: 0 };
+      byDay[day][r.gameType as 'SLOTS' | 'ROULETTE' | 'BLACKJACK']++;
+      byDay[day].total++;
+    });
+
+    const result = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = date.toISOString().split('T')[0];
+      const data = byDay[day] || { SLOTS: 0, ROULETTE: 0, BLACKJACK: 0, total: 0 };
+      result.push({ date: day, ...data });
+    }
+
+    return result;
+  }
 }
