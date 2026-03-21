@@ -210,7 +210,7 @@ const AdminPage = () => {
     setExportLoading(true);
     try {
       const data = userId
-        ? await getMyGameRoundsForExportApi(userId)
+        ? await getAdminGameRoundsApi(100000, 0)
         : await getAllGameRoundsForExportApi();
 
       const rows = data.map((g) => ({
