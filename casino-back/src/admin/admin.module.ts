@@ -4,9 +4,11 @@ import { AdminService } from './admin.service';
 import { WalletModule } from '../wallet/wallet.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { CasinoConfigModule } from '../casino-config/casino-config.module';
+import { ReportsModule } from '../reports/reports.module';
+
 
 @Module({
-  imports: [WalletModule, PrismaModule, CasinoConfigModule],
+  imports: [WalletModule, PrismaModule, CasinoConfigModule, ReportsModule],
   controllers: [AdminController],
   providers: [AdminService],
 })

@@ -5,9 +5,10 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminWalletActionDto } from './dto/admin-wallet-action.dto';
-import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AdminUpdateStatusDto } from './dto/admin-update-status.dto';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
+import { ReportsService } from '../reports/reports.service';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -17,7 +18,8 @@ export class AdminController {
     private readonly walletService: WalletService,
     private readonly adminService: AdminService,
     private readonly casinoConfigService: CasinoConfigService,
-  ) {}
+    private readonly reportsService: ReportsService,
+  ) { }
 
   @Patch('wallet/credit')
   async creditWallet(
@@ -177,5 +179,10 @@ export class AdminController {
     return this.adminService.getAlerts(
       limit ? parseInt(limit) : 50,
     );
+  }
+
+  @Post('reports/daily')
+  triggerDailyReport() {
+    return this.reportsService.triggerManualReport();
   }
 }

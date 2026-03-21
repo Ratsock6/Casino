@@ -119,6 +119,10 @@ export interface Alert {
   createdAt: string;
 }
 
+export const triggerDailyReportApi = async (): Promise<void> => {
+  await axiosInstance.post('/admin/reports/daily');
+};
+
 export const getAlertsApi = async (limit = 50): Promise<Alert[]> => {
   const res = await axiosInstance.get(`/admin/alerts?limit=${limit}`);
   return res.data;

@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './prisma/prisma.module';
@@ -15,8 +16,7 @@ import { BlackjackModule } from './blackjack/blackjack.module';
 import { GameRoundsModule } from './game-rounds/game-rounds.module';
 import { PublicModule } from './public/public.module';
 import { GatewayModule } from './gateway/gateway.module';
-
-
+import { ReportsModule } from './reports/reports.module';
 
 
 @Module({
@@ -44,6 +44,8 @@ import { GatewayModule } from './gateway/gateway.module';
     GameRoundsModule,
     PublicModule,
     GatewayModule,
+    ScheduleModule.forRoot(),
+    ReportsModule,
   ],
 })
 export class AppModule {}

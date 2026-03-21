@@ -25,6 +25,7 @@ import {
   getGamesHistoryApi,
   getAuditLogsApi,
   getAlertsApi,
+  triggerDailyReportApi,
 } from '../api/admin.api';
 
 import type {
@@ -340,31 +341,31 @@ const AdminPage = () => {
 
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
     ENABLE_PLAYER_STATS: {
-      label: 'Statistiques joueurs',
+      label: '📊 Statistiques des joueurs',
       description: 'Permet aux joueurs de voir leurs statistiques détaillées par jeu dans leur profil.',
     },
     ENABLE_PUBLIC_STATS: {
-      label: 'Statistiques publiques du casino',
+      label: '📊 Statistiques publiques du casino',
       description: 'Affiche les statistiques globales du casino (joueurs inscrits, parties jouées, total distribué) sur la page d\'accueil.',
     },
     DISCORD_WEBHOOK_URL: {
-      label: 'Webhook Discord',
+      label: '🔗 Webhook Discord',
       description: 'URL du webhook Discord pour recevoir les alertes en temps réel. Laissez vide pour désactiver.',
     },
     ALERT_HIGH_BET_THRESHOLD: {
-      label: 'Seuil mise élevée',
+      label: '💰 Seuil mise élevée',
       description: 'Montant en jetons à partir duquel une alerte est déclenchée.',
     },
     ALERT_CONSECUTIVE_LOSSES: {
-      label: 'Pertes consécutives',
+      label: '📉 Pertes consécutives',
       description: 'Nombre de pertes consécutives avant alerte.',
     },
     ALERT_CONSECUTIVE_WINS: {
-      label: 'Gains consécutifs',
+      label: '📈 Gains consécutifs',
       description: 'Nombre de gains consécutifs avant alerte.',
     },
     ALERT_CASINO_BALANCE_MIN: {
-      label: 'Solde casino minimum',
+      label: '🚨 Solde casino minimum',
       description: 'Seuil critique du solde du casino en jetons.',
     },
     MAINTENANCE_GLOBAL: {
@@ -382,6 +383,10 @@ const AdminPage = () => {
     MAINTENANCE_BLACKJACK: {
       label: '🃏 Maintenance Blackjack',
       description: 'Désactive le blackjack.',
+    },
+    REPORT_DAILY_HOUR: {
+      label: '⏰ Heure rapport journalier',
+      description: 'Heure à laquelle le rapport journalier est envoyé.',
     },
   };
 
@@ -1041,6 +1046,27 @@ const AdminPage = () => {
             {config.length === 0 && !loading && (
               <p className="admin__config-empty">Aucune configuration disponible.</p>
             )}
+          </div>
+          <div className="admin__config-row">
+            <div className="admin__config-info">
+              <span className="admin__config-label">📊 Rapport journalier Discord</span>
+              <span className="admin__config-description">
+                Envoyé automatiquement chaque jour à 8h00. Cliquez pour envoyer un rapport maintenant.
+              </span>
+            </div>
+            <button
+              className="admin__export-btn"
+              onClick={async () => {
+                try {
+                  await triggerDailyReportApi();
+                  alert('✅ Rapport envoyé sur Discord !');
+                } catch {
+                  alert('❌ Erreur — vérifiez que le webhook Discord est configuré.');
+                }
+              }}
+            >
+              📤 Envoyer maintenant
+            </button>
           </div>
         </div>
       )}
