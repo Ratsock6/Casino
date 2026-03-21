@@ -47,6 +47,8 @@ export type UserMinAggregateOutputType = {
   failedLoginCount: number | null
   lockedUntil: Date | null
   lastLoginAt: Date | null
+  hasAcceptedTerms: boolean | null
+  termsAcceptedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -64,6 +66,8 @@ export type UserMaxAggregateOutputType = {
   failedLoginCount: number | null
   lockedUntil: Date | null
   lastLoginAt: Date | null
+  hasAcceptedTerms: boolean | null
+  termsAcceptedAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -81,6 +85,8 @@ export type UserCountAggregateOutputType = {
   failedLoginCount: number
   lockedUntil: number
   lastLoginAt: number
+  hasAcceptedTerms: number
+  termsAcceptedAt: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -108,6 +114,8 @@ export type UserMinAggregateInputType = {
   failedLoginCount?: true
   lockedUntil?: true
   lastLoginAt?: true
+  hasAcceptedTerms?: true
+  termsAcceptedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -125,6 +133,8 @@ export type UserMaxAggregateInputType = {
   failedLoginCount?: true
   lockedUntil?: true
   lastLoginAt?: true
+  hasAcceptedTerms?: true
+  termsAcceptedAt?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +152,8 @@ export type UserCountAggregateInputType = {
   failedLoginCount?: true
   lockedUntil?: true
   lastLoginAt?: true
+  hasAcceptedTerms?: true
+  termsAcceptedAt?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -246,6 +258,8 @@ export type UserGroupByOutputType = {
   failedLoginCount: number
   lockedUntil: Date | null
   lastLoginAt: Date | null
+  hasAcceptedTerms: boolean
+  termsAcceptedAt: Date | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -286,6 +300,8 @@ export type UserWhereInput = {
   failedLoginCount?: Prisma.IntFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFilter<"User"> | boolean
+  termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
@@ -311,6 +327,8 @@ export type UserOrderByWithRelationInput = {
   failedLoginCount?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  hasAcceptedTerms?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   wallet?: Prisma.WalletOrderByWithRelationInput
@@ -339,6 +357,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   failedLoginCount?: Prisma.IntFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFilter<"User"> | boolean
+  termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
@@ -364,6 +384,8 @@ export type UserOrderByWithAggregationInput = {
   failedLoginCount?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  hasAcceptedTerms?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -389,6 +411,8 @@ export type UserScalarWhereWithAggregatesInput = {
   failedLoginCount?: Prisma.IntWithAggregatesFilter<"User"> | number
   lockedUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   lastLoginAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  termsAcceptedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -406,6 +430,8 @@ export type UserCreateInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -431,6 +457,8 @@ export type UserUncheckedCreateInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -456,6 +484,8 @@ export type UserUpdateInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -481,6 +511,8 @@ export type UserUncheckedUpdateInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -506,6 +538,8 @@ export type UserCreateManyInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -523,6 +557,8 @@ export type UserUpdateManyMutationInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -540,6 +576,8 @@ export type UserUncheckedUpdateManyInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -557,6 +595,8 @@ export type UserCountOrderByAggregateInput = {
   failedLoginCount?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
+  hasAcceptedTerms?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -578,6 +618,8 @@ export type UserMaxOrderByAggregateInput = {
   failedLoginCount?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
+  hasAcceptedTerms?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -595,6 +637,8 @@ export type UserMinOrderByAggregateInput = {
   failedLoginCount?: Prisma.SortOrder
   lockedUntil?: Prisma.SortOrder
   lastLoginAt?: Prisma.SortOrder
+  hasAcceptedTerms?: Prisma.SortOrder
+  termsAcceptedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -639,6 +683,10 @@ export type IntFieldUpdateOperationsInput = {
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type UserCreateNestedOneWithoutWalletInput = {
@@ -768,6 +816,8 @@ export type UserCreateWithoutWalletInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -792,6 +842,8 @@ export type UserUncheckedCreateWithoutWalletInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -832,6 +884,8 @@ export type UserUpdateWithoutWalletInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -856,6 +910,8 @@ export type UserUncheckedUpdateWithoutWalletInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -880,6 +936,8 @@ export type UserCreateWithoutTransactionsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -904,6 +962,8 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -933,6 +993,8 @@ export type UserCreateWithoutAdminWalletActionsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -957,6 +1019,8 @@ export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -997,6 +1061,8 @@ export type UserUpdateWithoutTransactionsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1021,6 +1087,8 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1056,6 +1124,8 @@ export type UserUpdateWithoutAdminWalletActionsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1080,6 +1150,8 @@ export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1104,6 +1176,8 @@ export type UserCreateWithoutRefreshTokensInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1128,6 +1202,8 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1168,6 +1244,8 @@ export type UserUpdateWithoutRefreshTokensInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1192,6 +1270,8 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1216,6 +1296,8 @@ export type UserCreateWithoutAdminActionsMadeInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1240,6 +1322,8 @@ export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1280,6 +1364,8 @@ export type UserUpdateWithoutAdminActionsMadeInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1304,6 +1390,8 @@ export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1328,6 +1416,8 @@ export type UserCreateWithoutGameRoundsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1352,6 +1442,8 @@ export type UserUncheckedCreateWithoutGameRoundsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1392,6 +1484,8 @@ export type UserUpdateWithoutGameRoundsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1416,6 +1510,8 @@ export type UserUncheckedUpdateWithoutGameRoundsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1440,6 +1536,8 @@ export type UserCreateWithoutIdempotencyRequestsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1464,6 +1562,8 @@ export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1504,6 +1604,8 @@ export type UserUpdateWithoutIdempotencyRequestsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1528,6 +1630,8 @@ export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1552,6 +1656,8 @@ export type UserCreateWithoutBlackjackGamesInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1576,6 +1682,8 @@ export type UserUncheckedCreateWithoutBlackjackGamesInput = {
   failedLoginCount?: number
   lockedUntil?: Date | string | null
   lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1616,6 +1724,8 @@ export type UserUpdateWithoutBlackjackGamesInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1640,6 +1750,8 @@ export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
   failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
   lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1749,6 +1861,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   failedLoginCount?: boolean
   lockedUntil?: boolean
   lastLoginAt?: boolean
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
@@ -1775,6 +1889,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   failedLoginCount?: boolean
   lockedUntil?: boolean
   lastLoginAt?: boolean
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1792,6 +1908,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   failedLoginCount?: boolean
   lockedUntil?: boolean
   lastLoginAt?: boolean
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1809,11 +1927,13 @@ export type UserSelectScalar = {
   failedLoginCount?: boolean
   lockedUntil?: boolean
   lastLoginAt?: boolean
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "firstName" | "lastName" | "phoneNumber" | "birthDate" | "passwordHash" | "role" | "status" | "failedLoginCount" | "lockedUntil" | "lastLoginAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "firstName" | "lastName" | "phoneNumber" | "birthDate" | "passwordHash" | "role" | "status" | "failedLoginCount" | "lockedUntil" | "lastLoginAt" | "hasAcceptedTerms" | "termsAcceptedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -1853,6 +1973,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     failedLoginCount: number
     lockedUntil: Date | null
     lastLoginAt: Date | null
+    hasAcceptedTerms: boolean
+    termsAcceptedAt: Date | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -2298,6 +2420,8 @@ export interface UserFieldRefs {
   readonly failedLoginCount: Prisma.FieldRef<"User", 'Int'>
   readonly lockedUntil: Prisma.FieldRef<"User", 'DateTime'>
   readonly lastLoginAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly hasAcceptedTerms: Prisma.FieldRef<"User", 'Boolean'>
+  readonly termsAcceptedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

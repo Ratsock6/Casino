@@ -75,6 +75,8 @@ model User {
   failedLoginCount Int        @default(0)
   lockedUntil      DateTime?
   lastLoginAt      DateTime?
+  hasAcceptedTerms Boolean    @default(false)
+  termsAcceptedAt  DateTime?
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 

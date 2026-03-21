@@ -605,10 +605,6 @@ export type EnumBlackjackGameStatusFieldUpdateOperationsInput = {
   set?: $Enums.BlackjackGameStatus
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type BlackjackGameCreateWithoutUserInput = {
   id?: string
   gameRoundId: string

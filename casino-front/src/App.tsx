@@ -13,6 +13,8 @@ import BlackjackPage from './pages/BlackjackPage';
 import AdminPage from './pages/AdminPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
+import ReglementPage from './pages/ReglementPage';
+
 
 // Route protégée : redirige vers /login si non connecté
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -50,6 +52,7 @@ function App() {
         {/* Route publique */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/reglement" element={<ReglementPage />} />
 
         {/* Routes protégées */}
         <Route path="/" element={

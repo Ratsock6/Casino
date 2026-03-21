@@ -16,6 +16,7 @@ export interface RegisterPayload {
   birthDate: string;
   phoneNumber: string;
   password: string;
+  hasAcceptedTerms: boolean;
 }
 
 export const registerApi = async (payload: RegisterPayload): Promise<void> => {

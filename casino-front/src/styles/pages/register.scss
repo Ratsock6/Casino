@@ -73,8 +73,13 @@
       font-size: 14px;
       transition: border-color $transition-fast;
 
-      &:focus { border-color: $color-gold; }
-      &::placeholder { color: $color-text-muted; }
+      &:focus {
+        border-color: $color-gold;
+      }
+
+      &::placeholder {
+        color: $color-text-muted;
+      }
 
       &[type="date"]::-webkit-calendar-picker-indicator {
         filter: invert(0.5);
@@ -104,7 +109,9 @@
     border-radius: $radius-sm;
     transition: background-color $transition-fast;
 
-    &:hover:not(:disabled) { background-color: $color-gold-light; }
+    &:hover:not(:disabled) {
+      background-color: $color-gold-light;
+    }
 
     &:disabled {
       opacity: 0.6;
@@ -120,7 +127,41 @@
     a {
       color: $color-gold;
       font-weight: 500;
-      &:hover { color: $color-gold-light; }
+
+      &:hover {
+        color: $color-gold-light;
+      }
+    }
+  }
+
+  &__terms {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
+
+    input[type="checkbox"] {
+      margin-top: 3px;
+      width: 16px;
+      height: 16px;
+      accent-color: $color-gold;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    label {
+      font-size: 13px;
+      color: $color-text-muted;
+      cursor: pointer;
+      line-height: 1.5;
+
+      a {
+        color: $color-gold;
+        font-weight: 500;
+
+        &:hover {
+          color: $color-gold-light;
+        }
+      }
     }
   }
 }

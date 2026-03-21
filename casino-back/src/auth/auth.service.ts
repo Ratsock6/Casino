@@ -45,6 +45,8 @@ export class AuthService {
           birthDate: new Date(dto.birthDate),
           phoneNumber: dto.phoneNumber,
           passwordHash,
+          hasAcceptedTerms: dto.hasAcceptedTerms,
+          termsAcceptedAt: dto.hasAcceptedTerms ? new Date() : null,
         },
       });
 

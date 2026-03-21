@@ -1,4 +1,4 @@
-import { IsDateString, IsString, Length, Matches } from 'class-validator';
+import { IsBoolean, IsDateString, IsString, Length, Matches, Equals } from 'class-validator';
 
 export class RegisterDto {
   @IsString()
@@ -28,4 +28,8 @@ export class RegisterDto {
   @IsString()
   @Length(8, 128)
   password: string;
+
+  @IsBoolean()
+  @Equals(true, { message: 'You must accept the terms and conditions' })
+  hasAcceptedTerms: boolean;
 }

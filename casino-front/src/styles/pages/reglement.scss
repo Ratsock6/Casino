@@ -1,0 +1,81 @@
+@import '../variables';
+
+.reglement {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+
+  &__content {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: $color-gold;
+      margin-bottom: $spacing-lg;
+      padding-bottom: $spacing-md;
+      border-bottom: 1px solid $color-border;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: $color-text;
+      margin-top: $spacing-xl;
+      margin-bottom: $spacing-md;
+      padding-bottom: $spacing-xs;
+      border-bottom: 1px solid $color-border;
+    }
+
+    p {
+      font-size: 14px;
+      color: $color-text-muted;
+      line-height: 1.8;
+      margin-bottom: $spacing-md;
+    }
+
+    ul, ol {
+      margin: $spacing-md 0;
+      padding-left: $spacing-xl;
+
+      li {
+        font-size: 14px;
+        color: $color-text-muted;
+        line-height: 1.8;
+        margin-bottom: $spacing-xs;
+      }
+    }
+
+    strong {
+      color: $color-text;
+      font-weight: 600;
+    }
+
+    em {
+      color: $color-text-muted;
+      font-style: italic;
+    }
+
+    blockquote {
+      border-left: 3px solid $color-gold;
+      padding-left: $spacing-md;
+      margin: $spacing-md 0;
+      color: $color-text-muted;
+      font-style: italic;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid $color-border;
+      margin: $spacing-xl 0;
+    }
+
+    a {
+      color: $color-gold;
+      &:hover { color: $color-gold-light; }
+    }
+  }
+}

@@ -90,6 +90,8 @@ export const UserScalarFieldEnum = {
   failedLoginCount: 'failedLoginCount',
   lockedUntil: 'lockedUntil',
   lastLoginAt: 'lastLoginAt',
+  hasAcceptedTerms: 'hasAcceptedTerms',
+  termsAcceptedAt: 'termsAcceptedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

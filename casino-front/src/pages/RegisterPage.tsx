@@ -20,6 +20,7 @@ const RegisterPage = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuthStore();
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -42,6 +43,7 @@ const RegisterPage = () => {
         birthDate: form.birthDate,
         phoneNumber: form.phoneNumber,
         password: form.password,
+        hasAcceptedTerms: acceptedTerms,
       });
 
       const data = await loginApi(form.username, form.password);
@@ -158,7 +160,24 @@ const RegisterPage = () => {
             />
           </div>
 
+          <div className="register-form__terms">
+            <input
+              type="checkbox"
+              id="terms"
+              checked={acceptedTerms}
+              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              required
+            />
+            <label htmlFor="terms">
+              J'ai lu et j'accepte le{' '}
+              <a href="/reglement" target="_blank" rel="noopener noreferrer">
+                règlement du Bellagio Casino
+              </a>
+            </label>
+          </div>
+
           {error && <p className="register-form__error">{error}</p>}
+
 
           <button
             className="register-form__submit"
