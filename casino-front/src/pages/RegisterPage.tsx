@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerApi } from '../api/auth.api';
 import '../styles/pages/register.scss';
+import { useAuthStore } from '../store/auth.store';
+import { loginApi } from '../api/auth.api';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -17,6 +19,7 @@ const RegisterPage = () => {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login } = useAuthStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,7 +43,11 @@ const RegisterPage = () => {
         phoneNumber: form.phoneNumber,
         password: form.password,
       });
-      navigate('/login');
+
+      const data = await loginApi(form.username, form.password);
+      login(data.user, data.accessToken);
+
+      navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Une erreur est survenue.');
     } finally {
@@ -57,32 +64,33 @@ const RegisterPage = () => {
           <p className="register-card__subtitle">Créez votre compte</p>
         </div>
 
+        {<p className="register-form__warning">Attention veuillez mettre vos vrais informations sous peine de ne pas pouvoir récupérer vos gains.</p>}
+
         <form className="register-form" onSubmit={handleSubmit}>
-          <div className="register-form__row">
-            <div className="register-form__field">
-              <label htmlFor="firstName">Prénom</label>
-              <input
-                id="firstName"
-                name="firstName"
-                type="text"
-                value={form.firstName}
-                onChange={handleChange}
-                placeholder="Diego"
-                required
-              />
-            </div>
-            <div className="register-form__field">
-              <label htmlFor="lastName">Nom</label>
-              <input
-                id="lastName"
-                name="lastName"
-                type="text"
-                value={form.lastName}
-                onChange={handleChange}
-                placeholder="Guerrero"
-                required
-              />
-            </div>
+          <div className="register-form__field">
+            <label htmlFor="firstName">Prénom</label>
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              value={form.firstName}
+              onChange={handleChange}
+              placeholder="Diego"
+              required
+            />
+          </div>
+
+          <div className="register-form__field">
+            <label htmlFor="lastName">Nom</label>
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              value={form.lastName}
+              onChange={handleChange}
+              placeholder="Guerrero"
+              required
+            />
           </div>
 
           <div className="register-form__field">
