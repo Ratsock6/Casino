@@ -34,3 +34,8 @@ export const blackjackActionApi = async (
   const res = await axiosInstance.post('/blackjack/action', { gameId, action });
   return res.data;
 };
+
+export const getActiveBlackjackApi = async (): Promise<BlackjackGame | null> => {
+  const res = await axiosInstance.get('/blackjack/active');
+  return res.data;
+};

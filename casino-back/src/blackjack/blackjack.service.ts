@@ -203,6 +203,28 @@ export class BlackjackService {
     });
   }
 
+  async getActiveGame(userId: string) {
+    const game = await this.prisma.blackjackGame.findFirst({
+      where: {
+        userId,
+        status: BlackjackGameStatus.PLAYER_TURN,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    if (!game) return null;
+
+    return this.formatGameResponse({
+      id: game.id,
+      status: game.status,
+      betAmount: game.betAmount,
+      playerCards: game.playerCards as unknown as BlackjackCard[],
+      dealerCards: game.dealerCards as unknown as BlackjackCard[],
+      playerScore: game.playerScore,
+      dealerScore: game.dealerScore,
+    });
+  }
+
   private async handleHit(
     game: {
       id: string;

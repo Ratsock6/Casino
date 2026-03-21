@@ -75,6 +75,11 @@ export class BlackjackController {
     return this.blackjackService.playAction(user.userId, dto.gameId, dto.action);
   }
 
+  @Get('active')
+  getActiveGame(@CurrentUser() user: { userId: string }) {
+    return this.blackjackService.getActiveGame(user.userId);
+  }
+
   @Get(':gameId')
   getGame(
     @CurrentUser() user: { userId: string },
@@ -82,4 +87,6 @@ export class BlackjackController {
   ) {
     return this.blackjackService.getGame(user.userId, gameId);
   }
+
+
 }

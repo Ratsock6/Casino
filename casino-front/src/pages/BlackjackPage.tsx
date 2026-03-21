@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWalletStore } from '../store/wallet.store';
-import { startBlackjackApi, blackjackActionApi } from '../api/blackjack.api';
+import { startBlackjackApi, blackjackActionApi, getActiveBlackjackApi } from '../api/blackjack.api';
 import type { BlackjackGame, BlackjackCard } from '../api/blackjack.api';
 import {
   SUIT_SYMBOLS, isRed, getCardLabel,
@@ -43,6 +43,7 @@ const BlackjackPage = () => {
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loadingActive, setLoadingActive] = useState(true);
 
   const handleStart = async () => {
     if (loading) return;
@@ -99,6 +100,34 @@ const BlackjackPage = () => {
 
   const gameOver = game ? isGameOver(game.status) : false;
   const statusInfo = game ? STATUS_LABELS[game.status] : null;
+
+  useEffect(() => {
+    const checkActiveGame = async () => {
+      try {
+        const activeGame = await getActiveBlackjackApi();
+        if (activeGame) {
+          setGame(activeGame);
+        }
+      } catch (err) {
+        console.error('Erreur récupération partie active:', err);
+      } finally {
+        setLoadingActive(false);
+      }
+    };
+    checkActiveGame();
+  }, []);
+
+
+  if (loadingActive) {
+    return (
+      <div className="blackjack">
+        <div className="blackjack__header">
+          <h1 className="blackjack__title">Blackjack</h1>
+        </div>
+        <div className="blackjack__loading">Chargement...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="blackjack">
@@ -158,13 +187,13 @@ const BlackjackPage = () => {
             <h3>Règles</h3>
             <div className="blackjack__rules-list">
               {[
-                { label: 'Objectif',    value: 'Approcher 21 sans le dépasser' },
-                { label: 'Blackjack',   value: 'As + figure = x2.5' },
-                { label: 'Victoire',    value: 'Plus proche de 21 = x2' },
-                { label: 'Égalité',     value: 'Mise remboursée' },
-                { label: 'As',          value: 'Vaut 1 ou 11' },
-                { label: 'Figures',     value: 'Valent 10' },
-                { label: 'Croupier',    value: 'Tir à 16 et reste à 17' },
+                { label: 'Objectif', value: 'Approcher 21 sans le dépasser' },
+                { label: 'Blackjack', value: 'As + figure = x2.5' },
+                { label: 'Victoire', value: 'Plus proche de 21 = x2' },
+                { label: 'Égalité', value: 'Mise remboursée' },
+                { label: 'As', value: 'Vaut 1 ou 11' },
+                { label: 'Figures', value: 'Valent 10' },
+                { label: 'Croupier', value: 'Tir à 16 et reste à 17' },
               ].map((rule) => (
                 <div key={rule.label} className="blackjack__rule-row">
                   <span className="blackjack__rule-label">{rule.label}</span>
@@ -205,10 +234,10 @@ const BlackjackPage = () => {
                   {game.status === 'PLAYER_WIN' || game.status === 'DEALER_BUST'
                     ? ` — +${Number(game.betAmount).toLocaleString()} jetons`
                     : game.status === 'PLAYER_BLACKJACK'
-                    ? ` — +${(Number(game.betAmount) * 1.5).toLocaleString()} jetons`
-                    : game.status === 'PUSH'
-                    ? ` — Mise remboursée`
-                    : ` — -${Number(game.betAmount).toLocaleString()} jetons`}
+                      ? ` — +${(Number(game.betAmount) * 1.5).toLocaleString()} jetons`
+                      : game.status === 'PUSH'
+                        ? ` — Mise remboursée`
+                        : ` — -${Number(game.betAmount).toLocaleString()} jetons`}
                 </span>
               )}
             </div>
