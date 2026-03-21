@@ -1,9 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CasinoConfigService } from '../casino-config/casino-config.service';
 
 @Injectable()
 export class GameRoundsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly casinoConfigService: CasinoConfigService,
+  ) { }
 
   async getMyRounds(userId: string, limit = 50) {
     const rounds = await this.prisma.gameRound.findMany({
@@ -24,6 +28,11 @@ export class GameRoundsService {
   }
 
   async getMyStats(userId: string) {
+    const statsEnabled = await this.casinoConfigService.getBoolean('ENABLE_PLAYER_STATS', true);
+
+    if (!statsEnabled) {
+      return null;
+    }
     const rounds = await this.prisma.gameRound.findMany({
       where: { userId },
     });
@@ -57,5 +66,9 @@ export class GameRoundsService {
       netResult: totalPayout - totalStake,
       byGame,
     };
+  }
+
+  async isStatsEnabled(): Promise<boolean> {
+    return this.casinoConfigService.getBoolean('ENABLE_PLAYER_STATS', true);
   }
 }

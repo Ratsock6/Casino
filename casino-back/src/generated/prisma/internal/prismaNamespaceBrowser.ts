@@ -58,7 +58,8 @@ export const ModelName = {
   AdminAction: 'AdminAction',
   GameRound: 'GameRound',
   IdempotencyRequest: 'IdempotencyRequest',
-  BlackjackGame: 'BlackjackGame'
+  BlackjackGame: 'BlackjackGame',
+  CasinoConfig: 'CasinoConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -204,6 +205,17 @@ export const BlackjackGameScalarFieldEnum = {
 } as const
 
 export type BlackjackGameScalarFieldEnum = (typeof BlackjackGameScalarFieldEnum)[keyof typeof BlackjackGameScalarFieldEnum]
+
+
+export const CasinoConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
+} as const
+
+export type CasinoConfigScalarFieldEnum = (typeof CasinoConfigScalarFieldEnum)[keyof typeof CasinoConfigScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -11,8 +11,10 @@ import type {
 import '../styles/pages/admin.scss';
 import { updateUserStatusApi } from '../api/admin.api';
 import { getUserStatsApi, type UserStats } from '../api/admin.api';
+import { getCasinoConfigApi, updateCasinoConfigApi, type CasinoConfig } from '../api/admin.api';
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players';
+
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -32,6 +34,10 @@ const AdminPage = () => {
   const [transactions, setTransactions] = useState<AdminTransaction[]>([]);
   const [games, setGames] = useState<AdminGameRound[]>([]);
   const [leaderboard, setLeaderboard] = useState<Leaderboard | null>(null);
+
+  // Config
+  const [config, setConfig] = useState<CasinoConfig[]>([]);
+  const [configLoading, setConfigLoading] = useState(false);
 
   // Player detail
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
@@ -53,6 +59,7 @@ const AdminPage = () => {
     );
   });
   const [userStats, setUserStats] = useState<UserStats | null>(null);
+
 
   // Loading
   const [loading, setLoading] = useState(false);
@@ -79,6 +86,10 @@ const AdminPage = () => {
       }
       if (tab === 'players' && users.length === 0) {
         setUsers(await getAdminUsersApi());
+      }
+      if (tab === 'config' && config.length === 0) {
+        const data = await getCasinoConfigApi();
+        setConfig(data);
       }
     } catch (err) {
       console.error(err);
@@ -144,6 +155,19 @@ const AdminPage = () => {
     }
   };
 
+  const handleUpdateConfig = async (key: string, value: string) => {
+    setConfigLoading(true);
+    try {
+      await updateCasinoConfigApi(key, value);
+      const updated = await getCasinoConfigApi();
+      setConfig(updated);
+    } catch {
+      console.error('Erreur mise à jour config');
+    } finally {
+      setConfigLoading(false);
+    }
+  };
+
   const formatDate = (d: string) =>
     new Date(d).toLocaleString('fr-FR', {
       day: '2-digit', month: '2-digit', year: '2-digit',
@@ -156,7 +180,15 @@ const AdminPage = () => {
     { key: 'games', label: '🎮 Parties' },
     { key: 'transactions', label: '💳 Transactions' },
     { key: 'players', label: '👥 Joueurs' },
+    { key: 'config', label: '⚙️ Configuration' },
   ];
+
+  const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
+    ENABLE_PLAYER_STATS: {
+      label: 'Statistiques joueurs',
+      description: 'Permet aux joueurs de voir leurs statistiques détaillées par jeu dans leur profil.',
+    },
+  };
 
   return (
     <div className="admin">
@@ -662,6 +694,51 @@ const AdminPage = () => {
       )
       }
 
+      {/* ── CONFIG ── */}
+      {activeTab === 'config' && (
+        <div className="admin__config">
+          <h2 className="admin__section-title">⚙️ Configuration du casino</h2>
+          <p className="admin__config-hint">
+            Ces paramètres affectent le comportement de la plateforme pour tous les joueurs.
+          </p>
+          <div className="admin__config-list">
+            {config.map((item) => {
+              const meta = CONFIG_LABELS[item.key];
+              const isEnabled = item.value === 'true';
+              return (
+                <div key={item.key} className="admin__config-row">
+                  <div className="admin__config-info">
+                    <span className="admin__config-label">
+                      {meta?.label || item.key}
+                    </span>
+                    <span className="admin__config-description">
+                      {meta?.description || '—'}
+                    </span>
+                    <span className="admin__config-updated">
+                      Dernière modification : {new Date(item.updatedAt).toLocaleString('fr-FR')} par {item.updatedByUsername || '—'}
+                    </span>
+                  </div>
+                  <div className="admin__config-toggle">
+                    <button
+                      className={`admin__toggle ${isEnabled ? 'admin__toggle--on' : 'admin__toggle--off'}`}
+                      onClick={() => handleUpdateConfig(item.key, isEnabled ? 'false' : 'true')}
+                      disabled={configLoading}
+                    >
+                      <span className="admin__toggle-dot" />
+                    </button>
+                    <span className={`admin__toggle-label ${isEnabled ? 'admin__toggle-label--on' : 'admin__toggle-label--off'}`}>
+                      {isEnabled ? 'Activé' : 'Désactivé'}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+            {config.length === 0 && !loading && (
+              <p className="admin__config-empty">Aucune configuration disponible.</p>
+            )}
+          </div>
+        </div>
+      )}
     </div >
   );
 };

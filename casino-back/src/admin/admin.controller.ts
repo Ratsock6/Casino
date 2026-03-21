@@ -7,6 +7,7 @@ import { AdminService } from './admin.service';
 import { AdminWalletActionDto } from './dto/admin-wallet-action.dto';
 import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { AdminUpdateStatusDto } from './dto/admin-update-status.dto';
+import { CasinoConfigService } from '../casino-config/casino-config.service';
 
 
 @Controller('admin')
@@ -16,6 +17,7 @@ export class AdminController {
   constructor(
     private readonly walletService: WalletService,
     private readonly adminService: AdminService,
+    private readonly casinoConfigService: CasinoConfigService,
   ) { }
 
   // ── Wallet existant ──────────────────────────────────────
@@ -103,5 +105,19 @@ export class AdminController {
   @Get('users/:userId/stats')
   getUserStats(@Param('userId') userId: string) {
     return this.adminService.getUserStats(userId);
+  }
+
+  @Get('config')
+  getConfig() {
+    return this.casinoConfigService.getAll();
+  }
+
+  @Patch('config/:key')
+  updateConfig(
+    @CurrentUser() admin: { userId: string },
+    @Param('key') key: string,
+    @Body('value') value: string,
+  ) {
+    return this.casinoConfigService.set(key, value, admin.userId);
   }
 }

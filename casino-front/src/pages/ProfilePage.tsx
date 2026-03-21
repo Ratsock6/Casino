@@ -5,8 +5,7 @@ import {
 } from '../api/profile.api';
 import type { UserProfile, UserTransaction, UserGameRound, UserStats } from '../api/profile.api';
 import '../styles/pages/profile.scss';
-
-const ENABLE_STATS = true;
+import axiosInstance from '../utils/axios.instance';
 
 type Tab = 'info' | 'transactions' | 'games' | 'stats';
 
@@ -31,9 +30,19 @@ const ProfilePage = () => {
   const [games, setGames] = useState<UserGameRound[]>([]);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(false);
+  const [statsEnabled, setStatsEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
     loadTab(activeTab);
+    const checkStatsEnabled = async () => {
+      try {
+        const res = await axiosInstance.get('/game-rounds/me/stats/enabled');
+        setStatsEnabled(res.data.enabled);
+      } catch {
+        setStatsEnabled(false);
+      }
+    };
+    checkStatsEnabled();
   }, [activeTab]);
 
   const loadTab = async (tab: Tab) => {
@@ -48,7 +57,7 @@ const ProfilePage = () => {
       if (tab === 'games' && games.length === 0) {
         setGames(await getMyGameRoundsApi(100));
       }
-      if (tab === 'stats' && !stats && ENABLE_STATS) {
+      if (tab === 'stats' && !stats && statsEnabled) {
         setStats(await getMyStatsApi());
       }
     } catch (err) {
@@ -65,10 +74,10 @@ const ProfilePage = () => {
     });
 
   const TABS: { key: Tab; label: string }[] = [
-    { key: 'info',         label: '👤 Mon profil' },
+    { key: 'info', label: '👤 Mon profil' },
     { key: 'transactions', label: '💳 Transactions' },
-    { key: 'games',        label: '🎮 Parties' },
-    ...(ENABLE_STATS ? [{ key: 'stats' as Tab, label: '📊 Statistiques' }] : []),
+    { key: 'games', label: '🎮 Parties' },
+    ...(statsEnabled ? [{ key: 'stats' as Tab, label: '📊 Statistiques' }] : []),
   ];
 
   return (
@@ -109,13 +118,13 @@ const ProfilePage = () => {
 
           <div className="profile__fields">
             {[
-              { label: 'Prénom',            value: profile.firstName },
-              { label: 'Nom',               value: profile.lastName },
-              { label: 'Pseudo',            value: profile.username },
-              { label: 'Téléphone RP',      value: profile.phoneNumber },
-              { label: 'Solde',             value: `${Number(profile.balance).toLocaleString()} 🪙` },
-              { label: 'Statut',            value: profile.status },
-              { label: 'Membre depuis',     value: new Date(profile.createdAt).toLocaleDateString('fr-FR') },
+              { label: 'Prénom', value: profile.firstName },
+              { label: 'Nom', value: profile.lastName },
+              { label: 'Pseudo', value: profile.username },
+              { label: 'Téléphone RP', value: profile.phoneNumber },
+              { label: 'Solde', value: `${Number(profile.balance).toLocaleString()} 🪙` },
+              { label: 'Statut', value: profile.status },
+              { label: 'Membre depuis', value: new Date(profile.createdAt).toLocaleDateString('fr-FR') },
               { label: 'Dernière connexion', value: profile.lastLoginAt ? formatDate(profile.lastLoginAt) : '—' },
             ].map((field) => (
               <div key={field.label} className="profile__field">
@@ -209,11 +218,10 @@ const ProfilePage = () => {
                       </span>
                     </td>
                     <td>
-                      <span className={`profile__badge profile__badge--${
-                        g.status === 'WON' ? 'win'
+                      <span className={`profile__badge profile__badge--${g.status === 'WON' ? 'win'
                         : g.status === 'LOST' ? 'loss'
-                        : 'neutral'
-                      }`}>
+                          : 'neutral'
+                        }`}>
                         {g.status}
                       </span>
                     </td>
@@ -236,17 +244,17 @@ const ProfilePage = () => {
       )}
 
       {/* ── STATS ── */}
-      {activeTab === 'stats' && ENABLE_STATS && stats && (
+      {activeTab === 'stats' && statsEnabled && stats && (
         <div className="profile__stats">
 
           <div className="profile__kpis">
             {[
               { label: 'Parties jouées', value: stats.totalRounds, color: '#5cc8e0' },
-              { label: 'Victoires',      value: stats.totalWon,    color: '#4caf7d' },
-              { label: 'Défaites',       value: stats.totalLost,   color: '#e05c5c' },
+              { label: 'Victoires', value: stats.totalWon, color: '#4caf7d' },
+              { label: 'Défaites', value: stats.totalLost, color: '#e05c5c' },
               { label: 'Taux de victoire', value: `${stats.winRate}%`, color: '#c9a84c' },
-              { label: 'Total misé',     value: `${stats.totalStake.toLocaleString()} 🪙`, color: '#e0a85c' },
-              { label: 'Total gagné',    value: `${stats.totalPayout.toLocaleString()} 🪙`, color: '#4caf7d' },
+              { label: 'Total misé', value: `${stats.totalStake.toLocaleString()} 🪙`, color: '#e0a85c' },
+              { label: 'Total gagné', value: `${stats.totalPayout.toLocaleString()} 🪙`, color: '#4caf7d' },
               {
                 label: 'Résultat net',
                 value: `${stats.netResult >= 0 ? '+' : ''}${stats.netResult.toLocaleString()} 🪙`,

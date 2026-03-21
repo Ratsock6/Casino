@@ -690,4 +690,126 @@
       }
     }
   }
+
+  &__config {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+
+    &-hint {
+      font-size: 13px;
+      color: $color-text-muted;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-md;
+    }
+
+    &-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: $spacing-xl;
+      background: $color-surface;
+      border: 1px solid $color-border;
+      border-radius: $radius-md;
+      padding: $spacing-lg $spacing-xl;
+    }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    &-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: $color-text;
+    }
+
+    &-description {
+      font-size: 13px;
+      color: $color-text-muted;
+      line-height: 1.5;
+    }
+
+    &-updated {
+      font-size: 11px;
+      color: $color-text-muted;
+      margin-top: 4px;
+    }
+
+    &-toggle {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      flex-shrink: 0;
+    }
+
+    &-empty {
+      font-size: 14px;
+      color: $color-text-muted;
+      text-align: center;
+      padding: $spacing-xl;
+    }
+  }
+
+  &__toggle {
+    width: 48px;
+    height: 26px;
+    border-radius: 13px;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    transition: background $transition-base;
+
+    &--on {
+      background: $color-success;
+    }
+
+    &--off {
+      background: $color-border;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &-dot {
+      position: absolute;
+      top: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      transition: left $transition-base;
+
+      .admin__toggle--on & {
+        left: 25px;
+      }
+
+      .admin__toggle--off & {
+        left: 3px;
+      }
+    }
+
+    &-label {
+      font-size: 13px;
+      font-weight: 600;
+      min-width: 60px;
+
+      &--on {
+        color: $color-success;
+      }
+
+      &--off {
+        color: $color-text-muted;
+      }
+    }
+  }
 }

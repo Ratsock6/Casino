@@ -391,7 +391,8 @@ export const ModelName = {
   AdminAction: 'AdminAction',
   GameRound: 'GameRound',
   IdempotencyRequest: 'IdempotencyRequest',
-  BlackjackGame: 'BlackjackGame'
+  BlackjackGame: 'BlackjackGame',
+  CasinoConfig: 'CasinoConfig'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -407,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1003,6 +1004,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    CasinoConfig: {
+      payload: Prisma.$CasinoConfigPayload<ExtArgs>
+      fields: Prisma.CasinoConfigFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CasinoConfigFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CasinoConfigFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>
+        }
+        findFirst: {
+          args: Prisma.CasinoConfigFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CasinoConfigFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>
+        }
+        findMany: {
+          args: Prisma.CasinoConfigFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>[]
+        }
+        create: {
+          args: Prisma.CasinoConfigCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>
+        }
+        createMany: {
+          args: Prisma.CasinoConfigCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CasinoConfigCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>[]
+        }
+        delete: {
+          args: Prisma.CasinoConfigDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>
+        }
+        update: {
+          args: Prisma.CasinoConfigUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>
+        }
+        deleteMany: {
+          args: Prisma.CasinoConfigDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CasinoConfigUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CasinoConfigUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>[]
+        }
+        upsert: {
+          args: Prisma.CasinoConfigUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CasinoConfigPayload>
+        }
+        aggregate: {
+          args: Prisma.CasinoConfigAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCasinoConfig>
+        }
+        groupBy: {
+          args: Prisma.CasinoConfigGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CasinoConfigGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CasinoConfigCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CasinoConfigCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1169,6 +1244,17 @@ export const BlackjackGameScalarFieldEnum = {
 } as const
 
 export type BlackjackGameScalarFieldEnum = (typeof BlackjackGameScalarFieldEnum)[keyof typeof BlackjackGameScalarFieldEnum]
+
+
+export const CasinoConfigScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  value: 'value',
+  updatedAt: 'updatedAt',
+  updatedBy: 'updatedBy'
+} as const
+
+export type CasinoConfigScalarFieldEnum = (typeof CasinoConfigScalarFieldEnum)[keyof typeof CasinoConfigScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1516,6 +1602,7 @@ export type GlobalOmitConfig = {
   gameRound?: Prisma.GameRoundOmit
   idempotencyRequest?: Prisma.IdempotencyRequestOmit
   blackjackGame?: Prisma.BlackjackGameOmit
+  casinoConfig?: Prisma.CasinoConfigOmit
 }
 
 /* Types for Logging */

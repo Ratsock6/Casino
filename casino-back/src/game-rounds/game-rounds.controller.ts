@@ -6,7 +6,7 @@ import { GameRoundsService } from './game-rounds.service';
 @Controller('game-rounds')
 @UseGuards(JwtAuthGuard)
 export class GameRoundsController {
-  constructor(private readonly gameRoundsService: GameRoundsService) {}
+  constructor(private readonly gameRoundsService: GameRoundsService) { }
 
   @Get('me')
   getMyRounds(
@@ -22,5 +22,11 @@ export class GameRoundsController {
   @Get('me/stats')
   getMyStats(@CurrentUser() user: { userId: string }) {
     return this.gameRoundsService.getMyStats(user.userId);
+  }
+
+  @Get('me/stats/enabled')
+  async getStatsEnabled() {
+    const enabled = await this.gameRoundsService.isStatsEnabled();
+    return { enabled };
   }
 }

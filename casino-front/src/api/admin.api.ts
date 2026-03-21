@@ -51,6 +51,24 @@ export interface Leaderboard {
   byRounds: { user: { id: string; username: string; role: string }; totalRounds: number }[];
 }
 
+export interface CasinoConfig {
+  id: string;
+  key: string;
+  value: string;
+  updatedAt: string;
+  updatedBy: string | null;
+  updatedByUsername: string | null;
+}
+
+export const getCasinoConfigApi = async (): Promise<CasinoConfig[]> => {
+  const res = await axiosInstance.get('/admin/config');
+  return res.data;
+};
+
+export const updateCasinoConfigApi = async (key: string, value: string): Promise<void> => {
+  await axiosInstance.patch(`/admin/config/${key}`, { value });
+};
+
 export const getAdminUsersApi = async (): Promise<AdminUser[]> => {
   const res = await axiosInstance.get('/admin/users');
   return res.data;
