@@ -16,12 +16,16 @@ import {
   SettleLossInput,
   SettleWinInput,
 } from './types/bet.types';
+import { AlertsService } from '../alerts/alerts.service';
 
 
 
 @Injectable()
 export class BetService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly alertsService: AlertsService,
+  ) { }
 
   private toInputJsonValue(data?: JsonObject | null): Prisma.InputJsonValue | undefined {
     if (!data) {
@@ -99,6 +103,14 @@ export class BetService {
             reason: `${gameType} bet`,
           },
         });
+
+        const user = await this.prisma.user.findUnique({
+          where: { id: userId },
+          select: { username: true },
+        });
+        if (user) {
+          await this.alertsService.checkHighBet(userId, user.username, amount);
+        }
 
         return {
           roundId: round.id,
@@ -191,6 +203,15 @@ export class BetService {
           },
         });
 
+        const user = await this.prisma.user.findUnique({
+          where: { id: round.userId },
+          select: { username: true },
+        });
+        if (user) {
+          await this.alertsService.checkConsecutiveResults(round.userId, user.username);
+          await this.alertsService.checkCasinoBalance();
+        }
+
         return {
           roundId: round.id,
           status: GameRoundStatus.WON,
@@ -241,6 +262,14 @@ export class BetService {
             metadata: this.toInputJsonValue(mergedMetadata),
           },
         });
+
+        const user = await this.prisma.user.findUnique({
+          where: { id: round.userId },
+          select: { username: true },
+        });
+        if (user) {
+          await this.alertsService.checkConsecutiveResults(round.userId, user.username);
+        }
 
         return {
           roundId: updatedRound.id,

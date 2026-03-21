@@ -167,4 +167,9 @@ export class AdminController {
       offset ? parseInt(offset) : 0,
     );
   }
+
+  @Get('alerts')
+  getAlerts(@Query('limit') limit?: string) {
+    return this.adminService.getAlerts(limit ? parseInt(limit) : 50);
+  }
 }

@@ -110,6 +110,20 @@ export interface AuditLog {
   admin: { id: string; username: string };
 }
 
+export interface Alert {
+  id: string;
+  type: string;
+  message: string;
+  username: string | null;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+}
+
+export const getAlertsApi = async (limit = 50): Promise<Alert[]> => {
+  const res = await axiosInstance.get(`/admin/alerts?limit=${limit}`);
+  return res.data;
+};
+
 export const getAuditLogsApi = async (limit = 50, offset = 0): Promise<AuditLog[]> => {
   const res = await axiosInstance.get(`/admin/audit-logs?limit=${limit}&offset=${offset}`);
   return res.data;

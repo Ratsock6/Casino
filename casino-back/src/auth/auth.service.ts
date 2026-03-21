@@ -9,12 +9,14 @@ import * as argon2 from 'argon2';
 import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
+import { AlertsService } from '../alerts/alerts.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly alertsService: AlertsService,
   ) { }
 
   async register(dto: RegisterDto) {
@@ -60,6 +62,7 @@ export class AuthService {
       return createdUser;
     });
 
+    await this.alertsService.alertNewPlayer(user.username, user.id);
     return {
       id: user.id,
       username: user.username,
@@ -97,6 +100,11 @@ export class AuthService {
       });
 
       throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const newFailedCount = user.failedLoginCount + 1;
+    if (newFailedCount >= 3) {
+      await this.alertsService.alertFailedLogin(user.username, newFailedCount);
     }
 
     await this.prisma.user.update({

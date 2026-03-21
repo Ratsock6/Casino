@@ -24,6 +24,7 @@ import {
   getBalanceHistoryApi,
   getGamesHistoryApi,
   getAuditLogsApi,
+  getAlertsApi,
 } from '../api/admin.api';
 
 import type {
@@ -38,13 +39,14 @@ import type {
   BalanceHistoryEntry,
   GamesHistoryEntry,
   AuditLog,
+  Alert,
 } from '../api/admin.api';
 
 import { exportToCsv } from '../utils/csv.utils';
 import '../styles/pages/admin.scss';
 
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit';
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -95,6 +97,8 @@ const AdminPage = () => {
   const [gamesHistory, setGamesHistory] = useState<GamesHistoryEntry[]>([]);
   const [chartDays, setChartDays] = useState(30);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [unreadAlerts, setUnreadAlerts] = useState(0);
 
 
   // Loading
@@ -104,6 +108,10 @@ const AdminPage = () => {
   useEffect(() => {
     loadTab(activeTab);
   }, [activeTab]);
+
+  useEffect(() => {
+    getAlertsApi(10).then((data) => setUnreadAlerts(data.length)).catch(console.error);
+  }, []);
 
   const loadTab = async (tab: Tab) => {
     setLoading(true);
@@ -137,6 +145,11 @@ const AdminPage = () => {
       }
       if (tab === 'audit' && auditLogs.length === 0) {
         setAuditLogs(await getAuditLogsApi());
+      }
+      if (tab === 'alerts' && alerts.length === 0) {
+        const data = await getAlertsApi();
+        setAlerts(data);
+        setUnreadAlerts(0);
       }
     } catch (err) {
       console.error(err);
@@ -317,6 +330,12 @@ const AdminPage = () => {
     { key: 'config', label: '⚙️ Configuration' },
     { key: 'charts', label: '📈 Graphiques' },
     { key: 'audit', label: '📋 Logs d\'audit' },
+    {
+      key: 'alerts',
+      label: unreadAlerts > 0
+        ? `🚨 Alertes (${unreadAlerts})`
+        : '🚨 Alertes'
+    },
   ];
 
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
@@ -328,6 +347,26 @@ const AdminPage = () => {
       label: 'Statistiques publiques du casino',
       description: 'Affiche les statistiques globales du casino (joueurs inscrits, parties jouées, total distribué) sur la page d\'accueil.',
     },
+    DISCORD_WEBHOOK_URL: {
+      label: 'Webhook Discord',
+      description: 'URL du webhook Discord pour recevoir les alertes en temps réel. Laissez vide pour désactiver.',
+    },
+    ALERT_HIGH_BET_THRESHOLD: {
+      label: 'Seuil mise élevée',
+      description: 'Montant en jetons à partir duquel une alerte est déclenchée.',
+    },
+    ALERT_CONSECUTIVE_LOSSES: {
+      label: 'Pertes consécutives',
+      description: 'Nombre de pertes consécutives avant alerte.',
+    },
+    ALERT_CONSECUTIVE_WINS: {
+      label: 'Gains consécutifs',
+      description: 'Nombre de gains consécutifs avant alerte.',
+    },
+    ALERT_CASINO_BALANCE_MIN: {
+      label: 'Solde casino minimum',
+      description: 'Seuil critique du solde du casino en jetons.',
+    },
   };
 
   const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
@@ -336,6 +375,17 @@ const AdminPage = () => {
     USER_STATUS_CHANGE: { label: 'Changement statut', color: '#e0a85c', icon: '🔄' },
     CONFIG_UPDATE: { label: 'Config modifiée', color: '#5cc8e0', icon: '⚙️' },
   };
+
+  const ALERT_META: Record<string, { label: string; color: string; icon: string }> = {
+    HIGH_BET: { label: 'Mise élevée', color: '#e0a85c', icon: '💰' },
+    CONSECUTIVE_LOSSES: { label: 'Pertes consécutives', color: '#e05c5c', icon: '📉' },
+    CONSECUTIVE_WINS: { label: 'Gains consécutifs', color: '#4caf7d', icon: '📈' },
+    LOW_CASINO_BALANCE: { label: 'Solde casino critique', color: '#c62828', icon: '🚨' },
+    NEW_PLAYER: { label: 'Nouveau joueur', color: '#5cc8e0', icon: '🎉' },
+    FAILED_LOGIN: { label: 'Connexion échouée', color: '#ff6b6b', icon: '🔐' },
+  };
+
+  const BOOL_CONFIGS = ['ENABLE_PLAYER_STATS', 'ENABLE_PUBLIC_STATS'];
 
   return (
     <div className="admin">
@@ -641,7 +691,7 @@ const AdminPage = () => {
                 {selectedUser.username} - {selectedUser.firstName} {selectedUser.lastName}
                 <span className={`admin__player-role admin__player-role--${selectedUser.role.toLowerCase()}`}>
                   {selectedUser.role}
-                </span>  
+                </span>
               </h2>
 
               <div className="admin__player-stats">
@@ -919,6 +969,8 @@ const AdminPage = () => {
             {config.map((item) => {
               const meta = CONFIG_LABELS[item.key];
               const isEnabled = item.value === 'true';
+              const isBool = BOOL_CONFIGS.includes(item.key);
+
               return (
                 <div key={item.key} className="admin__config-row">
                   <div className="admin__config-info">
@@ -932,18 +984,34 @@ const AdminPage = () => {
                       Dernière modification : {new Date(item.updatedAt).toLocaleString('fr-FR')} par {item.updatedByUsername || '—'}
                     </span>
                   </div>
-                  <div className="admin__config-toggle">
-                    <button
-                      className={`admin__toggle ${isEnabled ? 'admin__toggle--on' : 'admin__toggle--off'}`}
-                      onClick={() => handleUpdateConfig(item.key, isEnabled ? 'false' : 'true')}
-                      disabled={configLoading}
-                    >
-                      <span className="admin__toggle-dot" />
-                    </button>
-                    <span className={`admin__toggle-label ${isEnabled ? 'admin__toggle-label--on' : 'admin__toggle-label--off'}`}>
-                      {isEnabled ? 'Activé' : 'Désactivé'}
-                    </span>
-                  </div>
+
+                  {isBool ? (
+                    <div className="admin__config-toggle">
+                      <button
+                        className={`admin__toggle ${isEnabled ? 'admin__toggle--on' : 'admin__toggle--off'}`}
+                        onClick={() => handleUpdateConfig(item.key, isEnabled ? 'false' : 'true')}
+                        disabled={configLoading}
+                      >
+                        <span className="admin__toggle-dot" />
+                      </button>
+                      <span className={`admin__toggle-label ${isEnabled ? 'admin__toggle-label--on' : 'admin__toggle-label--off'}`}>
+                        {isEnabled ? 'Activé' : 'Désactivé'}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="admin__config-input">
+                      <input
+                        type="text"
+                        defaultValue={item.value}
+                        onBlur={(e) => {
+                          if (e.target.value !== item.value) {
+                            handleUpdateConfig(item.key, e.target.value);
+                          }
+                        }}
+                        placeholder="Valeur..."
+                      />
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -1088,7 +1156,7 @@ const AdminPage = () => {
               onClick={() => {
                 const rows = auditLogs.map((log) => ({
                   Date: formatDate(log.createdAt),
-                  Admin: log.admin.username,
+                  Admin: log.admin?.username || 'Système',
                   Action: ACTION_LABELS[log.action]?.label || log.action,
                   Cible: log.targetType,
                   'ID Cible': log.targetId,
@@ -1118,7 +1186,7 @@ const AdminPage = () => {
                   return (
                     <tr key={log.id}>
                       <td className="admin__table-date">{formatDate(log.createdAt)}</td>
-                      <td className="admin__table-username">{log.admin.username}</td>
+                      <td className="admin__table-username">{log.admin?.username || 'Système'}</td>
                       <td>
                         <span
                           className="admin__badge"
@@ -1150,6 +1218,70 @@ const AdminPage = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+
+      {activeTab === 'alerts' && (
+        <div className="admin__section">
+          <div className="admin__section-title-row">
+            <h2 className="admin__section-title">🚨 Alertes système</h2>
+            <button
+              className="admin__export-btn"
+              onClick={() => {
+                const rows = alerts.map((a) => ({
+                  Date: formatDate(a.createdAt),
+                  Type: ALERT_META[a.type]?.label || a.type,
+                  Message: a.message,
+                  Joueur: a.username || '—',
+                }));
+                exportToCsv('alertes', rows);
+              }}
+            >
+              📥 Exporter CSV
+            </button>
+          </div>
+
+          {alerts.length === 0 ? (
+            <div className="admin__alerts-empty">
+              <span>✅</span>
+              <p>Aucune alerte pour le moment</p>
+            </div>
+          ) : (
+            <div className="admin__alerts-list">
+              {alerts.map((alert) => {
+                const meta = ALERT_META[alert.type];
+                return (
+                  <div
+                    key={alert.id}
+                    className="admin__alert-row"
+                    style={{ borderLeftColor: meta?.color || '#888' }}
+                  >
+                    <div className="admin__alert-icon">{meta?.icon || '⚠️'}</div>
+                    <div className="admin__alert-content">
+                      <div className="admin__alert-header">
+                        <span
+                          className="admin__alert-type"
+                          style={{ color: meta?.color || '#888' }}
+                        >
+                          {meta?.label || alert.type}
+                        </span>
+                        {alert.username && (
+                          <span className="admin__alert-username">
+                            👤 {alert.username}
+                          </span>
+                        )}
+                        <span className="admin__alert-date">
+                          {formatDate(alert.createdAt)}
+                        </span>
+                      </div>
+                      <p className="admin__alert-message">{alert.message}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       )}
     </div >

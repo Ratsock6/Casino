@@ -331,7 +331,7 @@ export class AdminService {
 
     return result;
   }
-  
+
   async createAuditLog(
     adminId: string,
     action: string,
@@ -370,6 +370,23 @@ export class AdminService {
       metadata: log.metadata,
       createdAt: log.createdAt,
       admin: log.admin,
+    }));
+  }
+
+  async getAlerts(limit = 50) {
+    const logs = await this.prisma.adminAction.findMany({
+      where: { action: { startsWith: 'ALERT_' } },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+
+    return logs.map((log) => ({
+      id: log.id,
+      type: log.action.replace('ALERT_', ''),
+      message: (log.metadata as Record<string, unknown>)?.message || '',
+      username: (log.metadata as Record<string, unknown>)?.username || null,
+      metadata: log.metadata,
+      createdAt: log.createdAt,
     }));
   }
 }
