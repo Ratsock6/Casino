@@ -13,4 +13,13 @@
     width: 100%;
     margin: 0 auto;
   }
+
+  &__content {
+    flex: 1;
+    padding: $spacing-xl;
+    padding-bottom: calc(#{$spacing-xl} + 40px); // 40px = hauteur du ticker
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
 }

@@ -234,4 +234,25 @@ export class AdminService {
       byRounds: byRoundsWithUser,
     };
   }
+
+  async getRecentWinners(limit = 10) {
+    const wins = await this.prisma.gameRound.findMany({
+      where: { status: 'WON' },
+      orderBy: { settledAt: 'desc' },
+      take: limit,
+      include: {
+        user: {
+          select: { username: true },
+        },
+      },
+    });
+
+    return wins.map((w) => ({
+      username: w.user.username,
+      gameType: w.gameType,
+      payout: Number(w.payout),
+      multiplier: w.multiplier,
+      settledAt: w.settledAt,
+    }));
+  }
 }

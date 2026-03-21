@@ -265,6 +265,10 @@ const AdminPage = () => {
       label: 'Statistiques joueurs',
       description: 'Permet aux joueurs de voir leurs statistiques détaillées par jeu dans leur profil.',
     },
+    ENABLE_PUBLIC_STATS: {
+      label: 'Statistiques publiques du casino',
+      description: 'Affiche les statistiques globales du casino (joueurs inscrits, parties jouées, total distribué) sur la page d\'accueil.',
+    },
   };
 
   return (

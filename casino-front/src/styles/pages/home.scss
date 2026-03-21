@@ -5,32 +5,154 @@
   flex-direction: column;
   gap: $spacing-xl;
 
+  // Hero
   &__hero {
-    padding: $spacing-xl 0;
-    border-bottom: 1px solid $color-border;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-xl;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at top left, rgba($color-gold, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
   }
 
-  &__title {
-    font-size: 32px;
-    font-weight: 700;
+  &__hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    z-index: 1;
+  }
+
+  &__hero-eyebrow {
+    font-size: 13px;
+    color: $color-gold;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  &__hero-title {
+    font-size: 48px;
+    font-weight: 800;
     color: $color-text;
-    margin-bottom: $spacing-sm;
+    line-height: 1.1;
+    animation: fadeInUp 0.6s ease both;
 
     span {
       color: $color-gold;
+      position: relative;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: $color-gold;
+        border-radius: 2px;
+        animation: expandWidth 0.8s ease 0.4s both;
+      }
     }
   }
 
-  &__subtitle {
-    font-size: 16px;
+  &__hero-slogan {
+    font-size: 15px;
     color: $color-text-muted;
+    font-style: italic;
+    margin-top: $spacing-xs;
+    animation: fadeInUp 0.6s ease 0.2s both;
+  }
+
+  &__hero-balance {
+    font-size: 14px;
+    color: $color-text-muted;
+    margin-top: $spacing-sm;
+    animation: fadeInUp 0.6s ease 0.3s both;
 
     strong {
-      color: $color-text;
-      font-weight: 600;
+      color: $color-gold;
+      font-weight: 700;
     }
   }
 
+  &__hero-deco {
+    display: flex;
+    gap: $spacing-lg;
+    font-size: 52px;
+    opacity: 0.15;
+    animation: fadeIn 1s ease 0.5s both;
+    z-index: 1;
+  }
+
+  &__hero-card {
+    animation: float 3s ease-in-out infinite;
+
+    &:nth-child(2) { animation-delay: 0.5s; }
+    &:nth-child(3) { animation-delay: 1s; }
+  }
+
+  // Stats globales
+  &__stats {
+    display: flex;
+    gap: $spacing-md;
+  }
+
+  &__stat {
+    flex: 1;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xs;
+    text-align: center;
+    transition: border-color $transition-base;
+
+    &:hover { border-color: $color-gold; }
+
+    &-icon { font-size: 24px; }
+
+    &-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: $color-gold;
+    }
+
+    &-label {
+      font-size: 12px;
+      color: $color-text-muted;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  // Section
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+
+    &-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: $color-text;
+    }
+  }
+
+  // Jeux
   &__games {
     display: flex;
     flex-direction: column;
@@ -38,26 +160,44 @@
   }
 }
 
+// Game cards
 .game-card {
   display: flex;
   align-items: center;
   gap: $spacing-lg;
-  background-color: $color-surface;
+  background: $color-surface;
   border: 1px solid $color-border;
   border-radius: $radius-md;
-  padding: $spacing-lg $spacing-xl;
+  padding: $spacing-xl;
   cursor: pointer;
-  transition: border-color $transition-base, transform $transition-base;
+  transition: all $transition-base;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--game-color, $color-gold);
+    opacity: 0;
+    transition: opacity $transition-base;
+  }
 
   &:hover {
-    border-color: $color-gold;
+    border-color: var(--game-color, $color-gold);
     transform: translateX(4px);
+    background: $color-surface-2;
+
+    &::before { opacity: 1; }
   }
 
   &__icon {
-    font-size: 40px;
-    min-width: 56px;
+    font-size: 48px;
+    min-width: 64px;
     text-align: center;
+    flex-shrink: 0;
   }
 
   &__content {
@@ -66,7 +206,7 @@
 
   &__title {
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     color: $color-text;
     margin-bottom: $spacing-xs;
   }
@@ -74,15 +214,51 @@
   &__description {
     font-size: 14px;
     color: $color-text-muted;
+    line-height: 1.5;
+  }
+
+  &__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $spacing-xs;
+    flex-shrink: 0;
+  }
+
+  &__multiplier {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--game-color, $color-gold);
   }
 
   &__arrow {
-    font-size: 20px;
+    font-size: 18px;
     color: $color-text-muted;
     transition: color $transition-fast;
   }
 
   &:hover &__arrow {
-    color: $color-gold;
+    color: var(--game-color, $color-gold);
   }
+}
+
+// Animations
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 0.15; }
+}
+
+@keyframes expandWidth {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
 }

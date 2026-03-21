@@ -61,6 +61,30 @@ export interface LoginHistoryEntry {
   createdAt: string;
 }
 
+export interface RecentWinner {
+  username: string;
+  gameType: string;
+  payout: number;
+  multiplier: number | null;
+  settledAt: string;
+}
+
+export interface PublicStats {
+  totalUsers: number;
+  totalRounds: number;
+  totalPaidOut: number;
+}
+
+export const getRecentWinnersApi = async (): Promise<RecentWinner[]> => {
+  const res = await axiosInstance.get('/public/recent-winners');
+  return res.data;
+};
+
+export const getPublicStatsApi = async (): Promise<PublicStats> => {
+  const res = await axiosInstance.get('/public/stats');
+  return res.data;
+};
+
 export const getMyLoginHistoryApi = async (limit = 20): Promise<LoginHistoryEntry[]> => {
   const res = await axiosInstance.get(`/users/me/login-history?limit=${limit}`);
   return res.data;
