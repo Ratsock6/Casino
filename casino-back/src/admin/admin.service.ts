@@ -101,10 +101,11 @@ export class AdminService {
     }));
   }
 
-  async getAllGameRounds(limit = 50, offset = 0) {
+  async getAllGameRounds(limit = 50, offset = 0, userId?: string) {
     const rounds = await this.prisma.gameRound.findMany({
       take: limit,
       skip: offset,
+      where: userId ? { userId } : undefined,
       orderBy: { createdAt: 'desc' },
       include: {
         user: {
@@ -118,6 +119,20 @@ export class AdminService {
       stake: Number(r.stake),
       payout: Number(r.payout),
     }));
+  }
+
+  async getUserLoginHistory(userId: string, limit = 20) {
+    return this.prisma.loginHistory.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        ipAddress: true,
+        userAgent: true,
+        createdAt: true,
+      },
+    });
   }
 
   async getUserStats(userId: string) {

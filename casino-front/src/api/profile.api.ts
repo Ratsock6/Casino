@@ -54,6 +54,18 @@ export interface UserStats {
   }[];
 }
 
+export interface LoginHistoryEntry {
+  id: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+
+export const getMyLoginHistoryApi = async (limit = 20): Promise<LoginHistoryEntry[]> => {
+  const res = await axiosInstance.get(`/users/me/login-history?limit=${limit}`);
+  return res.data;
+};
+
 export const getProfileApi = async (): Promise<UserProfile> => {
   const res = await axiosInstance.get('/users/me');
   return res.data;

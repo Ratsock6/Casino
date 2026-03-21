@@ -304,6 +304,7 @@ export type UserWhereInput = {
   termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  loginHistory?: Prisma.LoginHistoryListRelationFilter
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   transactions?: Prisma.WalletTransactionListRelationFilter
@@ -331,6 +332,7 @@ export type UserOrderByWithRelationInput = {
   termsAcceptedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  loginHistory?: Prisma.LoginHistoryOrderByRelationAggregateInput
   wallet?: Prisma.WalletOrderByWithRelationInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   transactions?: Prisma.WalletTransactionOrderByRelationAggregateInput
@@ -361,6 +363,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   termsAcceptedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  loginHistory?: Prisma.LoginHistoryListRelationFilter
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   transactions?: Prisma.WalletTransactionListRelationFilter
@@ -434,6 +437,7 @@ export type UserCreateInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -461,6 +465,7 @@ export type UserUncheckedCreateInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -488,6 +493,7 @@ export type UserUpdateInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -515,6 +521,7 @@ export type UserUncheckedUpdateInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -803,6 +810,20 @@ export type UserUpdateOneRequiredWithoutBlackjackGamesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBlackjackGamesInput, Prisma.UserUpdateWithoutBlackjackGamesInput>, Prisma.UserUncheckedUpdateWithoutBlackjackGamesInput>
 }
 
+export type UserCreateNestedOneWithoutLoginHistoryInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoginHistoryInput, Prisma.UserUncheckedCreateWithoutLoginHistoryInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoginHistoryInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutLoginHistoryNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutLoginHistoryInput, Prisma.UserUncheckedCreateWithoutLoginHistoryInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLoginHistoryInput
+  upsert?: Prisma.UserUpsertWithoutLoginHistoryInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutLoginHistoryInput, Prisma.UserUpdateWithoutLoginHistoryInput>, Prisma.UserUncheckedUpdateWithoutLoginHistoryInput>
+}
+
 export type UserCreateWithoutWalletInput = {
   id?: string
   username: string
@@ -820,6 +841,7 @@ export type UserCreateWithoutWalletInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
@@ -846,6 +868,7 @@ export type UserUncheckedCreateWithoutWalletInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
@@ -888,6 +911,7 @@ export type UserUpdateWithoutWalletInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
@@ -914,6 +938,7 @@ export type UserUncheckedUpdateWithoutWalletInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
@@ -940,6 +965,7 @@ export type UserCreateWithoutTransactionsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
@@ -966,6 +992,7 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
@@ -997,6 +1024,7 @@ export type UserCreateWithoutAdminWalletActionsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1023,6 +1051,7 @@ export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1065,6 +1094,7 @@ export type UserUpdateWithoutTransactionsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
@@ -1091,6 +1121,7 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
@@ -1128,6 +1159,7 @@ export type UserUpdateWithoutAdminWalletActionsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1154,6 +1186,7 @@ export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1180,6 +1213,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
@@ -1206,6 +1240,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
@@ -1248,6 +1283,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
@@ -1274,6 +1310,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
@@ -1300,6 +1337,7 @@ export type UserCreateWithoutAdminActionsMadeInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1326,6 +1364,7 @@ export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1368,6 +1407,7 @@ export type UserUpdateWithoutAdminActionsMadeInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1394,6 +1434,7 @@ export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1420,6 +1461,7 @@ export type UserCreateWithoutGameRoundsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1446,6 +1488,7 @@ export type UserUncheckedCreateWithoutGameRoundsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1488,6 +1531,7 @@ export type UserUpdateWithoutGameRoundsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1514,6 +1558,7 @@ export type UserUncheckedUpdateWithoutGameRoundsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1540,6 +1585,7 @@ export type UserCreateWithoutIdempotencyRequestsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1566,6 +1612,7 @@ export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1608,6 +1655,7 @@ export type UserUpdateWithoutIdempotencyRequestsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1634,6 +1682,7 @@ export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1660,6 +1709,7 @@ export type UserCreateWithoutBlackjackGamesInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1686,6 +1736,7 @@ export type UserUncheckedCreateWithoutBlackjackGamesInput = {
   termsAcceptedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1728,6 +1779,7 @@ export type UserUpdateWithoutBlackjackGamesInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1754,6 +1806,7 @@ export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
   termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1763,12 +1816,137 @@ export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
   idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
 }
 
+export type UserCreateWithoutLoginHistoryInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutLoginHistoryInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutLoginHistoryInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoginHistoryInput, Prisma.UserUncheckedCreateWithoutLoginHistoryInput>
+}
+
+export type UserUpsertWithoutLoginHistoryInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutLoginHistoryInput, Prisma.UserUncheckedUpdateWithoutLoginHistoryInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutLoginHistoryInput, Prisma.UserUncheckedCreateWithoutLoginHistoryInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutLoginHistoryInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutLoginHistoryInput, Prisma.UserUncheckedUpdateWithoutLoginHistoryInput>
+}
+
+export type UserUpdateWithoutLoginHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutLoginHistoryInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
+}
+
 
 /**
  * Count Type UserCountOutputType
  */
 
 export type UserCountOutputType = {
+  loginHistory: number
   refreshTokens: number
   transactions: number
   adminWalletActions: number
@@ -1779,6 +1957,7 @@ export type UserCountOutputType = {
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  loginHistory?: boolean | UserCountOutputTypeCountLoginHistoryArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
   adminWalletActions?: boolean | UserCountOutputTypeCountAdminWalletActionsArgs
@@ -1796,6 +1975,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
    * Select specific fields to fetch from the UserCountOutputType
    */
   select?: Prisma.UserCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLoginHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.LoginHistoryWhereInput
 }
 
 /**
@@ -1865,6 +2051,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   termsAcceptedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  loginHistory?: boolean | Prisma.User$loginHistoryArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>
@@ -1935,6 +2122,7 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "firstName" | "lastName" | "phoneNumber" | "birthDate" | "passwordHash" | "role" | "status" | "failedLoginCount" | "lockedUntil" | "lastLoginAt" | "hasAcceptedTerms" | "termsAcceptedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  loginHistory?: boolean | Prisma.User$loginHistoryArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>
@@ -1951,6 +2139,7 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
+    loginHistory: Prisma.$LoginHistoryPayload<ExtArgs>[]
     wallet: Prisma.$WalletPayload<ExtArgs> | null
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     transactions: Prisma.$WalletTransactionPayload<ExtArgs>[]
@@ -2371,6 +2560,7 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  loginHistory<T extends Prisma.User$loginHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loginHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoginHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   wallet<T extends Prisma.User$walletArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$walletArgs<ExtArgs>>): Prisma.Prisma__WalletClient<runtime.Types.Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactions<T extends Prisma.User$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2814,6 +3004,30 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Users to delete.
    */
   limit?: number
+}
+
+/**
+ * User.loginHistory
+ */
+export type User$loginHistoryArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the LoginHistory
+   */
+  select?: Prisma.LoginHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the LoginHistory
+   */
+  omit?: Prisma.LoginHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LoginHistoryInclude<ExtArgs> | null
+  where?: Prisma.LoginHistoryWhereInput
+  orderBy?: Prisma.LoginHistoryOrderByWithRelationInput | Prisma.LoginHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.LoginHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.LoginHistoryScalarFieldEnum | Prisma.LoginHistoryScalarFieldEnum[]
 }
 
 /**

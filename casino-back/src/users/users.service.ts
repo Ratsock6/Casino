@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async getMe(userId: string) {
     const user = await this.prisma.user.findUnique({
@@ -30,5 +30,19 @@ export class UsersService {
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
     };
+  }
+
+  async getMyLoginHistory(userId: string, limit = 20) {
+    return this.prisma.loginHistory.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+      select: {
+        id: true,
+        ipAddress: true,
+        userAgent: true,
+        createdAt: true,
+      },
+    });
   }
 }

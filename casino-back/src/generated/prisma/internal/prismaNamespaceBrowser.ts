@@ -59,7 +59,8 @@ export const ModelName = {
   GameRound: 'GameRound',
   IdempotencyRequest: 'IdempotencyRequest',
   BlackjackGame: 'BlackjackGame',
-  CasinoConfig: 'CasinoConfig'
+  CasinoConfig: 'CasinoConfig',
+  LoginHistory: 'LoginHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -216,6 +217,17 @@ export const CasinoConfigScalarFieldEnum = {
 } as const
 
 export type CasinoConfigScalarFieldEnum = (typeof CasinoConfigScalarFieldEnum)[keyof typeof CasinoConfigScalarFieldEnum]
+
+
+export const LoginHistoryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type LoginHistoryScalarFieldEnum = (typeof LoginHistoryScalarFieldEnum)[keyof typeof LoginHistoryScalarFieldEnum]
 
 
 export const SortOrder = {

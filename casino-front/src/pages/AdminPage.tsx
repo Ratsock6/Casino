@@ -12,6 +12,12 @@ import '../styles/pages/admin.scss';
 import { updateUserStatusApi } from '../api/admin.api';
 import { getUserStatsApi, type UserStats } from '../api/admin.api';
 import { getCasinoConfigApi, updateCasinoConfigApi, type CasinoConfig } from '../api/admin.api';
+import { getUserLoginHistoryApi, type LoginHistoryEntry } from '../api/admin.api';
+import { exportToCsv } from '../utils/csv.utils';
+import {
+  getAllTransactionsForExportApi,
+  getAllGameRoundsForExportApi,
+} from '../api/admin.api';
 
 
 type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config';
@@ -59,6 +65,8 @@ const AdminPage = () => {
     );
   });
   const [userStats, setUserStats] = useState<UserStats | null>(null);
+  const [userLoginHistory, setUserLoginHistory] = useState<LoginHistoryEntry[]>([]);
+  const [exportLoading, setExportLoading] = useState(false);
 
 
   // Loading
@@ -98,6 +106,63 @@ const AdminPage = () => {
     }
   };
 
+  const handleExportTransactions = async (userId?: string) => {
+    setExportLoading(true);
+    try {
+      const data = userId
+        ? await getUserTransactionsApi(userId, 100000)
+        : await getAllTransactionsForExportApi();
+
+      const rows = data.map((t) => ({
+        Date: formatDate(t.createdAt),
+        Joueur: t.user?.username || selectedUser?.username || '—',
+        Type: t.type,
+        Montant: t.amount,
+        'Avant': t.balanceBefore,
+        'Après': t.balanceAfter,
+        Jeu: t.gameType || '—',
+        Raison: t.reason || '—',
+      }));
+
+      exportToCsv(
+        userId ? `transactions_${selectedUser?.username}` : 'transactions_global',
+        rows
+      );
+    } catch {
+      console.error('Erreur export transactions');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
+  const handleExportGames = async (userId?: string) => {
+    setExportLoading(true);
+    try {
+      const data = userId
+        ? await getMyGameRoundsForExportApi(userId)
+        : await getAllGameRoundsForExportApi();
+
+      const rows = data.map((g) => ({
+        Date: formatDate(g.createdAt),
+        Joueur: g.user?.username || selectedUser?.username || '—',
+        Jeu: g.gameType,
+        Statut: g.status,
+        Mise: g.stake,
+        Gain: g.payout,
+        Multiplicateur: g.multiplier || '—',
+      }));
+
+      exportToCsv(
+        userId ? `parties_${selectedUser?.username}` : 'parties_global',
+        rows
+      );
+    } catch {
+      console.error('Erreur export parties');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   const handleSelectUser = async (user: AdminUser) => {
     setSelectedUser(user);
     setActionMsg('');
@@ -107,6 +172,8 @@ const AdminPage = () => {
     setUserTransactions(txs);
     const stats = await getUserStatsApi(user.id);
     setUserStats(stats);
+    const loginHist = await getUserLoginHistoryApi(user.id, 20);
+    setUserLoginHistory(loginHist);
   };
 
   const handleUpdateStatus = async (status: 'ACTIVE' | 'BANNED' | 'SUSPENDED') => {
@@ -173,6 +240,16 @@ const AdminPage = () => {
       day: '2-digit', month: '2-digit', year: '2-digit',
       hour: '2-digit', minute: '2-digit',
     });
+
+  const parseUserAgent = (ua: string | null): string => {
+    if (!ua) return 'Inconnu';
+    if (ua.includes('Firefox')) return '🦊 Firefox';
+    if (ua.includes('Chrome') && !ua.includes('Edg')) return '🌐 Chrome';
+    if (ua.includes('Safari') && !ua.includes('Chrome')) return '🍎 Safari';
+    if (ua.includes('Edg')) return '🔵 Edge';
+    if (ua.includes('Opera')) return '🔴 Opera';
+    return '🌐 Navigateur inconnu';
+  };
 
   const TABS: { key: Tab; label: string }[] = [
     { key: 'stats', label: '📊 Vue globale' },
@@ -348,6 +425,15 @@ const AdminPage = () => {
       {activeTab === 'games' && (
         <div className="admin__section">
           <h2 className="admin__section-title">Historique des parties</h2>
+          <div className="admin__export-bar">
+            <button
+              className="admin__export-btn"
+              onClick={() => handleExportGames()}
+              disabled={exportLoading}
+            >
+              📥 Exporter toutes les parties (CSV)
+            </button>
+          </div>
           <div className="admin__table-wrapper">
             <table className="admin__table">
               <thead>
@@ -391,6 +477,15 @@ const AdminPage = () => {
       {activeTab === 'transactions' && (
         <div className="admin__section">
           <h2 className="admin__section-title">Toutes les transactions</h2>
+          <div className="admin__export-bar">
+            <button
+              className="admin__export-btn"
+              onClick={() => handleExportTransactions()}
+              disabled={exportLoading}
+            >
+              📥 Exporter toutes les transactions (CSV)
+            </button>
+          </div>
           <div className="admin__table-wrapper">
             <table className="admin__table">
               <thead>
@@ -583,11 +678,21 @@ const AdminPage = () => {
                 <p className="admin__action-msg">{actionMsg}</p>
               )}
 
+              {/* User stats */}
               {userStats && (
                 <div className="admin__user-stats">
-                  <h3 className="admin__section-title" style={{ marginTop: '24px' }}>
-                    Statistiques
-                  </h3>
+                  <div className="admin__section-title-row" style={{ marginTop: '24px' }}>
+                    <h3 className="admin__section-title">Statistiques</h3>
+                    <button
+                      className="admin__export-btn admin__export-btn--small"
+                      onClick={() => handleExportGames(selectedUser.id)}
+                      disabled={exportLoading}
+                    >
+                      📥 CSV parties
+                    </button>
+                  </div>
+
+
 
                   <div className="admin__kpis">
                     {[
@@ -649,10 +754,49 @@ const AdminPage = () => {
                 </div>
               )}
 
+              <h3 className="admin__section-title" style={{ marginTop: '24px' }}>
+                🔐 Dernières connexions
+              </h3>
+              <div className="admin__table-wrapper">
+                <table className="admin__table">
+                  <thead>
+                    <tr>
+                      <th>Navigateur</th>
+                      <th>Adresse IP</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {userLoginHistory.length === 0 ? (
+                      <tr>
+                        <td colSpan={3} style={{ textAlign: 'center', color: '#888' }}>
+                          Aucune connexion enregistrée
+                        </td>
+                      </tr>
+                    ) : (
+                      userLoginHistory.map((entry) => (
+                        <tr key={entry.id}>
+                          <td>{parseUserAgent(entry.userAgent)}</td>
+                          <td className="admin__table-muted">{entry.ipAddress || '—'}</td>
+                          <td className="admin__table-date">{formatDate(entry.createdAt)}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
               {/* Transactions du joueur */}
               <h3 className="admin__section-title" style={{ marginTop: '24px' }}>
                 Dernières transactions
               </h3>
+              <button
+                className="admin__export-btn admin__export-btn--small"
+                onClick={() => handleExportTransactions(selectedUser.id)}
+                disabled={exportLoading}
+              >
+                📥 CSV
+              </button>
               <div className="admin__table-wrapper">
                 <table className="admin__table">
                   <thead>
@@ -739,6 +883,8 @@ const AdminPage = () => {
           </div>
         </div>
       )}
+
+      {/* Historique de connexion du joueur */}
     </div >
   );
 };

@@ -68,7 +68,7 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto, ipAddress?: string, userAgent?: string) {
     const user = await this.prisma.user.findUnique({
       where: { username: dto.username },
       include: { wallet: true },
@@ -105,6 +105,14 @@ export class AuthService {
         failedLoginCount: 0,
         lockedUntil: null,
         lastLoginAt: new Date(),
+      },
+    });
+
+    await this.prisma.loginHistory.create({
+      data: {
+        userId: user.id,
+        ipAddress,
+        userAgent,
       },
     });
 

@@ -79,6 +79,7 @@ model User {
   termsAcceptedAt  DateTime?
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
+  loginHistory     LoginHistory[]
 
   wallet              Wallet?
   refreshTokens       RefreshToken[]
@@ -220,4 +221,16 @@ model CasinoConfig {
   updatedBy String?
 
   @@index([key])
+}
+
+model LoginHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }

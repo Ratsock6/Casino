@@ -6,8 +6,10 @@ import {
 import type { UserProfile, UserTransaction, UserGameRound, UserStats } from '../api/profile.api';
 import '../styles/pages/profile.scss';
 import axiosInstance from '../utils/axios.instance';
+import { getMyLoginHistoryApi, type LoginHistoryEntry } from '../api/profile.api';
 
-type Tab = 'info' | 'transactions' | 'games' | 'stats';
+
+type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -31,6 +33,7 @@ const ProfilePage = () => {
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [statsEnabled, setStatsEnabled] = useState<boolean | null>(null);
+  const [loginHistory, setLoginHistory] = useState<LoginHistoryEntry[]>([]);
 
   useEffect(() => {
     loadTab(activeTab);
@@ -60,11 +63,24 @@ const ProfilePage = () => {
       if (tab === 'stats' && !stats && statsEnabled) {
         setStats(await getMyStatsApi());
       }
+      if (tab === 'connections' && loginHistory.length === 0) {
+        setLoginHistory(await getMyLoginHistoryApi(50));
+      }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const parseUserAgent = (ua: string | null): string => {
+    if (!ua) return 'Null';
+    if (ua.includes('Firefox')) return '🦊 Firefox';
+    if (ua.includes('Chrome') && !ua.includes('Edg')) return '🌐 Chrome';
+    if (ua.includes('Safari') && !ua.includes('Chrome')) return '🍎 Safari';
+    if (ua.includes('Edg')) return '🔵 Edge';
+    if (ua.includes('Opera')) return '🔴 Opera';
+    return '🌐 Navigateur inconnu';
   };
 
   const formatDate = (d: string) =>
@@ -77,6 +93,7 @@ const ProfilePage = () => {
     { key: 'info', label: '👤 Mon profil' },
     { key: 'transactions', label: '💳 Transactions' },
     { key: 'games', label: '🎮 Parties' },
+    { key: 'connections', label: '🔐 Connexions' },
     ...(statsEnabled ? [{ key: 'stats' as Tab, label: '📊 Statistiques' }] : []),
   ];
 
@@ -326,6 +343,41 @@ const ProfilePage = () => {
         </div>
       )}
 
+      {activeTab === 'connections' && (
+        <div className="profile__section">
+          <p className="profile__section-hint">
+            Les 50 dernières connexions à votre compte
+          </p>
+          {loginHistory.length === 0 ? (
+            <p className="profile__empty">Aucune connexion enregistrée.</p>
+          ) : (
+            <div className="profile__table-wrapper">
+              <table className="profile__table">
+                <thead>
+                  <tr>
+                    <th>Navigateur</th>
+                    <th>Adresse IP</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loginHistory.map((entry) => (
+                    <tr key={entry.id}>
+                      <td>{parseUserAgent(entry.userAgent)}</td>
+                      <td className="profile__table-muted">
+                        {entry.ipAddress || '—'}
+                      </td>
+                      <td className="profile__table-date">
+                        {formatDate(entry.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

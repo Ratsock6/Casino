@@ -82,10 +82,12 @@ export class AdminController {
   getAllGameRounds(
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
+    @Query('userId') userId?: string,
   ) {
     return this.adminService.getAllGameRounds(
       limit ? parseInt(limit) : 50,
       offset ? parseInt(offset) : 0,
+      userId,
     );
   }
 
@@ -119,5 +121,16 @@ export class AdminController {
     @Body('value') value: string,
   ) {
     return this.casinoConfigService.set(key, value, admin.userId);
+  }
+
+  @Get('users/:userId/login-history')
+  getUserLoginHistory(
+    @Param('userId') userId: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.adminService.getUserLoginHistory(
+      userId,
+      limit ? parseInt(limit) : 20,
+    );
   }
 }

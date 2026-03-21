@@ -392,7 +392,8 @@ export const ModelName = {
   GameRound: 'GameRound',
   IdempotencyRequest: 'IdempotencyRequest',
   BlackjackGame: 'BlackjackGame',
-  CasinoConfig: 'CasinoConfig'
+  CasinoConfig: 'CasinoConfig',
+  LoginHistory: 'LoginHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1078,6 +1079,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    LoginHistory: {
+      payload: Prisma.$LoginHistoryPayload<ExtArgs>
+      fields: Prisma.LoginHistoryFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.LoginHistoryFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.LoginHistoryFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>
+        }
+        findFirst: {
+          args: Prisma.LoginHistoryFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.LoginHistoryFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>
+        }
+        findMany: {
+          args: Prisma.LoginHistoryFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>[]
+        }
+        create: {
+          args: Prisma.LoginHistoryCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>
+        }
+        createMany: {
+          args: Prisma.LoginHistoryCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.LoginHistoryCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>[]
+        }
+        delete: {
+          args: Prisma.LoginHistoryDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>
+        }
+        update: {
+          args: Prisma.LoginHistoryUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>
+        }
+        deleteMany: {
+          args: Prisma.LoginHistoryDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.LoginHistoryUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.LoginHistoryUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>[]
+        }
+        upsert: {
+          args: Prisma.LoginHistoryUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$LoginHistoryPayload>
+        }
+        aggregate: {
+          args: Prisma.LoginHistoryAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateLoginHistory>
+        }
+        groupBy: {
+          args: Prisma.LoginHistoryGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoginHistoryGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.LoginHistoryCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.LoginHistoryCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1255,6 +1330,17 @@ export const CasinoConfigScalarFieldEnum = {
 } as const
 
 export type CasinoConfigScalarFieldEnum = (typeof CasinoConfigScalarFieldEnum)[keyof typeof CasinoConfigScalarFieldEnum]
+
+
+export const LoginHistoryScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  ipAddress: 'ipAddress',
+  userAgent: 'userAgent',
+  createdAt: 'createdAt'
+} as const
+
+export type LoginHistoryScalarFieldEnum = (typeof LoginHistoryScalarFieldEnum)[keyof typeof LoginHistoryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1603,6 +1689,7 @@ export type GlobalOmitConfig = {
   idempotencyRequest?: Prisma.IdempotencyRequestOmit
   blackjackGame?: Prisma.BlackjackGameOmit
   casinoConfig?: Prisma.CasinoConfigOmit
+  loginHistory?: Prisma.LoginHistoryOmit
 }
 
 /* Types for Logging */

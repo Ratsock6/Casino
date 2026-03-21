@@ -84,3 +84,8 @@ export type BlackjackGame = Prisma.BlackjackGameModel
  * 
  */
 export type CasinoConfig = Prisma.CasinoConfigModel
+/**
+ * Model LoginHistory
+ * 
+ */
+export type LoginHistory = Prisma.LoginHistoryModel

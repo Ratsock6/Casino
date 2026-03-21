@@ -21,6 +21,24 @@ export interface GlobalStats {
   roundsByGame: { gameType: string; count: number }[];
 }
 
+export interface UserStats {
+  totalRounds: number;
+  totalWon: number;
+  totalLost: number;
+  winRate: number;
+  totalStake: number;
+  totalPayout: number;
+  netResult: number;
+  byGame: {
+    gameType: string;
+    total: number;
+    won: number;
+    lost: number;
+    stake: number;
+    payout: number;
+  }[];
+}
+
 export interface AdminTransaction {
   id: string;
   type: string;
@@ -59,6 +77,18 @@ export interface CasinoConfig {
   updatedBy: string | null;
   updatedByUsername: string | null;
 }
+
+export interface LoginHistoryEntry {
+  id: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: string;
+}
+
+export const getUserLoginHistoryApi = async (userId: string, limit = 20): Promise<LoginHistoryEntry[]> => {
+  const res = await axiosInstance.get(`/admin/users/${userId}/login-history?limit=${limit}`);
+  return res.data;
+};
 
 export const getCasinoConfigApi = async (): Promise<CasinoConfig[]> => {
   const res = await axiosInstance.get('/admin/config');
@@ -126,20 +156,17 @@ export const getUserStatsApi = async (userId: string): Promise<UserStats> => {
   return res.data;
 };
 
-export interface UserStats {
-  totalRounds: number;
-  totalWon: number;
-  totalLost: number;
-  winRate: number;
-  totalStake: number;
-  totalPayout: number;
-  netResult: number;
-  byGame: {
-    gameType: string;
-    total: number;
-    won: number;
-    lost: number;
-    stake: number;
-    payout: number;
-  }[];
-}
+export const getAllTransactionsForExportApi = async (): Promise<AdminTransaction[]> => {
+  const res = await axiosInstance.get('/admin/transactions?limit=999999999');
+  return res.data;
+};
+
+export const getAllGameRoundsForExportApi = async (): Promise<AdminGameRound[]> => {
+  const res = await axiosInstance.get('/admin/games?limit=999999999');
+  return res.data;
+};
+
+export const getMyGameRoundsForExportApi = async (userId: string): Promise<AdminGameRound[]> => {
+  const res = await axiosInstance.get(`/admin/games?limit=100000&userId=${userId}`);
+  return res.data;
+};
