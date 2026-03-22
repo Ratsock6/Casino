@@ -233,4 +233,16 @@ export const updateUserRoleApi = async (userId: string, role: 'ADMIN' | 'PLAYER'
   await axiosInstance.patch(`/admin/users/${userId}/role`, { role });
 };
 
+export const grantVipApi = async (
+  userId: string,
+  duration: string,
+  customDays?: number,
+): Promise<{ message: string; expiresAt: string | null }> => {
+  const res = await axiosInstance.post(`/admin/users/${userId}/vip`, {
+    duration,
+    customDays,
+  });
+  return res.data;
+};
+
 

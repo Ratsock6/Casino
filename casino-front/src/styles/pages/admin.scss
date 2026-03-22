@@ -1040,4 +1040,59 @@
       }
     }
   }
+
+  &__vip-grant {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    &-row {
+      display: flex;
+      gap: $spacing-sm;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+  }
+
+  &__vip-select {
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    padding: 8px $spacing-md;
+    color: $color-text;
+    font-size: 13px;
+    cursor: pointer;
+
+    &:focus {
+      border-color: $color-gold;
+      outline: none;
+    }
+
+    option {
+      background: $color-surface-2;
+    }
+  }
+
+  &__vip-days {
+    width: 160px;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    padding: 8px $spacing-md;
+    color: $color-text;
+    font-size: 13px;
+
+    &:focus {
+      border-color: $color-gold;
+      outline: none;
+    }
+
+    &::placeholder {
+      color: $color-text-muted;
+    }
+  }
 }

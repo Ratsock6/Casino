@@ -9,17 +9,17 @@ import { CasinoConfigService } from '../casino-config/casino-config.service';
 import { VipDuration } from './dto/buy-vip.dto';
 
 const DURATION_LABELS: Record<VipDuration, string> = {
-  '1_MONTH':    '1 mois',
-  '3_MONTHS':   '3 mois',
-  '6_MONTHS':   '6 mois',
-  'LIFETIME':   'À vie',
+  '1_MONTH': '1 mois',
+  '3_MONTHS': '3 mois',
+  '6_MONTHS': '6 mois',
+  'LIFETIME': 'À vie',
 };
 
 const DURATION_CONFIG_KEYS: Record<VipDuration, string> = {
-  '1_MONTH':    'VIP_PRICE_1_MONTH',
-  '3_MONTHS':   'VIP_PRICE_3_MONTHS',
-  '6_MONTHS':   'VIP_PRICE_6_MONTHS',
-  'LIFETIME':   'VIP_PRICE_LIFETIME',
+  '1_MONTH': 'VIP_PRICE_1_MONTH',
+  '3_MONTHS': 'VIP_PRICE_3_MONTHS',
+  '6_MONTHS': 'VIP_PRICE_6_MONTHS',
+  'LIFETIME': 'VIP_PRICE_LIFETIME',
 };
 
 @Injectable()
@@ -27,7 +27,7 @@ export class VipService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly casinoConfigService: CasinoConfigService,
-  ) {}
+  ) { }
 
   async getPrices() {
     const [m1, m3, m6, lifetime] = await Promise.all([
@@ -38,10 +38,10 @@ export class VipService {
     ]);
 
     return [
-      { duration: '1_MONTH',    label: '1 mois',   price: parseInt(m1 || '50000'),      originalPrice: null },
-      { duration: '3_MONTHS',   label: '3 mois',   price: parseInt(m3 || '120000'),     originalPrice: parseInt(m1 || '50000') * 3 },
-      { duration: '6_MONTHS',   label: '6 mois',   price: parseInt(m6 || '200000'),     originalPrice: parseInt(m1 || '50000') * 6 },
-      { duration: 'LIFETIME',   label: 'À vie',    price: parseInt(lifetime || '500000'), originalPrice: null },
+      { duration: '1_MONTH', label: '1 mois', price: parseInt(m1 || '50000'), originalPrice: null },
+      { duration: '3_MONTHS', label: '3 mois', price: parseInt(m3 || '120000'), originalPrice: parseInt(m1 || '50000') * 3 },
+      { duration: '6_MONTHS', label: '6 mois', price: parseInt(m6 || '200000'), originalPrice: parseInt(m1 || '50000') * 6 },
+      { duration: 'LIFETIME', label: 'À vie', price: parseInt(lifetime || '500000'), originalPrice: null },
     ];
   }
 
@@ -146,9 +146,9 @@ export class VipService {
     if (activeSub) baseDate = new Date(activeSub.expiresAt);
 
     const date = new Date(baseDate);
-    if (duration === '1_MONTH')    date.setMonth(date.getMonth() + 1);
-    if (duration === '3_MONTHS')   date.setMonth(date.getMonth() + 3);
-    if (duration === '6_MONTHS')   date.setMonth(date.getMonth() + 6);
+    if (duration === '1_MONTH') date.setMonth(date.getMonth() + 1);
+    if (duration === '3_MONTHS') date.setMonth(date.getMonth() + 3);
+    if (duration === '6_MONTHS') date.setMonth(date.getMonth() + 6);
 
     return date;
   }
@@ -225,5 +225,72 @@ export class VipService {
         console.log(`⏰ VIP expiré : ${user.username}`);
       }
     }
+  }
+
+  async adminGrantVip(
+    adminId: string,
+    userId: string,
+    duration: VipDuration | 'CUSTOM',
+    customDays?: number,
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { vipSubscriptions: true },
+    });
+
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+
+    // Calcule la date d'expiration
+    let expiresAt: Date | null = null;
+
+    if (duration === 'LIFETIME') {
+      expiresAt = null;
+    } else if (duration === 'CUSTOM' && customDays) {
+      const now = new Date();
+      // Prolonge depuis l'expiration actuelle si déjà VIP
+      const activeSub = user.vipSubscriptions.find(
+        (s) => s.expiresAt && new Date(s.expiresAt) > now
+      );
+      const baseDate = activeSub ? new Date(activeSub.expiresAt!) : now;
+      expiresAt = new Date(baseDate);
+      expiresAt.setDate(expiresAt.getDate() + customDays);
+    } else {
+      expiresAt = this.calculateExpiresAt(duration as VipDuration, user);
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      await tx.vipSubscription.create({
+        data: {
+          userId,
+          duration: duration === 'CUSTOM' ? `CUSTOM_${customDays}D` : duration,
+          price: 0, // Gratuit car attribué par admin
+          expiresAt,
+        },
+      });
+
+      await tx.user.update({
+        where: { id: userId },
+        data: { role: 'VIP' },
+      });
+
+      await tx.adminAction.create({
+        data: {
+          adminId,
+          action: 'ADMIN_GRANT_VIP',
+          targetType: 'USER',
+          targetId: userId,
+          metadata: {
+            duration,
+            customDays: customDays || null,
+            expiresAt: expiresAt?.toISOString() || 'LIFETIME',
+          },
+        },
+      });
+
+      return {
+        message: `✅ VIP attribué${expiresAt ? ` jusqu'au ${expiresAt.toLocaleDateString('fr-FR')}` : ' à vie'} !`,
+        expiresAt,
+      };
+    });
   }
 }

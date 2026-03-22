@@ -9,6 +9,7 @@ import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@ne
 import { AdminUpdateStatusDto } from './dto/admin-update-status.dto';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
 import { ReportsService } from '../reports/reports.service';
+import { VipService } from 'src/vip/vip.service';
 
 @Controller('admin')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -19,6 +20,7 @@ export class AdminController {
     private readonly adminService: AdminService,
     private readonly casinoConfigService: CasinoConfigService,
     private readonly reportsService: ReportsService,
+    private readonly vipService: VipService,
   ) { }
 
   @Patch('wallet/credit')
@@ -200,5 +202,19 @@ export class AdminController {
       { newRole: role },
     );
     return result;
+  }
+
+  @Post('users/:userId/vip')
+  async grantVip(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+    @Body() body: { duration: string; customDays?: number },
+  ) {
+    return this.vipService.adminGrantVip(
+      admin.userId,
+      userId,
+      body.duration as any,
+      body.customDays,
+    );
   }
 }

@@ -26,6 +26,7 @@ import {
   getAuditLogsApi,
   getAlertsApi,
   triggerDailyReportApi,
+  grantVipApi,
 } from '../api/admin.api';
 
 import type {
@@ -103,6 +104,10 @@ const AdminPage = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [unreadAlerts, setUnreadAlerts] = useState(0);
   const [roleMsg, setRoleMsg] = useState('');
+  const [vipDuration, setVipDuration] = useState('1_MONTH');
+  const [vipCustomDays, setVipCustomDays] = useState('');
+  const [vipMsg, setVipMsg] = useState('');
+
   const { user } = useAuthStore();
 
   const handleUpdateRole = async (role: 'ADMIN' | 'PLAYER' | 'VIP') => {
@@ -115,6 +120,23 @@ const AdminPage = () => {
       setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
     } catch {
       setRoleMsg('❌ Erreur lors de la mise à jour du rôle');
+    }
+  };
+
+  const handleGrantVip = async () => {
+    if (!selectedUser) return;
+    try {
+      const data = await grantVipApi(
+        selectedUser.id,
+        vipDuration,
+        vipDuration === 'CUSTOM' ? parseInt(vipCustomDays) : undefined,
+      );
+      setVipMsg(data.message);
+      const updated = await getAdminUsersApi();
+      setUsers(updated);
+      setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
+    } catch (err: any) {
+      setVipMsg('❌ ' + (err.response?.data?.message || 'Erreur'));
     }
   };
 
@@ -836,6 +858,43 @@ const AdminPage = () => {
               {roleMsg && (
                 <p className="admin__action-msg">{roleMsg}</p>
               )}
+
+              <div className="admin__vip-grant">
+                <p className="admin__status-label">Attribuer VIP</p>
+                <div className="admin__vip-grant-row">
+                  <select
+                    className="admin__vip-select"
+                    value={vipDuration}
+                    onChange={(e) => setVipDuration(e.target.value)}
+                  >
+                    <option value="1_MONTH">1 mois</option>
+                    <option value="3_MONTHS">3 mois</option>
+                    <option value="6_MONTHS">6 mois</option>
+                    <option value="LIFETIME">À vie</option>
+                    <option value="CUSTOM">Personnalisé</option>
+                  </select>
+                  {vipDuration === 'CUSTOM' && (
+                    <input
+                      type="number"
+                      className="admin__vip-days"
+                      value={vipCustomDays}
+                      onChange={(e) => setVipCustomDays(e.target.value)}
+                      placeholder="Nombre de jours"
+                      min={1}
+                    />
+                  )}
+                  <button
+                    className="admin__btn"
+                    style={{ color: '#c9a84c', borderColor: '#c9a84c' }}
+                    onClick={handleGrantVip}
+                    disabled={vipDuration === 'CUSTOM' && !vipCustomDays}
+                  >
+                    👑 Attribuer
+                  </button>
+                </div>
+                {vipMsg && <p className="admin__action-msg">{vipMsg}</p>}
+              </div>
+
 
               {/* Actions wallet */}
               <div className="admin__wallet-actions">
