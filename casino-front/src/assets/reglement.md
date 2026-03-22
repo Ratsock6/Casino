@@ -126,7 +126,7 @@
 
 > Cette section sort du cadre du jeu. Elle s'adresse à vous en tant que joueur et non en tant que personnage.
 
-**HRP.1** — Le Bellagio Casino est un établissement fictif intégré à un serveur FiveM RP. Aucune transaction ne met en jeu de l'argent réel. Les jetons n'ont aucune valeur monétaire en dehors du jeu.
+**HRP.1** — Le Bellagio Casino est un établissement fictif intégré à un serveur GTA V RP. Aucune transaction ne met en jeu de l'argent réel. Les jetons n'ont aucune valeur monétaire en dehors du jeu.
 
 **HRP.2** — En cas de **Character Kill (CK)** de votre personnage, validé par le staff du serveur, la procédure décrite à l'Article 6 s'applique intégralement. Vous devrez fournir un document RP officiel certifié par une autorité de l'État en jeu pour prétendre récupérer les fonds. Aucune exception ne sera accordée hors de cette procédure, même sur demande directe.
 
