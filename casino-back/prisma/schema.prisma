@@ -82,6 +82,7 @@ model User {
   loginHistory     LoginHistory[]
   discordId        String?   @unique
   discordUsername  String?
+  metadata         Json?
   vipSubscriptions VipSubscription[]
 
   wallet              Wallet?

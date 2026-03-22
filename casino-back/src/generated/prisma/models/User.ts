@@ -95,6 +95,7 @@ export type UserCountAggregateOutputType = {
   updatedAt: number
   discordId: number
   discordUsername: number
+  metadata: number
   _all: number
 }
 
@@ -168,6 +169,7 @@ export type UserCountAggregateInputType = {
   updatedAt?: true
   discordId?: true
   discordUsername?: true
+  metadata?: true
   _all?: true
 }
 
@@ -276,6 +278,7 @@ export type UserGroupByOutputType = {
   updatedAt: Date
   discordId: string | null
   discordUsername: string | null
+  metadata: runtime.JsonValue | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -320,6 +323,7 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   discordId?: Prisma.StringNullableFilter<"User"> | string | null
   discordUsername?: Prisma.StringNullableFilter<"User"> | string | null
+  metadata?: Prisma.JsonNullableFilter<"User">
   loginHistory?: Prisma.LoginHistoryListRelationFilter
   vipSubscriptions?: Prisma.VipSubscriptionListRelationFilter
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
@@ -351,6 +355,7 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   discordId?: Prisma.SortOrderInput | Prisma.SortOrder
   discordUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   loginHistory?: Prisma.LoginHistoryOrderByRelationAggregateInput
   vipSubscriptions?: Prisma.VipSubscriptionOrderByRelationAggregateInput
   wallet?: Prisma.WalletOrderByWithRelationInput
@@ -385,6 +390,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   discordUsername?: Prisma.StringNullableFilter<"User"> | string | null
+  metadata?: Prisma.JsonNullableFilter<"User">
   loginHistory?: Prisma.LoginHistoryListRelationFilter
   vipSubscriptions?: Prisma.VipSubscriptionListRelationFilter
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
@@ -416,6 +422,7 @@ export type UserOrderByWithAggregationInput = {
   updatedAt?: Prisma.SortOrder
   discordId?: Prisma.SortOrderInput | Prisma.SortOrder
   discordUsername?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -445,6 +452,7 @@ export type UserScalarWhereWithAggregatesInput = {
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   discordId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   discordUsername?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  metadata?: Prisma.JsonNullableWithAggregatesFilter<"User">
 }
 
 export type UserCreateInput = {
@@ -466,6 +474,7 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -497,6 +506,7 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -528,6 +538,7 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -559,6 +570,7 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -590,6 +602,7 @@ export type UserCreateManyInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserUpdateManyMutationInput = {
@@ -611,6 +624,7 @@ export type UserUpdateManyMutationInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -632,6 +646,7 @@ export type UserUncheckedUpdateManyInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -653,6 +668,7 @@ export type UserCountOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
   discordId?: Prisma.SortOrder
   discordUsername?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -914,6 +930,7 @@ export type UserCreateWithoutWalletInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -944,6 +961,7 @@ export type UserUncheckedCreateWithoutWalletInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -990,6 +1008,7 @@ export type UserUpdateWithoutWalletInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1020,6 +1039,7 @@ export type UserUncheckedUpdateWithoutWalletInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1050,6 +1070,7 @@ export type UserCreateWithoutTransactionsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1080,6 +1101,7 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1115,6 +1137,7 @@ export type UserCreateWithoutAdminWalletActionsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1145,6 +1168,7 @@ export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1191,6 +1215,7 @@ export type UserUpdateWithoutTransactionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1221,6 +1246,7 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1262,6 +1288,7 @@ export type UserUpdateWithoutAdminWalletActionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1292,6 +1319,7 @@ export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1322,6 +1350,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1352,6 +1381,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1398,6 +1428,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1428,6 +1459,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1458,6 +1490,7 @@ export type UserCreateWithoutAdminActionsMadeInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1488,6 +1521,7 @@ export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1534,6 +1568,7 @@ export type UserUpdateWithoutAdminActionsMadeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1564,6 +1599,7 @@ export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1594,6 +1630,7 @@ export type UserCreateWithoutGameRoundsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1624,6 +1661,7 @@ export type UserUncheckedCreateWithoutGameRoundsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1670,6 +1708,7 @@ export type UserUpdateWithoutGameRoundsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1700,6 +1739,7 @@ export type UserUncheckedUpdateWithoutGameRoundsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1730,6 +1770,7 @@ export type UserCreateWithoutIdempotencyRequestsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1760,6 +1801,7 @@ export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1806,6 +1848,7 @@ export type UserUpdateWithoutIdempotencyRequestsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1836,6 +1879,7 @@ export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -1866,6 +1910,7 @@ export type UserCreateWithoutBlackjackGamesInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
@@ -1896,6 +1941,7 @@ export type UserUncheckedCreateWithoutBlackjackGamesInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
@@ -1942,6 +1988,7 @@ export type UserUpdateWithoutBlackjackGamesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
@@ -1972,6 +2019,7 @@ export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
@@ -2002,6 +2050,7 @@ export type UserCreateWithoutLoginHistoryInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2032,6 +2081,7 @@ export type UserUncheckedCreateWithoutLoginHistoryInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2078,6 +2128,7 @@ export type UserUpdateWithoutLoginHistoryInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2108,6 +2159,7 @@ export type UserUncheckedUpdateWithoutLoginHistoryInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2138,6 +2190,7 @@ export type UserCreateWithoutVipSubscriptionsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2168,6 +2221,7 @@ export type UserUncheckedCreateWithoutVipSubscriptionsInput = {
   updatedAt?: Date | string
   discordId?: string | null
   discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2214,6 +2268,7 @@ export type UserUpdateWithoutVipSubscriptionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2244,6 +2299,7 @@ export type UserUncheckedUpdateWithoutVipSubscriptionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2377,6 +2433,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   discordId?: boolean
   discordUsername?: boolean
+  metadata?: boolean
   loginHistory?: boolean | Prisma.User$loginHistoryArgs<ExtArgs>
   vipSubscriptions?: boolean | Prisma.User$vipSubscriptionsArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
@@ -2409,6 +2466,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   discordId?: boolean
   discordUsername?: boolean
+  metadata?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2430,6 +2488,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   discordId?: boolean
   discordUsername?: boolean
+  metadata?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -2451,9 +2510,10 @@ export type UserSelectScalar = {
   updatedAt?: boolean
   discordId?: boolean
   discordUsername?: boolean
+  metadata?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "firstName" | "lastName" | "phoneNumber" | "birthDate" | "passwordHash" | "role" | "status" | "failedLoginCount" | "lockedUntil" | "lastLoginAt" | "hasAcceptedTerms" | "termsAcceptedAt" | "createdAt" | "updatedAt" | "discordId" | "discordUsername", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "firstName" | "lastName" | "phoneNumber" | "birthDate" | "passwordHash" | "role" | "status" | "failedLoginCount" | "lockedUntil" | "lastLoginAt" | "hasAcceptedTerms" | "termsAcceptedAt" | "createdAt" | "updatedAt" | "discordId" | "discordUsername" | "metadata", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   loginHistory?: boolean | Prisma.User$loginHistoryArgs<ExtArgs>
   vipSubscriptions?: boolean | Prisma.User$vipSubscriptionsArgs<ExtArgs>
@@ -2503,6 +2563,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     updatedAt: Date
     discordId: string | null
     discordUsername: string | null
+    metadata: runtime.JsonValue | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -2954,6 +3015,7 @@ export interface UserFieldRefs {
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly discordId: Prisma.FieldRef<"User", 'String'>
   readonly discordUsername: Prisma.FieldRef<"User", 'String'>
+  readonly metadata: Prisma.FieldRef<"User", 'Json'>
 }
     
 

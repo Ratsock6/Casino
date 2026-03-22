@@ -5,7 +5,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { WalletService } from '../wallet/wallet.service';
 import { AdminService } from './admin.service';
 import { AdminWalletActionDto } from './dto/admin-wallet-action.dto';
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AdminUpdateStatusDto } from './dto/admin-update-status.dto';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
 import { ReportsService } from '../reports/reports.service';
@@ -216,5 +216,37 @@ export class AdminController {
       body.duration as any,
       body.customDays,
     );
+  }
+
+  @Delete('users/:userId')
+  async deleteUser(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+  ) {
+    return this.adminService.deleteUser(admin.userId, userId);
+  }
+
+  @Patch('users/:userId/anonymize')
+  async anonymizeUser(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+  ) {
+    return this.adminService.anonymizeUser(admin.userId, userId);
+  }
+
+  @Patch('users/:userId/deanonymize')
+  async deanonymizeUser(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+  ) {
+    return this.adminService.deanonymizeUser(admin.userId, userId);
+  }
+
+  @Patch('users/:userId/reset-password')
+  async resetPassword(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+  ) {
+    return this.adminService.resetPassword(admin.userId, userId);
   }
 }

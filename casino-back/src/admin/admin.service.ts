@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import * as argon2 from 'argon2';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AdminService {
@@ -396,5 +398,90 @@ export class AdminService {
       data: { role },
       select: { id: true, username: true, role: true },
     });
+  }
+
+  async deleteUser(adminId: string, userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+
+    await this.prisma.user.delete({ where: { id: userId } });
+
+    return { message: `Compte de ${user.username} supprimé définitivement.` };
+  }
+
+
+  async anonymizeUser(adminId: string, userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+
+    const metadata = user.metadata as any;
+    if (metadata?.anonymized) {
+      throw new BadRequestException('Ce compte est déjà anonymisé.');
+    }
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        username: `anon_${userId.slice(0, 8)}`,
+        firstName: '[Anonymisé]',
+        lastName: '[Anonymisé]',
+        phoneNumber: `00000-${userId.slice(0, 5)}`,
+        discordId: null,
+        discordUsername: null,
+        passwordHash: await argon2.hash(randomUUID()),
+        metadata: {
+          anonymized: true,
+          originalData: {
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            phoneNumber: user.phoneNumber,
+          },
+        },
+      },
+    });
+
+    await this.createAuditLog(adminId, 'USER_ANONYMIZED', 'USER', userId, {});
+    return { message: 'Compte anonymisé avec succès.' };
+  }
+
+  async deanonymizeUser(adminId: string, userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+
+    const metadata = user.metadata as any;
+    if (!metadata?.anonymized || !metadata?.originalData) {
+      throw new BadRequestException('Ce compte n\'est pas anonymisé.');
+    }
+
+    const { username, firstName, lastName, phoneNumber } = metadata.originalData;
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { username, firstName, lastName, phoneNumber, metadata: {} },
+    });
+
+    await this.createAuditLog(adminId, 'USER_DEANONYMIZED', 'USER', userId, {});
+    return { message: 'Compte désanonymisé avec succès.' };
+  }
+
+  async resetPassword(adminId: string, userId: string): Promise<{ message: string; newPassword: string }> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('Utilisateur introuvable');
+
+    const newPassword = Math.random().toString(36).slice(-8).toUpperCase() +
+      Math.random().toString(36).slice(-4);
+    const passwordHash = await argon2.hash(newPassword);
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    await this.createAuditLog(adminId, 'PASSWORD_RESET', 'USER', userId, {});
+    return {
+      message: `Mot de passe réinitialisé pour ${user.username}.`,
+      newPassword,
+    };
   }
 }
