@@ -17,7 +17,7 @@ export class DiscordController {
   async generateCode(
     @Body() body: { discordId: string; discordUsername: string; secret: string },
   ) {
-    const BOT_SECRET = this.configService.get<string>('DISCORD_BOT_SECRET');
+    const BOT_SECRET = process.env.DISCORD_BOT_SECRET;
     console.log('Secret reçu:', body.secret);
     console.log('Secret attendu:', BOT_SECRET);
 
