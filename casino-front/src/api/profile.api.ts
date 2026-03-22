@@ -119,3 +119,14 @@ export const linkDiscordApi = async (code: string): Promise<void> => {
 export const unlinkDiscordApi = async (): Promise<void> => {
   await axiosInstance.delete('/discord/link');
 };
+
+export const changePasswordApi = async (
+  currentPassword: string,
+  newPassword: string,
+): Promise<{ message: string }> => {
+  const res = await axiosInstance.patch('/users/me/password', {
+    currentPassword,
+    newPassword,
+  });
+  return res.data;
+};

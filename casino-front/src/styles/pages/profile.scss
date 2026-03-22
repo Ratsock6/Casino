@@ -547,4 +547,90 @@
       color: $color-text-muted;
     }
   }
+
+  &__password {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    max-width: 500px;
+
+    &-form {
+      background: $color-surface;
+      border: 1px solid $color-border;
+      border-radius: $radius-lg;
+      padding: $spacing-xl;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-lg;
+    }
+
+    &-field {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+
+      label {
+        font-size: 13px;
+        font-weight: 600;
+        color: $color-text-muted;
+      }
+
+      input {
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        padding: 10px $spacing-md;
+        color: $color-text;
+        font-size: 14px;
+        transition: border-color $transition-fast;
+
+        &:focus {
+          border-color: $color-gold;
+          outline: none;
+        }
+
+        &::placeholder {
+          color: $color-text-muted;
+        }
+      }
+    }
+
+    &-error {
+      font-size: 13px;
+      color: $color-error;
+      padding: $spacing-sm $spacing-md;
+      background: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+      border-radius: $radius-sm;
+    }
+
+    &-success {
+      font-size: 13px;
+      color: $color-success;
+      padding: $spacing-sm $spacing-md;
+      background: rgba($color-success, 0.1);
+      border: 1px solid rgba($color-success, 0.3);
+      border-radius: $radius-sm;
+    }
+
+    &-btn {
+      padding: 12px $spacing-xl;
+      background: $color-gold;
+      color: #0d0d0d;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: $radius-sm;
+      transition: background $transition-fast;
+      align-self: flex-start;
+
+      &:hover:not(:disabled) {
+        background: $color-gold-light;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
 }

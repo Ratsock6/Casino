@@ -7,11 +7,11 @@ import type { UserProfile, UserTransaction, UserGameRound, UserStats } from '../
 import '../styles/pages/profile.scss';
 import axiosInstance from '../utils/axios.instance';
 import { getMyLoginHistoryApi, type LoginHistoryEntry } from '../api/profile.api';
-import { linkDiscordApi, unlinkDiscordApi } from '../api/profile.api';
+import { linkDiscordApi, unlinkDiscordApi, changePasswordApi } from '../api/profile.api';
 import { getVipStatusApi, type VipStatus } from '../api/vip.api';
 
 
-type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord';
+type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord' | 'password';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -40,6 +40,12 @@ const ProfilePage = () => {
   const [discordMsg, setDiscordMsg] = useState('');
   const [discordError, setDiscordError] = useState('');
   const [vipStatus, setVipStatus] = useState<VipStatus | null>(null);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordMsg, setPasswordMsg] = useState('');
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
 
 
   const handleLinkDiscord = async () => {
@@ -54,6 +60,34 @@ const ProfilePage = () => {
       setProfile(updated);
     } catch (err: any) {
       setDiscordError(err.response?.data?.message || 'Code invalide ou expiré.');
+    }
+  };
+
+  const handleChangePassword = async () => {
+    setPasswordMsg('');
+    setPasswordError('');
+
+    if (newPassword.length < 8) {
+      setPasswordError('Le nouveau mot de passe doit contenir au moins 8 caractères.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Les mots de passe ne correspondent pas.');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const data = await changePasswordApi(currentPassword, newPassword);
+      setPasswordMsg(data.message);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err: any) {
+      setPasswordError(err.response?.data?.message || 'Une erreur est survenue.');
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -135,6 +169,7 @@ const ProfilePage = () => {
     { key: 'games', label: '🎮 Parties' },
     { key: 'connections', label: '🔐 Connexions' },
     { key: 'discord', label: '🔗 Discord' },
+    { key: 'password', label: '🔒 Sécurité' },
     ...(statsEnabled ? [{ key: 'stats' as Tab, label: '📊 Statistiques' }] : []),
   ];
 
@@ -478,6 +513,66 @@ const ProfilePage = () => {
               {discordError && <p className="profile__discord-error">{discordError}</p>}
             </div>
           )}
+        </div>
+      )}
+
+
+      {activeTab === 'password' && (
+        <div className="profile__password">
+          <h3 className="profile__section-title">Changer mon mot de passe</h3>
+          <p className="profile__section-hint">
+            Pour votre sécurité, choisissez un mot de passe d'au moins 8 caractères.
+          </p>
+
+          <div className="profile__password-form">
+            <div className="profile__password-field">
+              <label>Mot de passe actuel</label>
+              <input
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                placeholder="Votre mot de passe actuel"
+              />
+            </div>
+            <div className="profile__password-field">
+              <label>Nouveau mot de passe</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Au moins 8 caractères"
+              />
+            </div>
+            <div className="profile__password-field">
+              <label>Confirmer le nouveau mot de passe</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Répétez le nouveau mot de passe"
+              />
+            </div>
+
+            {passwordError && (
+              <p className="profile__password-error">{passwordError}</p>
+            )}
+            {passwordMsg && (
+              <p className="profile__password-success">✅ {passwordMsg}</p>
+            )}
+
+            <button
+              className="profile__password-btn"
+              onClick={handleChangePassword}
+              disabled={
+                passwordLoading ||
+                !currentPassword ||
+                !newPassword ||
+                !confirmPassword
+              }
+            >
+              {passwordLoading ? 'Modification...' : '🔑 Modifier le mot de passe'}
+            </button>
+          </div>
         </div>
       )}
     </div>
