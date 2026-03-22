@@ -55,3 +55,15 @@ export const notifyLinked = async (data: {
     console.error('Erreur notifyLinked:', err.response?.data || err.message);
   }
 };
+
+export const getLinkedUsers = async () => {
+  try {
+    const res = await api.get('/discord/linked-users', {
+      params: { secret: SECRET },
+    });
+    return res.data;
+  } catch (err: any) {
+    console.error('Erreur getLinkedUsers:', err.response?.data || err.message);
+    return [];
+  }
+};

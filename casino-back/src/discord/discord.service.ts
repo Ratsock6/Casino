@@ -116,4 +116,17 @@ export class DiscordService {
       data: { discordId: null, discordUsername: null },
     });
   }
+
+  async getLinkedUsers() {
+    return this.prisma.user.findMany({
+      where: { discordId: { not: null } },
+      select: {
+        discordId: true,
+        firstName: true,
+        lastName: true,
+        phoneNumber: true,
+        role: true,
+      },
+    });
+  }
 }

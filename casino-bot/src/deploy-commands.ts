@@ -2,10 +2,12 @@ import { REST, Routes } from 'discord.js';
 import * as lier from './commands/lier';
 import * as solde from './commands/solde';
 import * as retrait from './commands/retrait';
+import * as sync from './commands/sync';
+import * as credit from './commands/credit';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-const commands = [lier.data, solde.data, retrait.data].map((c) => c.toJSON());
+const commands = [lier.data, solde.data, retrait.data, sync.data, credit.data].map((c) => c.toJSON());
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
 

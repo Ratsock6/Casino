@@ -1,9 +1,9 @@
 import { Guild, GuildMember } from 'discord.js';
 
 const ROLE_MAP: Record<string, string | undefined> = {
-  PLAYER:      process.env.DISCORD_ROLE_PLAYER,
-  VIP:         process.env.DISCORD_ROLE_VIP,
-  ADMIN:       process.env.DISCORD_ROLE_ADMIN,
+  PLAYER: process.env.DISCORD_ROLE_PLAYER,
+  VIP: process.env.DISCORD_ROLE_VIP,
+  ADMIN: process.env.DISCORD_ROLE_ADMIN,
   SUPER_ADMIN: process.env.DISCORD_ROLE_ADMIN,
 };
 
@@ -39,13 +39,19 @@ export const applyDiscordProfile = async (
       }
     }
 
-    // Ajoute le nouveau rôle
-    const newRoleId = ROLE_MAP[role];
-    if (newRoleId) {
-      await member.roles.add(newRoleId).catch(console.error);
+    // Ajoute toujours le rôle PLAYER
+    const playerRoleId = process.env.DISCORD_ROLE_PLAYER;
+    if (playerRoleId) {
+      await member.roles.add(playerRoleId).catch(console.error);
     }
 
-    console.log(`✅ Profil Discord mis à jour : ${nickname} (${role})`);
+    // Ajoute le rôle spécifique en plus si ce n'est pas PLAYER
+    const specificRoleId = ROLE_MAP[role];
+    if (specificRoleId && specificRoleId !== playerRoleId) {
+      await member.roles.add(specificRoleId).catch(console.error);
+    }
+
+    console.log(`✅ Profil Discord mis à jour : ${nickname} (PLAYER + ${role})`);
   } catch (err) {
     console.error('Erreur applyDiscordProfile:', err);
   }

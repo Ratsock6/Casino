@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { DiscordService } from './discord.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
@@ -94,5 +94,12 @@ export class DiscordController {
     const BOT_SECRET = this.configService.get<string>('DISCORD_BOT_SECRET');
     if (body.secret !== BOT_SECRET) return { error: 'Unauthorized' };
     return { success: true };
+  }
+
+  @Get('linked-users')
+  async getLinkedUsers(@Query('secret') secret: string) {
+    const BOT_SECRET = this.configService.get<string>('DISCORD_BOT_SECRET');
+    if (secret !== BOT_SECRET) return { error: 'Unauthorized' };
+    return this.discordService.getLinkedUsers();
   }
 }
