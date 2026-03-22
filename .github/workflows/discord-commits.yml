@@ -13,27 +13,32 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         run: |
           COMMITS=$(jq -r '
-            .commits[] |
-            "- `" + (.id[0:7]) + "` " + .message + " — **" + .author.name + "**"
+            if (.commits | length) > 0 then
+              .commits[]
+              | "- `" + (.id[0:7]) + "` " + (.message | split("\n")[0]) + " — **" + .author.name + "**"
+            else
+              "Aucun détail de commit disponible."
+            end
           ' "$GITHUB_EVENT_PATH")
 
-          CONTENT=$(jq -n \
-            --arg repo "${{ github.repository }}" \
-            --arg branch "${{ github.ref_name }}" \
-            --arg pusher "${{ github.actor }}" \
-            --arg compare "${{ github.event.compare }}" \
-            --arg commits "$COMMITS" \
-            '{
-              username: "GitHub",
-              content:
-                "📦 **Repo :** \($repo)\n" +
-                "🌿 **Branche :** \($branch)\n" +
-                "👤 **Push par :** \($pusher)\n\n" +
-                "📝 **Commits :**\n" + $commits + "\n\n" +
-                "🔗 \($compare)"
-            }')
+          MESSAGE=$(cat <<EOF
+📦 **Repo :** ${{ github.repository }}
+🌿 **Branche :** ${{ github.ref_name }}
+👤 **Push par :** ${{ github.actor }}
+
+📝 **Commits :**
+$COMMITS
+
+🔗 ${{ github.event.compare }}
+EOF
+)
+
+          PAYLOAD=$(jq -n \
+            --arg username "GitHub" \
+            --arg content "$MESSAGE" \
+            '{username: $username, content: $content}')
 
           curl -H "Content-Type: application/json" \
                -X POST \
-               -d "$CONTENT" \
+               -d "$PAYLOAD" \
                "$DISCORD_WEBHOOK"
