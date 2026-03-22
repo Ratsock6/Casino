@@ -229,4 +229,8 @@ export const getMyGameRoundsForExportApi = async (userId: string): Promise<Admin
   return res.data;
 };
 
+export const updateUserRoleApi = async (userId: string, role: 'ADMIN' | 'PLAYER' | 'VIP'): Promise<void> => {
+  await axiosInstance.patch(`/admin/users/${userId}/role`, { role });
+};
+
 

@@ -45,6 +45,8 @@ import type {
 
 import { exportToCsv } from '../utils/csv.utils';
 import '../styles/pages/admin.scss';
+import { updateUserRoleApi } from '../api/admin.api';
+import { useAuthStore } from '../store/auth.store';
 
 
 type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts';
@@ -100,6 +102,21 @@ const AdminPage = () => {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [unreadAlerts, setUnreadAlerts] = useState(0);
+  const [roleMsg, setRoleMsg] = useState('');
+  const { user } = useAuthStore();
+
+  const handleUpdateRole = async (role: 'ADMIN' | 'PLAYER' | 'VIP') => {
+    if (!selectedUser) return;
+    try {
+      await updateUserRoleApi(selectedUser.id, role);
+      setRoleMsg(`✅ Rôle mis à jour : ${role}`);
+      const updated = await getAdminUsersApi();
+      setUsers(updated);
+      setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
+    } catch {
+      setRoleMsg('❌ Erreur lors de la mise à jour du rôle');
+    }
+  };
 
 
   // Loading
@@ -387,6 +404,22 @@ const AdminPage = () => {
     REPORT_DAILY_HOUR: {
       label: '⏰ Heure rapport journalier',
       description: 'Heure à laquelle le rapport journalier est envoyé.',
+    },
+    VIP_PRICE_1_MONTH: {
+      label: '👑 Prix VIP 1 mois',
+      description: 'Prix en jetons pour un abonnement VIP de 1 mois.',
+    },
+    VIP_PRICE_3_MONTHS: {
+      label: '👑 Prix VIP 3 mois',
+      description: 'Prix en jetons pour un abonnement VIP de 3 mois.',
+    },
+    VIP_PRICE_6_MONTHS: {
+      label: '👑 Prix VIP 6 mois',
+      description: 'Prix en jetons pour un abonnement VIP de 6 mois.',
+    },
+    VIP_PRICE_LIFETIME: {
+      label: '👑 Prix VIP à vie',
+      description: 'Prix en jetons pour un abonnement VIP à vie.',
     },
   };
 
@@ -768,12 +801,41 @@ const AdminPage = () => {
                 </div>
               </div>
 
+
               <div className="admin__kpi">
                 <span className="admin__kpi-label">Téléphone</span>
                 <span className="admin__kpi-value" style={{ color: '#5cc8e0' }}>
                   {selectedUser.phoneNumber}
                 </span>
               </div>
+
+              {user?.role === 'SUPER_ADMIN' && (
+                <div className="admin__role-actions">
+                  <p className="admin__status-label">Changer le rôle</p>
+                  <div className="admin__status-btns">
+                    <button
+                      className={`admin__btn ${selectedUser.role === 'PLAYER' ? 'admin__btn--current' : ''}`}
+                      onClick={() => handleUpdateRole('PLAYER')}
+                      disabled={selectedUser.role === 'PLAYER'}
+                      style={{ color: '#5cc8e0', borderColor: '#5cc8e0' }}
+                    >
+                      👤 Player
+                    </button>
+                    <button
+                      className={`admin__btn ${selectedUser.role === 'ADMIN' ? 'admin__btn--current' : ''}`}
+                      onClick={() => handleUpdateRole('ADMIN')}
+                      disabled={selectedUser.role === 'ADMIN'}
+                      style={{ color: '#4caf7d', borderColor: '#4caf7d' }}
+                    >
+                      🛡️ Admin
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {roleMsg && (
+                <p className="admin__action-msg">{roleMsg}</p>
+              )}
 
               {/* Actions wallet */}
               <div className="admin__wallet-actions">

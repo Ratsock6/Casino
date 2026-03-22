@@ -60,7 +60,8 @@ export const ModelName = {
   IdempotencyRequest: 'IdempotencyRequest',
   BlackjackGame: 'BlackjackGame',
   CasinoConfig: 'CasinoConfig',
-  LoginHistory: 'LoginHistory'
+  LoginHistory: 'LoginHistory',
+  VipSubscription: 'VipSubscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -230,6 +231,19 @@ export const LoginHistoryScalarFieldEnum = {
 } as const
 
 export type LoginHistoryScalarFieldEnum = (typeof LoginHistoryScalarFieldEnum)[keyof typeof LoginHistoryScalarFieldEnum]
+
+
+export const VipSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  startedAt: 'startedAt',
+  expiresAt: 'expiresAt',
+  duration: 'duration',
+  price: 'price',
+  createdAt: 'createdAt'
+} as const
+
+export type VipSubscriptionScalarFieldEnum = (typeof VipSubscriptionScalarFieldEnum)[keyof typeof VipSubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {

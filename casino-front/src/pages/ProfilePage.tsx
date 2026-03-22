@@ -8,6 +8,7 @@ import '../styles/pages/profile.scss';
 import axiosInstance from '../utils/axios.instance';
 import { getMyLoginHistoryApi, type LoginHistoryEntry } from '../api/profile.api';
 import { linkDiscordApi, unlinkDiscordApi } from '../api/profile.api';
+import { getVipStatusApi, type VipStatus } from '../api/vip.api';
 
 
 type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord';
@@ -38,6 +39,7 @@ const ProfilePage = () => {
   const [discordCode, setDiscordCode] = useState('');
   const [discordMsg, setDiscordMsg] = useState('');
   const [discordError, setDiscordError] = useState('');
+  const [vipStatus, setVipStatus] = useState<VipStatus | null>(null);
 
 
   const handleLinkDiscord = async () => {
@@ -98,6 +100,11 @@ const ProfilePage = () => {
       }
       if (tab === 'connections' && loginHistory.length === 0) {
         setLoginHistory(await getMyLoginHistoryApi(50));
+      }
+      if (tab === 'info' && !profile) {
+        const [p, v] = await Promise.all([getProfileApi(), getVipStatusApi()]);
+        setProfile(p);
+        setVipStatus(v);
       }
     } catch (err) {
       console.error(err);
@@ -165,6 +172,16 @@ const ProfilePage = () => {
                 {profile.role}
               </span>
             </div>
+
+            {profile.role === 'VIP' && (
+              <div className="profile__vip-badge">
+                👑 VIP
+                {vipStatus?.subscription && !vipStatus.subscription.isLifetime && (
+                  <span> — {vipStatus.subscription.daysLeft}j restants</span>
+                )}
+                {vipStatus?.subscription?.isLifetime && <span> — À vie</span>}
+              </div>
+            )}
           </div>
 
           <div className="profile__fields">

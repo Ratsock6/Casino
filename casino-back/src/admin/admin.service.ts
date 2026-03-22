@@ -389,4 +389,12 @@ export class AdminService {
       createdAt: log.createdAt,
     }));
   }
+
+  async updateUserRole(userId: string, role: 'ADMIN' | 'PLAYER' | 'VIP') {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: { role },
+      select: { id: true, username: true, role: true },
+    });
+  }
 }

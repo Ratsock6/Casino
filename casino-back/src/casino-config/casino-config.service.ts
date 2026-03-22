@@ -28,6 +28,11 @@ export class CasinoConfigService {
 
   async getAll() {
     const configs = await this.prisma.casinoConfig.findMany({
+      where: {
+        key: {
+          not: { startsWith: 'DISCORD_LINK_' },
+        },
+      },
       orderBy: { key: 'asc' },
     });
 

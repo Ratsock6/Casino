@@ -79,7 +79,17 @@ const Navbar = () => {
           >
             Admin
           </NavLink>
+
         )}
+
+        <NavLink
+          to="/vip"
+          className={({ isActive }) =>
+            isActive ? 'navbar__link navbar__link--active navbar__link--vip' : 'navbar__link navbar__link--vip'
+          }
+        >
+          👑 VIP
+        </NavLink>
       </div>
 
       <div className="navbar__right">

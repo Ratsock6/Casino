@@ -110,4 +110,12 @@
       border-color: $color-error;
     }
   }
+
+  &__link--vip {
+    color: $color-gold !important;
+
+    &:hover {
+      color: $color-gold-light !important;
+    }
+  }
 }

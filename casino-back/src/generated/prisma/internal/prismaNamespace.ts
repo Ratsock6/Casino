@@ -393,7 +393,8 @@ export const ModelName = {
   IdempotencyRequest: 'IdempotencyRequest',
   BlackjackGame: 'BlackjackGame',
   CasinoConfig: 'CasinoConfig',
-  LoginHistory: 'LoginHistory'
+  LoginHistory: 'LoginHistory',
+  VipSubscription: 'VipSubscription'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -409,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1153,6 +1154,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    VipSubscription: {
+      payload: Prisma.$VipSubscriptionPayload<ExtArgs>
+      fields: Prisma.VipSubscriptionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VipSubscriptionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VipSubscriptionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>
+        }
+        findFirst: {
+          args: Prisma.VipSubscriptionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VipSubscriptionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>
+        }
+        findMany: {
+          args: Prisma.VipSubscriptionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>[]
+        }
+        create: {
+          args: Prisma.VipSubscriptionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>
+        }
+        createMany: {
+          args: Prisma.VipSubscriptionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VipSubscriptionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>[]
+        }
+        delete: {
+          args: Prisma.VipSubscriptionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>
+        }
+        update: {
+          args: Prisma.VipSubscriptionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>
+        }
+        deleteMany: {
+          args: Prisma.VipSubscriptionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VipSubscriptionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VipSubscriptionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>[]
+        }
+        upsert: {
+          args: Prisma.VipSubscriptionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VipSubscriptionPayload>
+        }
+        aggregate: {
+          args: Prisma.VipSubscriptionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVipSubscription>
+        }
+        groupBy: {
+          args: Prisma.VipSubscriptionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VipSubscriptionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VipSubscriptionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VipSubscriptionCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1343,6 +1418,19 @@ export const LoginHistoryScalarFieldEnum = {
 } as const
 
 export type LoginHistoryScalarFieldEnum = (typeof LoginHistoryScalarFieldEnum)[keyof typeof LoginHistoryScalarFieldEnum]
+
+
+export const VipSubscriptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  startedAt: 'startedAt',
+  expiresAt: 'expiresAt',
+  duration: 'duration',
+  price: 'price',
+  createdAt: 'createdAt'
+} as const
+
+export type VipSubscriptionScalarFieldEnum = (typeof VipSubscriptionScalarFieldEnum)[keyof typeof VipSubscriptionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1692,6 +1780,7 @@ export type GlobalOmitConfig = {
   blackjackGame?: Prisma.BlackjackGameOmit
   casinoConfig?: Prisma.CasinoConfigOmit
   loginHistory?: Prisma.LoginHistoryOmit
+  vipSubscription?: Prisma.VipSubscriptionOmit
 }
 
 /* Types for Logging */

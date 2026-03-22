@@ -528,4 +528,23 @@
       color: $color-error;
     }
   }
+
+  &__vip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    background: linear-gradient(135deg, rgba($color-gold, 0.2), rgba($color-gold, 0.05));
+    border: 1px solid rgba($color-gold, 0.5);
+    border-radius: $radius-sm;
+    padding: 4px $spacing-md;
+    font-size: 13px;
+    font-weight: 700;
+    color: $color-gold;
+
+    span {
+      font-size: 11px;
+      font-weight: 400;
+      color: $color-text-muted;
+    }
+  }
 }

@@ -67,3 +67,8 @@ export type CasinoConfig = Prisma.CasinoConfigModel
  * 
  */
 export type LoginHistory = Prisma.LoginHistoryModel
+/**
+ * Model VipSubscription
+ * 
+ */
+export type VipSubscription = Prisma.VipSubscriptionModel

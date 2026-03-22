@@ -18,6 +18,7 @@ import { PublicModule } from './public/public.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { ReportsModule } from './reports/reports.module';
 import { DiscordModule } from './discord/discord.module';
+import { VipModule } from './vip/vip.module';
 
 
 @Module({
@@ -48,6 +49,7 @@ import { DiscordModule } from './discord/discord.module';
     ScheduleModule.forRoot(),
     ReportsModule,
     DiscordModule,
+    VipModule,
   ],
 })
 export class AppModule {}

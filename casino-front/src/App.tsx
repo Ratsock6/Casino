@@ -14,6 +14,7 @@ import AdminPage from './pages/AdminPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import ReglementPage from './pages/ReglementPage';
+import VipPage from './pages/VipPage';
 
 
 // Route protégée : redirige vers /login si non connecté
@@ -66,6 +67,7 @@ function App() {
           <Route path="blackjack" element={<BlackjackPage />} />
           <Route path="admin" element={<AdminPage />} />
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="vip" element={<VipPage />} />
         </Route>
 
         {/* Fallback */}

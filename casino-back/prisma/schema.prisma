@@ -82,6 +82,7 @@ model User {
   loginHistory     LoginHistory[]
   discordId        String?   @unique
   discordUsername  String?
+  vipSubscriptions VipSubscription[]
 
   wallet              Wallet?
   refreshTokens       RefreshToken[]
@@ -235,4 +236,19 @@ model LoginHistory {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, createdAt])
+}
+
+model VipSubscription {
+  id        String    @id @default(cuid())
+  userId    String
+  startedAt DateTime  @default(now())
+  expiresAt DateTime?  // null = à vie
+  duration  String    // '1_MONTH', '3_MONTHS', '6_MONTHS', 'LIFETIME'
+  price     Int
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }

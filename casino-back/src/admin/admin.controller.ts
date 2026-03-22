@@ -185,4 +185,20 @@ export class AdminController {
   triggerDailyReport() {
     return this.reportsService.triggerManualReport();
   }
+
+
+  @Patch('users/:userId/role')
+  @Roles('SUPER_ADMIN')
+  async updateUserRole(
+    @CurrentUser() admin: { userId: string },
+    @Param('userId') userId: string,
+    @Body('role') role: 'ADMIN' | 'PLAYER' | 'VIP',
+  ) {
+    const result = await this.adminService.updateUserRole(userId, role);
+    await this.adminService.createAuditLog(
+      admin.userId, 'USER_ROLE_CHANGE', 'USER', userId,
+      { newRole: role },
+    );
+    return result;
+  }
 }
