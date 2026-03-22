@@ -70,6 +70,21 @@ const Navbar = () => {
           Blackjack
         </NavLink>
 
+        <NavLink
+          to="/vip"
+          className={({ isActive }) =>
+            isActive ? 'navbar__link navbar__link--active navbar__link--vip' : 'navbar__link navbar__link--vip'
+          }
+        >
+          👑 VIP
+        </NavLink>
+
+        <NavLink to="/level" className={({ isActive }) =>
+          isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+        }>
+          ⭐ Niveau
+        </NavLink>
+
         {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (
           <NavLink
             to="/admin"
@@ -82,14 +97,6 @@ const Navbar = () => {
 
         )}
 
-        <NavLink
-          to="/vip"
-          className={({ isActive }) =>
-            isActive ? 'navbar__link navbar__link--active navbar__link--vip' : 'navbar__link navbar__link--vip'
-          }
-        >
-          👑 VIP
-        </NavLink>
       </div>
 
       <div className="navbar__right">
@@ -107,7 +114,7 @@ const Navbar = () => {
           Déconnexion
         </button>
       </div>
-    </nav>
+    </nav >
   );
 };
 

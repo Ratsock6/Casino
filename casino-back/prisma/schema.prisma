@@ -84,6 +84,7 @@ model User {
   discordUsername  String?
   metadata         Json?
   vipSubscriptions VipSubscription[]
+  playerLevel      PlayerLevel?
 
   wallet              Wallet?
   refreshTokens       RefreshToken[]
@@ -252,4 +253,38 @@ model VipSubscription {
 
   @@index([userId])
   @@index([expiresAt])
+}
+
+model PlayerLevel {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  level        Int      @default(1)
+  currentXp    BigInt   @default(0)
+  totalXp      BigInt   @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rewards      LevelReward[]
+
+  @@index([userId])
+  @@index([level])
+}
+
+model LevelReward {
+  id              String    @id @default(cuid())
+  userId          String
+  level           Int
+  rewardType      String    // 'TOKENS', 'VIP', 'BADGE', 'INGAME'
+  rewardValue     String
+  isIngame        Boolean   @default(false)
+  ingameClaimed   Boolean   @default(false)
+  ingameClaimedAt DateTime?
+  ingameClaimedBy String?   // adminId qui a validé
+  claimedAt       DateTime  @default(now())
+
+  playerLevel     PlayerLevel @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([userId, level])
+  @@index([isIngame, ingameClaimed])
 }

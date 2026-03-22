@@ -17,6 +17,7 @@ import {
   SettleWinInput,
 } from './types/bet.types';
 import { AlertsService } from '../alerts/alerts.service';
+import { LevelsService } from 'src/levels/levels.service';
 
 
 
@@ -25,6 +26,7 @@ export class BetService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly alertsService: AlertsService,
+    private readonly levelsService: LevelsService,
   ) { }
 
   private toInputJsonValue(data?: JsonObject | null): Prisma.InputJsonValue | undefined {
@@ -203,6 +205,8 @@ export class BetService {
           },
         });
 
+        await this.levelsService.addXp(round.userId, Number(round.stake));
+
         const user = await this.prisma.user.findUnique({
           where: { id: round.userId },
           select: { username: true },
@@ -262,6 +266,9 @@ export class BetService {
             metadata: this.toInputJsonValue(mergedMetadata),
           },
         });
+
+        
+        await this.levelsService.addXp(round.userId, Number(round.stake));
 
         const user = await this.prisma.user.findUnique({
           where: { id: round.userId },

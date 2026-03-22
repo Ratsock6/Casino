@@ -94,3 +94,13 @@ export type LoginHistory = Prisma.LoginHistoryModel
  * 
  */
 export type VipSubscription = Prisma.VipSubscriptionModel
+/**
+ * Model PlayerLevel
+ * 
+ */
+export type PlayerLevel = Prisma.PlayerLevelModel
+/**
+ * Model LevelReward
+ * 
+ */
+export type LevelReward = Prisma.LevelRewardModel

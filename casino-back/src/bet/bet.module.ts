@@ -3,9 +3,11 @@ import { BetController } from './bet.controller';
 import { BetService } from './bet.service';
 import { AlertsModule } from '../alerts/alerts.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { LevelsModule } from '../levels/levels.module';
+
 
 @Module({
-  imports: [PrismaModule, AlertsModule],
+  imports: [PrismaModule, AlertsModule, LevelsModule],
   controllers: [BetController],
   providers: [BetService],
   exports: [BetService],

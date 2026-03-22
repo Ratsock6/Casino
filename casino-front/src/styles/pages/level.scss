@@ -1,0 +1,403 @@
+@import '../variables';
+
+.level {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: 900px;
+  margin: 0 auto;
+
+  // Header
+  &__header {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at top left, rgba(var(--level-color), 0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-lg;
+    }
+  }
+
+  &__badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  &__username {
+    font-size: 13px;
+    color: $color-text-muted;
+    margin-bottom: 2px;
+  }
+
+  &__level {
+    font-size: 28px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__max {
+    font-size: 14px;
+    background: $color-gold;
+    color: #0d0d0d;
+    padding: 2px 8px;
+    border-radius: $radius-sm;
+    font-weight: 700;
+  }
+
+  &__total-xp {
+    font-size: 13px;
+    color: $color-text-muted;
+    margin-top: 2px;
+  }
+
+  // Barre de progression
+  &__progress-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: $color-text-muted;
+  }
+
+  &__progress-bar {
+    height: 12px;
+    background: $color-surface-2;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid $color-border;
+  }
+
+  &__progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.8s ease;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 2s infinite;
+    }
+  }
+
+  &__progress-xp {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: $color-text-muted;
+  }
+
+  // Prochaine récompense
+  &__next-reward {
+    background: rgba($color-gold, 0.05);
+    border: 1px solid rgba($color-gold, 0.3);
+    border-radius: $radius-md;
+    padding: $spacing-md $spacing-lg;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-md;
+
+    &-label {
+      font-size: 13px;
+      color: $color-text-muted;
+      flex-shrink: 0;
+    }
+
+    &-value {
+      font-size: 13px;
+      font-weight: 700;
+      color: $color-gold;
+      text-align: right;
+    }
+  }
+
+  // Tabs
+  &__tabs {
+    display: flex;
+    gap: $spacing-xs;
+    border-bottom: 1px solid $color-border;
+    padding-bottom: -1px;
+  }
+
+  &__tab {
+    padding: $spacing-sm $spacing-lg;
+    font-size: 14px;
+    font-weight: 600;
+    color: $color-text-muted;
+    border-bottom: 2px solid transparent;
+    transition: all $transition-fast;
+
+    &:hover { color: $color-text; }
+
+    &--active {
+      color: $color-gold;
+      border-bottom-color: $color-gold;
+    }
+  }
+
+  // Section
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+
+  &__section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__empty {
+    text-align: center;
+    color: $color-text-muted;
+    padding: $spacing-xl;
+    font-size: 14px;
+  }
+
+  // Récompenses obtenues
+  &__reward-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__reward-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-md $spacing-lg;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+
+    &--pending {
+      border-color: rgba($color-warning, 0.4);
+      background: rgba($color-warning, 0.03);
+    }
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+
+    &-level {
+      font-size: 12px;
+      font-weight: 700;
+      color: $color-gold;
+      background: rgba($color-gold, 0.1);
+      border: 1px solid rgba($color-gold, 0.3);
+      border-radius: $radius-sm;
+      padding: 2px 8px;
+      white-space: nowrap;
+    }
+
+    &-value {
+      font-size: 13px;
+      color: $color-text;
+    }
+
+    &-status {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: $radius-sm;
+
+      &--claimed {
+        color: $color-success;
+        background: rgba($color-success, 0.1);
+        border: 1px solid rgba($color-success, 0.3);
+      }
+
+      &--pending {
+        color: $color-warning;
+        background: rgba($color-warning, 0.1);
+        border: 1px solid rgba($color-warning, 0.3);
+      }
+    }
+  }
+
+  // Règles XP
+  &__xp-info {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: $color-text;
+    }
+  }
+
+  &__xp-rules {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  &__xp-rule {
+    flex: 1;
+    min-width: 150px;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+
+    span { font-size: 12px; color: $color-text-muted; }
+    strong { font-size: 18px; color: $color-gold; font-weight: 800; }
+  }
+
+  // Table des récompenses
+  &__rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: $spacing-sm;
+  }
+
+  &__rewards-card {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    transition: all $transition-fast;
+
+    &:hover { border-color: rgba($color-gold, 0.3); }
+
+    &--past {
+      opacity: 0.5;
+    }
+
+    &--current {
+      border-color: $color-gold;
+      background: rgba($color-gold, 0.05);
+    }
+
+    &--ingame {
+      border-color: rgba(#5cc8e0, 0.3);
+    }
+
+    &--badge {
+      border-color: rgba($color-gold, 0.4);
+    }
+
+    &-level {
+      font-size: 11px;
+      font-weight: 700;
+      color: $color-gold;
+    }
+
+    &-value {
+      font-size: 12px;
+      color: $color-text;
+      line-height: 1.4;
+    }
+
+    &-ingame {
+      font-size: 10px;
+      color: #5cc8e0;
+      font-weight: 600;
+    }
+  }
+
+  // Leaderboard
+  &__leaderboard {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__leaderboard-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    padding: $spacing-md $spacing-lg;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    transition: background $transition-fast;
+
+    &:hover { background: $color-surface-2; }
+
+    &--me {
+      border-color: $color-gold;
+      background: rgba($color-gold, 0.05);
+    }
+  }
+
+  &__leaderboard-rank {
+    width: 40px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__leaderboard-username {
+    flex: 1;
+    font-weight: 600;
+    color: $color-text;
+  }
+
+  &__leaderboard-level {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  &__leaderboard-xp {
+    font-size: 12px;
+    color: $color-text-muted;
+    text-align: right;
+    min-width: 100px;
+  }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

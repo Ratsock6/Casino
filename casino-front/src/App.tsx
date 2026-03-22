@@ -15,6 +15,7 @@ import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
 import ReglementPage from './pages/ReglementPage';
 import VipPage from './pages/VipPage';
+import LevelPage from './pages/LevelPage';
 
 
 // Route protégée : redirige vers /login si non connecté
@@ -68,6 +69,7 @@ function App() {
           <Route path="admin" element={<AdminPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="vip" element={<VipPage />} />
+          <Route path="level" element={<LevelPage />} />
         </Route>
 
         {/* Fallback */}

@@ -15,7 +15,7 @@ export class WalletService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly gateway: CasinoGateway,
-  ) {}
+  ) { }
 
   async adminCredit(adminId: string, userId: string, amount: number, reason?: string) {
     if (amount <= 0) throw new BadRequestException('Amount must be greater than 0');
@@ -29,7 +29,7 @@ export class WalletService {
 
       await tx.wallet.update({ where: { userId }, data: { balance: balanceAfter } });
 
-      const transaction = await tx.walletTransaction.create({
+      const walletTx = await tx.walletTransaction.create({ // 👈 sauvegarde la variable
         data: {
           userId,
           type: WalletTransactionType.ADMIN_CREDIT,
@@ -37,23 +37,28 @@ export class WalletService {
           balanceBefore,
           balanceAfter,
           reason: reason ?? 'Admin credit',
-          adminId,
+          adminId: adminId === 'SYSTEM' ? null : adminId,
         },
       });
 
       await tx.adminAction.create({
         data: {
-          adminId,
+          adminId: adminId === 'SYSTEM' ? null : adminId,
           action: 'ADMIN_CREDIT',
           targetType: 'WALLET',
           targetId: wallet.id,
-          metadata: { userId, amount, reason: reason ?? 'Admin credit', walletTransactionId: transaction.id },
+          metadata: {
+            userId,
+            amount,
+            reason: reason ?? 'Admin credit',
+            walletTransactionId: walletTx.id, // 👈
+          },
         },
       });
 
       return {
         message: 'Wallet credited successfully',
-        transactionId: transaction.id,
+        transactionId: walletTx.id, // 👈
         userId,
         amount,
         balanceBefore: balanceBefore.toString(),
@@ -61,7 +66,6 @@ export class WalletService {
       };
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
-    // Notification temps réel au joueur
     this.gateway.notifyUser(userId, 'wallet:credited', {
       amount,
       newBalance: result.balanceAfter,
@@ -100,7 +104,7 @@ export class WalletService {
 
       await tx.adminAction.create({
         data: {
-          adminId,
+          adminId: adminId === 'SYSTEM' ? null : adminId,
           action: 'ADMIN_DEBIT',
           targetType: 'WALLET',
           targetId: wallet.id,

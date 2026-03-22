@@ -52,9 +52,12 @@ import { exportToCsv } from '../utils/csv.utils';
 import '../styles/pages/admin.scss';
 import { updateUserRoleApi } from '../api/admin.api';
 import { useAuthStore } from '../store/auth.store';
+import { getAllIngameRewardsApi, claimIngameRewardApi, type IngameReward } from '../api/levels.api';
 
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts';
+
+
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame';;
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -113,6 +116,8 @@ const AdminPage = () => {
   const [vipMsg, setVipMsg] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [newPassword, setNewPassword] = useState<string | null>(null);
+  const [ingameRewards, setIngameRewards] = useState<IngameReward[]>([]);
+  const [ingameFilter, setIngameFilter] = useState<'all' | 'pending' | 'claimed'>('pending');
 
   const { user } = useAuthStore();
 
@@ -232,6 +237,9 @@ const AdminPage = () => {
         const data = await getCasinoConfigApi();
         setConfig(data);
       }
+      if (tab === 'ingame' && ingameRewards.length === 0) {
+        setIngameRewards(await getAllIngameRewardsApi());
+      }
       if (tab === 'charts') {
         const [b, g] = await Promise.all([
           getBalanceHistoryApi(chartDays),
@@ -343,6 +351,16 @@ const AdminPage = () => {
     setUserLoginHistory(loginHist);
   };
 
+  const handleClaimIngame = async (rewardId: string) => {
+    try {
+      await claimIngameRewardApi(rewardId);
+      const updated = await getAllIngameRewardsApi();
+      setIngameRewards(updated);
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
   const handleUpdateStatus = async (status: 'ACTIVE' | 'BANNED' | 'SUSPENDED') => {
     if (!selectedUser) return;
     setStatusLoading(true);
@@ -433,6 +451,7 @@ const AdminPage = () => {
         ? `🚨 Alertes (${unreadAlerts})`
         : '🚨 Alertes'
     },
+    { key: 'ingame', label: '🎮 Lots in-game' },
   ];
 
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
@@ -1582,6 +1601,90 @@ const AdminPage = () => {
               })}
             </div>
           )}
+        </div>
+      )}
+
+      {activeTab === 'ingame' && (
+        <div className="admin__section">
+          <div className="admin__section-title-row">
+            <h2 className="admin__section-title">🎮 Lots in-game</h2>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {['pending', 'claimed', 'all'].map((f) => (
+                <button
+                  key={f}
+                  className={`admin__period-btn ${ingameFilter === f ? 'admin__period-btn--active' : ''}`}
+                  onClick={() => setIngameFilter(f as any)}
+                >
+                  {f === 'pending' ? '⏳ En attente' : f === 'claimed' ? '✅ Récupérés' : '📋 Tous'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="admin__table-wrapper">
+            <table className="admin__table">
+              <thead>
+                <tr>
+                  <th>Joueur</th>
+                  <th>Téléphone</th>
+                  <th>Niveau</th>
+                  <th>Lot</th>
+                  <th>Obtenu le</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ingameRewards
+                  .filter((r) =>
+                    ingameFilter === 'all' ? true :
+                      ingameFilter === 'pending' ? !r.ingameClaimed :
+                        r.ingameClaimed
+                  )
+                  .map((r) => (
+                    <tr key={r.id}>
+                      <td>
+                        <div>
+                          <strong>{r.user.username}</strong>
+                          <div style={{ fontSize: 12, color: '#888' }}>
+                            {r.user.firstName} {r.user.lastName}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="admin__table-muted">{r.user.phoneNumber}</td>
+                      <td>
+                        <span className="admin__badge" style={{ color: '#c9a84c', borderColor: '#c9a84c' }}>
+                          Niveau {r.level}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: 13 }}>{r.rewardValue}</td>
+                      <td className="admin__table-date">{formatDate(r.claimedAt)}</td>
+                      <td>
+                        {r.ingameClaimed ? (
+                          <span className="admin__badge" style={{ color: '#4caf7d', borderColor: '#4caf7d' }}>
+                            ✅ Récupéré
+                          </span>
+                        ) : (
+                          <span className="admin__badge" style={{ color: '#e0a85c', borderColor: '#e0a85c' }}>
+                            ⏳ En attente
+                          </span>
+                        )}
+                      </td>
+                      <td>
+                        {!r.ingameClaimed && (
+                          <button
+                            className="admin__export-btn admin__export-btn--small"
+                            onClick={() => handleClaimIngame(r.id)}
+                          >
+                            ✅ Marquer récupéré
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div >

@@ -326,6 +326,7 @@ export type UserWhereInput = {
   metadata?: Prisma.JsonNullableFilter<"User">
   loginHistory?: Prisma.LoginHistoryListRelationFilter
   vipSubscriptions?: Prisma.VipSubscriptionListRelationFilter
+  playerLevel?: Prisma.XOR<Prisma.PlayerLevelNullableScalarRelationFilter, Prisma.PlayerLevelWhereInput> | null
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   transactions?: Prisma.WalletTransactionListRelationFilter
@@ -358,6 +359,7 @@ export type UserOrderByWithRelationInput = {
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   loginHistory?: Prisma.LoginHistoryOrderByRelationAggregateInput
   vipSubscriptions?: Prisma.VipSubscriptionOrderByRelationAggregateInput
+  playerLevel?: Prisma.PlayerLevelOrderByWithRelationInput
   wallet?: Prisma.WalletOrderByWithRelationInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   transactions?: Prisma.WalletTransactionOrderByRelationAggregateInput
@@ -393,6 +395,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   metadata?: Prisma.JsonNullableFilter<"User">
   loginHistory?: Prisma.LoginHistoryListRelationFilter
   vipSubscriptions?: Prisma.VipSubscriptionListRelationFilter
+  playerLevel?: Prisma.XOR<Prisma.PlayerLevelNullableScalarRelationFilter, Prisma.PlayerLevelWhereInput> | null
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   transactions?: Prisma.WalletTransactionListRelationFilter
@@ -477,6 +480,7 @@ export type UserCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -509,6 +513,7 @@ export type UserUncheckedCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -541,6 +546,7 @@ export type UserUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -573,6 +579,7 @@ export type UserUncheckedUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -911,6 +918,20 @@ export type UserUpdateOneRequiredWithoutVipSubscriptionsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVipSubscriptionsInput, Prisma.UserUpdateWithoutVipSubscriptionsInput>, Prisma.UserUncheckedUpdateWithoutVipSubscriptionsInput>
 }
 
+export type UserCreateNestedOneWithoutPlayerLevelInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlayerLevelInput, Prisma.UserUncheckedCreateWithoutPlayerLevelInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlayerLevelInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPlayerLevelNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPlayerLevelInput, Prisma.UserUncheckedCreateWithoutPlayerLevelInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPlayerLevelInput
+  upsert?: Prisma.UserUpsertWithoutPlayerLevelInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPlayerLevelInput, Prisma.UserUpdateWithoutPlayerLevelInput>, Prisma.UserUncheckedUpdateWithoutPlayerLevelInput>
+}
+
 export type UserCreateWithoutWalletInput = {
   id?: string
   username: string
@@ -933,6 +954,7 @@ export type UserCreateWithoutWalletInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
@@ -964,6 +986,7 @@ export type UserUncheckedCreateWithoutWalletInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
@@ -1011,6 +1034,7 @@ export type UserUpdateWithoutWalletInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
@@ -1042,6 +1066,7 @@ export type UserUncheckedUpdateWithoutWalletInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
@@ -1073,6 +1098,7 @@ export type UserCreateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
@@ -1104,6 +1130,7 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
@@ -1140,6 +1167,7 @@ export type UserCreateWithoutAdminWalletActionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1171,6 +1199,7 @@ export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1218,6 +1247,7 @@ export type UserUpdateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
@@ -1249,6 +1279,7 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
@@ -1291,6 +1322,7 @@ export type UserUpdateWithoutAdminWalletActionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1322,6 +1354,7 @@ export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1353,6 +1386,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
@@ -1384,6 +1418,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
@@ -1431,6 +1466,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
@@ -1462,6 +1498,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
   adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
@@ -1493,6 +1530,7 @@ export type UserCreateWithoutAdminActionsMadeInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1524,6 +1562,7 @@ export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1571,6 +1610,7 @@ export type UserUpdateWithoutAdminActionsMadeInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1602,6 +1642,7 @@ export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1633,6 +1674,7 @@ export type UserCreateWithoutGameRoundsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1664,6 +1706,7 @@ export type UserUncheckedCreateWithoutGameRoundsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1711,6 +1754,7 @@ export type UserUpdateWithoutGameRoundsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1742,6 +1786,7 @@ export type UserUncheckedUpdateWithoutGameRoundsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1773,6 +1818,7 @@ export type UserCreateWithoutIdempotencyRequestsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1804,6 +1850,7 @@ export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1851,6 +1898,7 @@ export type UserUpdateWithoutIdempotencyRequestsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1882,6 +1930,7 @@ export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1913,6 +1962,7 @@ export type UserCreateWithoutBlackjackGamesInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1944,6 +1994,7 @@ export type UserUncheckedCreateWithoutBlackjackGamesInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1991,6 +2042,7 @@ export type UserUpdateWithoutBlackjackGamesInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -2022,6 +2074,7 @@ export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -2052,6 +2105,7 @@ export type UserCreateWithoutLoginHistoryInput = {
   discordUsername?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -2083,6 +2137,7 @@ export type UserUncheckedCreateWithoutLoginHistoryInput = {
   discordUsername?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -2130,6 +2185,7 @@ export type UserUpdateWithoutLoginHistoryInput = {
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -2161,6 +2217,7 @@ export type UserUncheckedUpdateWithoutLoginHistoryInput = {
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -2192,6 +2249,7 @@ export type UserCreateWithoutVipSubscriptionsInput = {
   discordUsername?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -2223,6 +2281,7 @@ export type UserUncheckedCreateWithoutVipSubscriptionsInput = {
   discordUsername?: string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -2270,6 +2329,7 @@ export type UserUpdateWithoutVipSubscriptionsInput = {
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -2301,6 +2361,151 @@ export type UserUncheckedUpdateWithoutVipSubscriptionsInput = {
   discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
+  wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPlayerLevelInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  discordId?: string | null
+  discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
+  vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPlayerLevelInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  discordId?: string | null
+  discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+  vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPlayerLevelInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlayerLevelInput, Prisma.UserUncheckedCreateWithoutPlayerLevelInput>
+}
+
+export type UserUpsertWithoutPlayerLevelInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPlayerLevelInput, Prisma.UserUncheckedUpdateWithoutPlayerLevelInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPlayerLevelInput, Prisma.UserUncheckedCreateWithoutPlayerLevelInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPlayerLevelInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPlayerLevelInput, Prisma.UserUncheckedUpdateWithoutPlayerLevelInput>
+}
+
+export type UserUpdateWithoutPlayerLevelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
+  vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPlayerLevelInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+  vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -2436,6 +2641,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   metadata?: boolean
   loginHistory?: boolean | Prisma.User$loginHistoryArgs<ExtArgs>
   vipSubscriptions?: boolean | Prisma.User$vipSubscriptionsArgs<ExtArgs>
+  playerLevel?: boolean | Prisma.User$playerLevelArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>
@@ -2517,6 +2723,7 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   loginHistory?: boolean | Prisma.User$loginHistoryArgs<ExtArgs>
   vipSubscriptions?: boolean | Prisma.User$vipSubscriptionsArgs<ExtArgs>
+  playerLevel?: boolean | Prisma.User$playerLevelArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   transactions?: boolean | Prisma.User$transactionsArgs<ExtArgs>
@@ -2535,6 +2742,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     loginHistory: Prisma.$LoginHistoryPayload<ExtArgs>[]
     vipSubscriptions: Prisma.$VipSubscriptionPayload<ExtArgs>[]
+    playerLevel: Prisma.$PlayerLevelPayload<ExtArgs> | null
     wallet: Prisma.$WalletPayload<ExtArgs> | null
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     transactions: Prisma.$WalletTransactionPayload<ExtArgs>[]
@@ -2960,6 +3168,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   loginHistory<T extends Prisma.User$loginHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$loginHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$LoginHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vipSubscriptions<T extends Prisma.User$vipSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vipSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VipSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  playerLevel<T extends Prisma.User$playerLevelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playerLevelArgs<ExtArgs>>): Prisma.Prisma__PlayerLevelClient<runtime.Types.Result.GetResult<Prisma.$PlayerLevelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   wallet<T extends Prisma.User$walletArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$walletArgs<ExtArgs>>): Prisma.Prisma__WalletClient<runtime.Types.Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   transactions<T extends Prisma.User$transactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$WalletTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3454,6 +3663,25 @@ export type User$vipSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.VipSubscriptionScalarFieldEnum | Prisma.VipSubscriptionScalarFieldEnum[]
+}
+
+/**
+ * User.playerLevel
+ */
+export type User$playerLevelArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PlayerLevel
+   */
+  select?: Prisma.PlayerLevelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PlayerLevel
+   */
+  omit?: Prisma.PlayerLevelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PlayerLevelInclude<ExtArgs> | null
+  where?: Prisma.PlayerLevelWhereInput
 }
 
 /**

@@ -61,7 +61,9 @@ export const ModelName = {
   BlackjackGame: 'BlackjackGame',
   CasinoConfig: 'CasinoConfig',
   LoginHistory: 'LoginHistory',
-  VipSubscription: 'VipSubscription'
+  VipSubscription: 'VipSubscription',
+  PlayerLevel: 'PlayerLevel',
+  LevelReward: 'LevelReward'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -245,6 +247,35 @@ export const VipSubscriptionScalarFieldEnum = {
 } as const
 
 export type VipSubscriptionScalarFieldEnum = (typeof VipSubscriptionScalarFieldEnum)[keyof typeof VipSubscriptionScalarFieldEnum]
+
+
+export const PlayerLevelScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  level: 'level',
+  currentXp: 'currentXp',
+  totalXp: 'totalXp',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PlayerLevelScalarFieldEnum = (typeof PlayerLevelScalarFieldEnum)[keyof typeof PlayerLevelScalarFieldEnum]
+
+
+export const LevelRewardScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  level: 'level',
+  rewardType: 'rewardType',
+  rewardValue: 'rewardValue',
+  isIngame: 'isIngame',
+  ingameClaimed: 'ingameClaimed',
+  ingameClaimedAt: 'ingameClaimedAt',
+  ingameClaimedBy: 'ingameClaimedBy',
+  claimedAt: 'claimedAt'
+} as const
+
+export type LevelRewardScalarFieldEnum = (typeof LevelRewardScalarFieldEnum)[keyof typeof LevelRewardScalarFieldEnum]
 
 
 export const SortOrder = {
