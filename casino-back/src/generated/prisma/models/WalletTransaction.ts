@@ -595,10 +595,6 @@ export type EnumWalletTransactionTypeFieldUpdateOperationsInput = {
   set?: $Enums.WalletTransactionType
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type WalletTransactionCreateWithoutUserInput = {
   id?: string
   type: $Enums.WalletTransactionType

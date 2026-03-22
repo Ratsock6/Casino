@@ -12,6 +12,8 @@ export interface UserProfile {
   balance: string;
   createdAt: string;
   lastLoginAt: string;
+  discordId: string | null;
+  discordUsername: string | null;
 }
 
 export interface UserTransaction {
@@ -108,4 +110,12 @@ export const getMyGameRoundsApi = async (limit = 50): Promise<UserGameRound[]> =
 export const getMyStatsApi = async (): Promise<UserStats> => {
   const res = await axiosInstance.get('/game-rounds/me/stats');
   return res.data;
+};
+
+export const linkDiscordApi = async (code: string): Promise<void> => {
+  await axiosInstance.post('/discord/link', { code });
+};
+
+export const unlinkDiscordApi = async (): Promise<void> => {
+  await axiosInstance.delete('/discord/link');
 };

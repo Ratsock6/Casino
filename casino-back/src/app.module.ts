@@ -17,6 +17,7 @@ import { GameRoundsModule } from './game-rounds/game-rounds.module';
 import { PublicModule } from './public/public.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { ReportsModule } from './reports/reports.module';
+import { DiscordModule } from './discord/discord.module';
 
 
 @Module({
@@ -46,6 +47,7 @@ import { ReportsModule } from './reports/reports.module';
     GatewayModule,
     ScheduleModule.forRoot(),
     ReportsModule,
+    DiscordModule,
   ],
 })
 export class AppModule {}

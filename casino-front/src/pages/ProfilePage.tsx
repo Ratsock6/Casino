@@ -7,9 +7,10 @@ import type { UserProfile, UserTransaction, UserGameRound, UserStats } from '../
 import '../styles/pages/profile.scss';
 import axiosInstance from '../utils/axios.instance';
 import { getMyLoginHistoryApi, type LoginHistoryEntry } from '../api/profile.api';
+import { linkDiscordApi, unlinkDiscordApi } from '../api/profile.api';
 
 
-type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections';
+type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -34,6 +35,38 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [statsEnabled, setStatsEnabled] = useState<boolean | null>(null);
   const [loginHistory, setLoginHistory] = useState<LoginHistoryEntry[]>([]);
+  const [discordCode, setDiscordCode] = useState('');
+  const [discordMsg, setDiscordMsg] = useState('');
+  const [discordError, setDiscordError] = useState('');
+
+
+  const handleLinkDiscord = async () => {
+    setDiscordMsg('');
+    setDiscordError('');
+    try {
+      await linkDiscordApi(discordCode);
+      setDiscordMsg('✅ Compte Discord lié avec succès !');
+      setDiscordCode('');
+      // Recharge le profil
+      const updated = await getProfileApi();
+      setProfile(updated);
+    } catch (err: any) {
+      setDiscordError(err.response?.data?.message || 'Code invalide ou expiré.');
+    }
+  };
+
+  const handleUnlinkDiscord = async () => {
+    setDiscordMsg('');
+    setDiscordError('');
+    try {
+      await unlinkDiscordApi();
+      setDiscordMsg('✅ Compte Discord délié.');
+      const updated = await getProfileApi();
+      setProfile(updated);
+    } catch {
+      setDiscordError('Une erreur est survenue.');
+    }
+  };
 
   useEffect(() => {
     loadTab(activeTab);
@@ -94,6 +127,7 @@ const ProfilePage = () => {
     { key: 'transactions', label: '💳 Transactions' },
     { key: 'games', label: '🎮 Parties' },
     { key: 'connections', label: '🔐 Connexions' },
+    { key: 'discord', label: '🔗 Discord' },
     ...(statsEnabled ? [{ key: 'stats' as Tab, label: '📊 Statistiques' }] : []),
   ];
 
@@ -374,6 +408,57 @@ const ProfilePage = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'discord' && profile && (
+        <div className="profile__discord">
+          {profile.discordId ? (
+            <div className="profile__discord-linked">
+              <div className="profile__discord-status">
+                <span className="profile__discord-icon">✅</span>
+                <div>
+                  <p className="profile__discord-title">Compte Discord lié</p>
+                  <p className="profile__discord-username">{profile.discordUsername}</p>
+                </div>
+              </div>
+              <p className="profile__discord-desc">
+                Vous pouvez utiliser les commandes <strong>/solde</strong> et <strong>/retrait</strong> sur notre serveur Discord.
+              </p>
+              <button className="profile__discord-unlink" onClick={handleUnlinkDiscord}>
+                🔗 Délier mon compte Discord
+              </button>
+            </div>
+          ) : (
+            <div className="profile__discord-unlinked">
+              <div className="profile__discord-status">
+                <span className="profile__discord-icon">❌</span>
+                <div>
+                  <p className="profile__discord-title">Aucun compte Discord lié</p>
+                  <p className="profile__discord-username">Liez votre Discord pour accéder aux commandes du bot.</p>
+                </div>
+              </div>
+              <div className="profile__discord-steps">
+                <p><strong>1.</strong> Rejoignez notre serveur Discord</p>
+                <p><strong>2.</strong> Tapez la commande <strong>/lier</strong></p>
+                <p><strong>3.</strong> Entrez le code reçu ci-dessous :</p>
+              </div>
+              <div className="profile__discord-form">
+                <input
+                  type="text"
+                  value={discordCode}
+                  onChange={(e) => setDiscordCode(e.target.value.toUpperCase())}
+                  placeholder="Ex: A1B2C3"
+                  maxLength={6}
+                />
+                <button onClick={handleLinkDiscord} disabled={discordCode.length !== 6}>
+                  Lier mon compte
+                </button>
+              </div>
+              {discordMsg && <p className="profile__discord-success">{discordMsg}</p>}
+              {discordError && <p className="profile__discord-error">{discordError}</p>}
             </div>
           )}
         </div>

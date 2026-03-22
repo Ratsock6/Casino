@@ -29,6 +29,8 @@ export class UsersService {
       balance: user.wallet?.balance.toString() ?? '0',
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
+      discordId: user.discordId,
+      discordUsername: user.discordUsername,
     };
   }
 

@@ -42,7 +42,10 @@
     border: 1px solid transparent;
     transition: all $transition-fast;
 
-    &:hover { color: $color-text; border-color: $color-border; }
+    &:hover {
+      color: $color-text;
+      border-color: $color-border;
+    }
 
     &--active {
       color: $color-gold;
@@ -104,10 +107,25 @@
     padding: 3px 10px;
     border-radius: $radius-sm;
 
-    &--player      { color: $color-text-muted; background: rgba($color-text-muted, 0.1); }
-    &--vip         { color: $color-gold; background: rgba($color-gold, 0.1); }
-    &--admin       { color: #5cc8e0; background: rgba(#5cc8e0, 0.1); }
-    &--super_admin { color: #e05c5c; background: rgba(#e05c5c, 0.1); }
+    &--player {
+      color: $color-text-muted;
+      background: rgba($color-text-muted, 0.1);
+    }
+
+    &--vip {
+      color: $color-gold;
+      background: rgba($color-gold, 0.1);
+    }
+
+    &--admin {
+      color: #5cc8e0;
+      background: rgba(#5cc8e0, 0.1);
+    }
+
+    &--super_admin {
+      color: #e05c5c;
+      background: rgba(#e05c5c, 0.1);
+    }
   }
 
   &__fields {
@@ -115,7 +133,9 @@
     grid-template-columns: repeat(2, 1fr);
     gap: $spacing-md;
 
-    @media (max-width: 600px) { grid-template-columns: 1fr; }
+    @media (max-width: 600px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__field {
@@ -190,12 +210,23 @@
       color: $color-text;
     }
 
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: rgba($color-surface, 0.5); }
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: rgba($color-surface, 0.5);
+    }
   }
 
-  &__table-muted { color: $color-text-muted !important; }
-  &__table-date  { color: $color-text-muted !important; font-size: 12px !important; }
+  &__table-muted {
+    color: $color-text-muted !important;
+  }
+
+  &__table-date {
+    color: $color-text-muted !important;
+    font-size: 12px !important;
+  }
 
   // Badge
   &__badge {
@@ -207,9 +238,20 @@
     border: 1px solid currentColor;
     text-transform: uppercase;
 
-    &--win     { color: $color-success; border-color: $color-success; }
-    &--loss    { color: $color-error;   border-color: $color-error; }
-    &--neutral { color: $color-text-muted; border-color: $color-border; }
+    &--win {
+      color: $color-success;
+      border-color: $color-success;
+    }
+
+    &--loss {
+      color: $color-error;
+      border-color: $color-error;
+    }
+
+    &--neutral {
+      color: $color-text-muted;
+      border-color: $color-border;
+    }
   }
 
   // KPIs
@@ -266,7 +308,9 @@
       grid-template-columns: repeat(3, 1fr);
       gap: $spacing-lg;
 
-      @media (max-width: 800px) { grid-template-columns: 1fr; }
+      @media (max-width: 800px) {
+        grid-template-columns: 1fr;
+      }
     }
 
     &-card {
@@ -306,8 +350,14 @@
       font-size: 12px;
       color: $color-text-muted;
 
-      span:first-child { min-width: 60px; }
-      span:last-child  { min-width: 20px; text-align: right; }
+      span:first-child {
+        min-width: 60px;
+      }
+
+      span:last-child {
+        min-width: 20px;
+        text-align: right;
+      }
     }
 
     &-track {
@@ -332,7 +382,150 @@
       padding-top: $spacing-sm;
       border-top: 1px solid $color-border;
 
-      strong { color: $color-text; }
+      strong {
+        color: $color-text;
+      }
+    }
+  }
+
+  &__discord {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    max-width: 600px;
+
+    &-linked,
+    &-unlinked {
+      background: $color-surface;
+      border: 1px solid $color-border;
+      border-radius: $radius-lg;
+      padding: $spacing-xl;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-lg;
+    }
+
+    &-status {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+
+    &-icon {
+      font-size: 32px;
+    }
+
+    &-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    &-username {
+      font-size: 13px;
+      color: $color-text-muted;
+    }
+
+    &-desc {
+      font-size: 14px;
+      color: $color-text-muted;
+      line-height: 1.6;
+
+      strong {
+        color: $color-text;
+      }
+    }
+
+    &-steps {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+      font-size: 14px;
+      color: $color-text-muted;
+
+      strong {
+        color: $color-gold;
+      }
+    }
+
+    &-form {
+      display: flex;
+      gap: $spacing-sm;
+
+      input {
+        flex: 1;
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        padding: 10px $spacing-md;
+        color: $color-text;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        text-align: center;
+        text-transform: uppercase;
+
+        &:focus {
+          border-color: $color-gold;
+          outline: none;
+        }
+
+        &::placeholder {
+          color: $color-text-muted;
+          letter-spacing: 0;
+          font-size: 13px;
+          font-weight: 400;
+        }
+      }
+
+      button {
+        padding: 10px $spacing-xl;
+        background: #5865F2;
+        color: white;
+        border: none;
+        border-radius: $radius-sm;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background $transition-fast;
+        white-space: nowrap;
+
+        &:hover:not(:disabled) {
+          background: #4752C4;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    &-unlink {
+      padding: 8px $spacing-lg;
+      background: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+      border-radius: $radius-sm;
+      color: $color-error;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all $transition-fast;
+      align-self: flex-start;
+
+      &:hover {
+        background: rgba($color-error, 0.2);
+      }
+    }
+
+    &-success {
+      font-size: 13px;
+      color: $color-success;
+    }
+
+    &-error {
+      font-size: 13px;
+      color: $color-error;
     }
   }
 }
