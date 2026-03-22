@@ -38,7 +38,7 @@ export class DiscordService {
   }
 
   // Valide le code depuis le site web
-  async validateLinkCode(userId: string, code: string): Promise<void> {
+  async validateLinkCode(userId: string, code: string) {
     const key = `DISCORD_LINK_${code.toUpperCase()}`;
 
     const config = await this.prisma.casinoConfig.findUnique({
@@ -56,13 +56,11 @@ export class DiscordService {
       throw new BadRequestException('Ce code a expiré. Génère-en un nouveau avec /lier.');
     }
 
-    // Vérifie que l'utilisateur n'est pas déjà lié
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (user?.discordId) {
       throw new BadRequestException('Votre compte casino est déjà lié à un compte Discord.');
     }
 
-    // Lie le compte
     await this.prisma.user.update({
       where: { id: userId },
       data: {
@@ -71,8 +69,21 @@ export class DiscordService {
       },
     });
 
-    // Supprime le code
     await this.prisma.casinoConfig.delete({ where: { key } });
+
+    // Retourne les infos du joueur pour que le bot puisse agir
+    const updatedUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    return {
+      discordId: data.discordId,
+      username: updatedUser!.username,
+      firstName: updatedUser!.firstName,
+      lastName: updatedUser!.lastName,
+      phoneNumber: updatedUser!.phoneNumber,
+      role: updatedUser!.role,
+    };
   }
 
   // Récupère les infos depuis Discord

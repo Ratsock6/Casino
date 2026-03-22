@@ -36,7 +36,29 @@ export class DiscordController {
     @CurrentUser() user: { userId: string },
     @Body('code') code: string,
   ) {
-    await this.discordService.validateLinkCode(user.userId, code);
+    const result = await this.discordService.validateLinkCode(user.userId, code);
+
+    // Notifie le bot pour appliquer le rôle et le pseudo
+    const botWebhookUrl = this.configService.get<string>('DISCORD_BOT_WEBHOOK_URL');
+    if (botWebhookUrl) {
+      try {
+        await fetch(`${botWebhookUrl}/linked`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            secret: this.configService.get<string>('DISCORD_BOT_SECRET'),
+            discordId: result.discordId,
+            firstName: result.firstName,
+            lastName: result.lastName,
+            phoneNumber: result.phoneNumber,
+            role: result.role,
+          }),
+        });
+      } catch (err) {
+        console.error('Erreur notification bot:', err);
+      }
+    }
+
     return { message: 'Compte Discord lié avec succès !' };
   }
 
@@ -55,5 +77,22 @@ export class DiscordController {
   async unlinkAccount(@CurrentUser() user: { userId: string }) {
     await this.discordService.unlinkDiscord(user.userId);
     return { message: 'Compte Discord délié avec succès.' };
+  }
+
+  @Post('notify-linked')
+  async notifyLinked(
+    @Body() body: {
+      discordId: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      phoneNumber: string;
+      role: string;
+      secret: string;
+    },
+  ) {
+    const BOT_SECRET = this.configService.get<string>('DISCORD_BOT_SECRET');
+    if (body.secret !== BOT_SECRET) return { error: 'Unauthorized' };
+    return { success: true };
   }
 }

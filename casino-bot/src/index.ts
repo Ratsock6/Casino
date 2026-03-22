@@ -3,10 +3,11 @@ import * as dotenv from 'dotenv';
 import * as lier from './commands/lier';
 import * as solde from './commands/solde';
 import * as retrait from './commands/retrait';
+import { startWebhook } from './webhook';
 dotenv.config();
 
-const client = new Client({
-  intents: [GatewayIntentBits.Guilds],
+export const client = new Client({
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
 
 const commands = new Collection<string, any>();
@@ -16,6 +17,7 @@ commands.set('retrait', { data: retrait.data, execute: retrait.execute });
 
 client.once(Events.ClientReady, (c) => {
   console.log(`✅ Bot connecté en tant que ${c.user.tag}`);
+  startWebhook();
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

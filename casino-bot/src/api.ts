@@ -36,3 +36,22 @@ export const getUserByDiscordId = async (discordId: string) => {
     throw err;
   }
 };
+
+export const notifyLinked = async (data: {
+  discordId: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  role: string;
+}) => {
+  try {
+    const res = await api.post('/discord/notify-linked', {
+      ...data,
+      secret: SECRET,
+    });
+    return res.data;
+  } catch (err: any) {
+    console.error('Erreur notifyLinked:', err.response?.data || err.message);
+  }
+};
