@@ -51,14 +51,14 @@ export class WalletService {
             userId,
             amount,
             reason: reason ?? 'Admin credit',
-            walletTransactionId: walletTx.id, // 👈
+            walletTransactionId: walletTx.id,
           },
         },
       });
 
       return {
         message: 'Wallet credited successfully',
-        transactionId: walletTx.id, // 👈
+        transactionId: walletTx.id,
         userId,
         amount,
         balanceBefore: balanceBefore.toString(),
