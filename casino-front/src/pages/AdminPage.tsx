@@ -27,6 +27,10 @@ import {
   getAlertsApi,
   triggerDailyReportApi,
   grantVipApi,
+  deleteUserApi,
+  anonymizeUserApi,
+  deanonymizeUserApi,
+  resetPasswordApi,
 } from '../api/admin.api';
 
 import type {
@@ -107,9 +111,62 @@ const AdminPage = () => {
   const [vipDuration, setVipDuration] = useState('1_MONTH');
   const [vipCustomDays, setVipCustomDays] = useState('');
   const [vipMsg, setVipMsg] = useState('');
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [newPassword, setNewPassword] = useState<string | null>(null);
 
   const { user } = useAuthStore();
 
+
+  const handleDeleteUser = async () => {
+    if (!selectedUser) return;
+    try {
+      await deleteUserApi(selectedUser.id);
+      setSelectedUser(null);
+      setShowDeleteConfirm(false);
+      const updated = await getAdminUsersApi();
+      setUsers(updated);
+      setActionMsg('✅ Compte supprimé définitivement.');
+    } catch (err: any) {
+      setActionMsg('❌ ' + (err.response?.data?.message || 'Erreur'));
+    }
+  };
+
+  const handleAnonymize = async () => {
+    if (!selectedUser) return;
+    try {
+      const data = await anonymizeUserApi(selectedUser.id);
+      setActionMsg(`✅ ${data.message}`);
+      const updated = await getAdminUsersApi();
+      setUsers(updated);
+      setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
+    } catch (err: any) {
+      setActionMsg('❌ ' + (err.response?.data?.message || 'Erreur'));
+    }
+  };
+
+  const handleDeanonymize = async () => {
+    if (!selectedUser) return;
+    try {
+      const data = await deanonymizeUserApi(selectedUser.id);
+      setActionMsg(`✅ ${data.message}`);
+      const updated = await getAdminUsersApi();
+      setUsers(updated);
+      setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
+    } catch (err: any) {
+      setActionMsg('❌ ' + (err.response?.data?.message || 'Erreur'));
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!selectedUser) return;
+    try {
+      const data = await resetPasswordApi(selectedUser.id);
+      setNewPassword(data.newPassword);
+      setActionMsg(`✅ ${data.message}`);
+    } catch (err: any) {
+      setActionMsg('❌ ' + (err.response?.data?.message || 'Erreur'));
+    }
+  };
   const handleUpdateRole = async (role: 'ADMIN' | 'PLAYER' | 'VIP') => {
     if (!selectedUser) return;
     try {
@@ -794,6 +851,79 @@ const AdminPage = () => {
                     {new Date(selectedUser.createdAt).toLocaleDateString('fr-FR')}
                   </span>
                 </div>
+              </div>
+
+              {/* Actions avancées */}
+              <div className="admin__advanced-actions">
+                <p className="admin__status-label">Actions avancées</p>
+                <div className="admin__advanced-btns">
+
+                  {/* Réinitialiser le mot de passe */}
+                  <button
+                    className="admin__btn admin__btn--warning"
+                    onClick={handleResetPassword}
+                  >
+                    🔑 Réinitialiser le mot de passe
+                  </button>
+
+                  {/* Anonymiser / Désanonymiser */}
+                  {(selectedUser.firstName === '[Anonymisé]') ? (
+                    <button
+                      className="admin__btn admin__btn--info"
+                      onClick={handleDeanonymize}
+                    >
+                      👁️ Désanonymiser
+                    </button>
+                  ) : (
+                    <button
+                      className="admin__btn admin__btn--warning"
+                      onClick={handleAnonymize}
+                    >
+                      🕵️ Anonymiser
+                    </button>
+                  )}
+
+                  {/* Supprimer */}
+                  {!showDeleteConfirm ? (
+                    <button
+                      className="admin__btn admin__btn--danger"
+                      onClick={() => setShowDeleteConfirm(true)}
+                    >
+                      🗑️ Supprimer le compte
+                    </button>
+                  ) : (
+                    <div className="admin__delete-confirm">
+                      <p>⚠️ Supprimer <strong>{selectedUser.username}</strong> définitivement ?</p>
+                      <div className="admin__delete-confirm-btns">
+                        <button
+                          className="admin__btn admin__btn--danger"
+                          onClick={handleDeleteUser}
+                        >
+                          ✅ Confirmer
+                        </button>
+                        <button
+                          className="admin__btn"
+                          onClick={() => setShowDeleteConfirm(false)}
+                          style={{ color: '#888', borderColor: '#888' }}
+                        >
+                          ✕ Annuler
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Affiche le nouveau mot de passe */}
+                {newPassword && (
+                  <div className="admin__new-password">
+                    <p>🔑 Nouveau mot de passe :</p>
+                    <code>{newPassword}</code>
+                    <p className="admin__new-password-hint">
+                      Communiquez ce mot de passe au joueur et demandez-lui de le changer.
+                    </p>
+                    <button onClick={() => setNewPassword(null)}>✕ Fermer</button>
+                  </div>
+                )}
               </div>
 
               <div className="admin__status-actions">

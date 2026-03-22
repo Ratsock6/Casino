@@ -245,4 +245,23 @@ export const grantVipApi = async (
   return res.data;
 };
 
+export const deleteUserApi = async (userId: string): Promise<void> => {
+  await axiosInstance.delete(`/admin/users/${userId}`);
+};
+
+export const anonymizeUserApi = async (userId: string): Promise<{ message: string }> => {
+  const res = await axiosInstance.patch(`/admin/users/${userId}/anonymize`);
+  return res.data;
+};
+
+export const deanonymizeUserApi = async (userId: string): Promise<{ message: string }> => {
+  const res = await axiosInstance.patch(`/admin/users/${userId}/deanonymize`);
+  return res.data;
+};
+
+export const resetPasswordApi = async (userId: string): Promise<{ message: string; newPassword: string }> => {
+  const res = await axiosInstance.patch(`/admin/users/${userId}/reset-password`);
+  return res.data;
+};
+
 

@@ -1095,4 +1095,118 @@
       color: $color-text-muted;
     }
   }
+
+  &__advanced-actions {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+  }
+
+  &__advanced-btns {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    &--warning {
+      background: rgba($color-warning, 0.15);
+      color: $color-warning;
+      border: 1px solid rgba($color-warning, 0.3);
+
+      &:hover:not(:disabled) {
+        background: rgba($color-warning, 0.25);
+      }
+    }
+
+    &--danger {
+      background: rgba($color-error, 0.15);
+      color: $color-error;
+      border: 1px solid rgba($color-error, 0.3);
+
+      &:hover:not(:disabled) {
+        background: rgba($color-error, 0.25);
+      }
+    }
+
+    &--info {
+      background: rgba(#5cc8e0, 0.15);
+      color: #5cc8e0;
+      border: 1px solid rgba(#5cc8e0, 0.3);
+
+      &:hover:not(:disabled) {
+        background: rgba(#5cc8e0, 0.25);
+      }
+    }
+  }
+
+  &__delete-confirm {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    padding: $spacing-md;
+    background: rgba($color-error, 0.05);
+    border: 1px solid rgba($color-error, 0.3);
+    border-radius: $radius-sm;
+
+    p {
+      font-size: 13px;
+      color: $color-text-muted;
+
+      strong {
+        color: $color-error;
+      }
+    }
+
+    &-btns {
+      display: flex;
+      gap: $spacing-sm;
+    }
+  }
+
+  &__new-password {
+    padding: $spacing-md;
+    background: rgba($color-success, 0.05);
+    border: 1px solid rgba($color-success, 0.3);
+    border-radius: $radius-sm;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    p {
+      font-size: 13px;
+      color: $color-text-muted;
+    }
+
+    code {
+      font-size: 18px;
+      font-weight: 700;
+      color: $color-success;
+      letter-spacing: 2px;
+      padding: $spacing-sm $spacing-md;
+      background: rgba($color-success, 0.1);
+      border-radius: $radius-sm;
+      display: block;
+    }
+
+    &-hint {
+      font-size: 11px;
+      color: $color-text-muted;
+      font-style: italic;
+    }
+
+    button {
+      align-self: flex-end;
+      font-size: 12px;
+      color: $color-text-muted;
+
+      &:hover {
+        color: $color-error;
+      }
+    }
+  }
 }
