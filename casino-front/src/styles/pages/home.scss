@@ -170,6 +170,75 @@
     flex-direction: column;
     gap: $spacing-md;
   }
+
+  &__jackpot-history {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__jackpot-entry {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-md $spacing-lg;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:first-child {
+      border-color: rgba($color-gold, 0.4);
+      background: rgba($color-gold, 0.03);
+    }
+
+    &:hover {
+      background: $color-surface-2;
+    }
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+
+    &-rank {
+      font-size: 20px;
+      width: 32px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    &-username {
+      font-size: 14px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    &-game {
+      font-size: 12px;
+      color: $color-text-muted;
+      margin-top: 2px;
+    }
+
+    &-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    &-amount {
+      font-size: 16px;
+      font-weight: 800;
+      color: $color-gold;
+    }
+
+    &-date {
+      font-size: 11px;
+      color: $color-text-muted;
+    }
+  }
 }
 
 // Game cards

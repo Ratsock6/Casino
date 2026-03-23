@@ -6,6 +6,7 @@ import { getNumberColor, WHEEL_ORDER } from '../utils/roulette.utils';
 import axiosInstance from '../utils/axios.instance';
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
 import '../styles/pages/roulette.scss';
+import JackpotBanner from '../components/ui/JackpotBanner';
 
 const CHIP_VALUES = [50, 100, 500, 1000, 5000];
 
@@ -148,6 +149,8 @@ const RoulettePage = () => {
           Solde : <strong>{balance.toLocaleString()} jetons</strong>
         </p>
       </div>
+
+      <JackpotBanner />
 
       {history.length > 0 && (
         <div className="roulette__history">

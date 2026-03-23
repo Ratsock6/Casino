@@ -104,3 +104,13 @@ export type PlayerLevel = Prisma.PlayerLevelModel
  * 
  */
 export type LevelReward = Prisma.LevelRewardModel
+/**
+ * Model Jackpot
+ * 
+ */
+export type Jackpot = Prisma.JackpotModel
+/**
+ * Model JackpotWin
+ * 
+ */
+export type JackpotWin = Prisma.JackpotWinModel

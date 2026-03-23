@@ -40,6 +40,17 @@ const Notifications = () => {
       addNotification('error', data.message);
     });
 
+    // Jackpot gagné par le joueur
+    on('jackpot:won', (data: any) => {
+      addNotification('success', data.message);
+    });
+
+    // Jackpot gagné par quelqu'un d'autre
+    on('jackpot:won_global', (data: any) => {
+      addNotification('info', `🎰 ${data.username} vient de remporter le jackpot de ${data.amount?.toLocaleString()} jetons sur ${data.gameType} !`);
+    });
+
+
     // Alertes admin
     if (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN') {
       on('alert:new', (data: any) => {
@@ -53,6 +64,8 @@ const Notifications = () => {
       off('wallet:debited');
       off('account:status_changed');
       off('alert:new');
+      off('jackpot:won');
+      off('jackpot:won_global');
     };
   }, [user]);
 

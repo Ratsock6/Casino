@@ -18,6 +18,8 @@ import {
 } from './types/bet.types';
 import { AlertsService } from '../alerts/alerts.service';
 import { LevelsService } from 'src/levels/levels.service';
+import { JackpotService } from 'src/jackpot/jackpot.service';
+import { CasinoGateway } from 'src/gateway/casino.gateway';
 
 
 
@@ -27,6 +29,8 @@ export class BetService {
     private readonly prisma: PrismaService,
     private readonly alertsService: AlertsService,
     private readonly levelsService: LevelsService,
+    private readonly jackpotService: JackpotService,
+    private readonly gatewayService: CasinoGateway,
   ) { }
 
   private toInputJsonValue(data?: JsonObject | null): Prisma.InputJsonValue | undefined {
@@ -138,156 +142,120 @@ export class BetService {
       throw new BadRequestException('Payout must be a non-negative integer');
     }
 
-    return this.prisma.$transaction(
+    // ── Transaction atomique (uniquement les opérations financières) ──
+    const result = await this.prisma.$transaction(
       async (tx) => {
-        const round = await tx.gameRound.findUnique({
-          where: { id: roundId },
-        });
+        const round = await tx.gameRound.findUnique({ where: { id: roundId } });
+        if (!round) throw new NotFoundException('Game round not found');
+        if (round.status !== GameRoundStatus.PENDING) throw new BadRequestException('Game round already settled');
 
-        if (!round) {
-          throw new NotFoundException('Game round not found');
-        }
-
-        if (round.status !== GameRoundStatus.PENDING) {
-          throw new BadRequestException('Game round already settled');
-        }
-
-        const wallet = await tx.wallet.findUnique({
-          where: { userId: round.userId },
-        });
-
-        if (!wallet) {
-          throw new NotFoundException('Wallet not found');
-        }
+        const wallet = await tx.wallet.findUnique({ where: { userId: round.userId } });
+        if (!wallet) throw new NotFoundException('Wallet not found');
 
         const balanceBefore = wallet.balance;
         const payoutAmount = BigInt(payout);
         const balanceAfter = balanceBefore + payoutAmount;
 
-        await tx.wallet.update({
-          where: { userId: round.userId },
-          data: {
-            balance: balanceAfter,
-          },
-        });
+        await tx.wallet.update({ where: { userId: round.userId }, data: { balance: balanceAfter } });
 
-        const existingMetadata =
-          round.metadata && typeof round.metadata === 'object' && !Array.isArray(round.metadata)
-            ? (round.metadata as JsonObject)
-            : {};
-
-        const mergedMetadata: JsonObject = {
-          ...existingMetadata,
-          ...(metadata ?? {}),
-        };
+        const existingMetadata = round.metadata && typeof round.metadata === 'object' && !Array.isArray(round.metadata)
+          ? (round.metadata as JsonObject) : {};
+        const mergedMetadata: JsonObject = { ...existingMetadata, ...(metadata ?? {}) };
 
         await tx.gameRound.update({
           where: { id: round.id },
-          data: {
-            status: GameRoundStatus.WON,
-            payout: payoutAmount,
-            multiplier,
-            settledAt: new Date(),
-            metadata: this.toInputJsonValue(mergedMetadata),
-          },
+          data: { status: GameRoundStatus.WON, payout: payoutAmount, multiplier, settledAt: new Date(), metadata: this.toInputJsonValue(mergedMetadata) },
         });
 
         await tx.walletTransaction.create({
           data: {
-            userId: round.userId,
-            type: WalletTransactionType.WIN,
-            amount: payoutAmount,
-            balanceBefore,
-            balanceAfter,
-            gameType: round.gameType,
-            gameRoundId: round.id,
-            reason: `${round.gameType} win`,
+            userId: round.userId, type: WalletTransactionType.WIN, amount: payoutAmount,
+            balanceBefore, balanceAfter, gameType: round.gameType, gameRoundId: round.id, reason: `${round.gameType} win`,
           },
         });
 
-        await this.levelsService.addXp(round.userId, Number(round.stake));
-
-        const user = await this.prisma.user.findUnique({
-          where: { id: round.userId },
-          select: { username: true },
-        });
-        if (user) {
-          await this.alertsService.checkConsecutiveResults(round.userId, user.username);
-          await this.alertsService.checkCasinoBalance();
-        }
-
-        return {
-          roundId: round.id,
-          status: GameRoundStatus.WON,
-          payout,
-          balanceBefore: balanceBefore.toString(),
-          balanceAfter: balanceAfter.toString(),
-        };
+        return { roundId: round.id, userId: round.userId, gameType: round.gameType, stake: Number(round.stake), status: GameRoundStatus.WON, payout, balanceBefore: balanceBefore.toString(), balanceAfter: balanceAfter.toString() };
       },
-      {
-        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
     );
+
+    const user = await this.prisma.user.findUnique({ where: { id: result.userId }, select: { username: true } });
+
+    await this.levelsService.addXp(result.userId, result.stake).catch(console.error);
+
+    if (user) {
+      await this.alertsService.checkConsecutiveResults(result.userId, user.username).catch(console.error);
+      await this.alertsService.checkCasinoBalance().catch(console.error);
+
+      const jackpotResult = await this.jackpotService.processJackpot(result.userId, user.username, result.stake, result.gameType).catch(() => ({ won: false }));
+
+      if (jackpotResult.won) {
+        console.log(`🎰 JACKPOT GAGNÉ par ${user.username} : ${jackpotResult.amount} jetons`);
+        this.gatewayService.notifyUser(result.userId, 'jackpot:won', {
+          amount: jackpotResult.amount,
+          message: `🎰 FÉLICITATIONS ! Vous avez remporté le JACKPOT de ${jackpotResult.amount?.toLocaleString()} jetons !`,
+        });
+        this.gatewayService.broadcast('jackpot:won_global', { username: user.username, amount: jackpotResult.amount, gameType: result.gameType });
+        this.gatewayService.notifyAdmins('alert:new', {
+          type: 'JACKPOT_WIN',
+          message: `🎰 JACKPOT remporté par **${user.username}** : ${jackpotResult.amount?.toLocaleString()} jetons sur ${result.gameType}`,
+          username: user.username, createdAt: new Date().toISOString(),
+        });
+      }
+    }
+
+    return { roundId: result.roundId, status: result.status, payout, balanceBefore: result.balanceBefore, balanceAfter: result.balanceAfter };
   }
 
   async settleLoss(input: SettleLossInput) {
     const { roundId, metadata } = input;
 
-    return this.prisma.$transaction(
+    // ── Transaction atomique ──
+    const result = await this.prisma.$transaction(
       async (tx) => {
-        const round = await tx.gameRound.findUnique({
-          where: { id: roundId },
-        });
+        const round = await tx.gameRound.findUnique({ where: { id: roundId } });
+        if (!round) throw new NotFoundException('Game round not found');
+        if (round.status !== GameRoundStatus.PENDING) throw new BadRequestException('Game round already settled');
 
-        if (!round) {
-          throw new NotFoundException('Game round not found');
-        }
-
-        if (round.status !== GameRoundStatus.PENDING) {
-          throw new BadRequestException('Game round already settled');
-        }
-
-        const existingMetadata =
-          round.metadata && typeof round.metadata === 'object' && !Array.isArray(round.metadata)
-            ? (round.metadata as JsonObject)
-            : {};
-
-        const mergedMetadata: JsonObject = {
-          ...existingMetadata,
-          ...(metadata ?? {}),
-        };
+        const existingMetadata = round.metadata && typeof round.metadata === 'object' && !Array.isArray(round.metadata)
+          ? (round.metadata as JsonObject) : {};
+        const mergedMetadata: JsonObject = { ...existingMetadata, ...(metadata ?? {}) };
 
         const updatedRound = await tx.gameRound.update({
           where: { id: round.id },
-          data: {
-            status: GameRoundStatus.LOST,
-            payout: BigInt(0),
-            settledAt: new Date(),
-            metadata: this.toInputJsonValue(mergedMetadata),
-          },
+          data: { status: GameRoundStatus.LOST, payout: BigInt(0), settledAt: new Date(), metadata: this.toInputJsonValue(mergedMetadata) },
         });
 
-        
-        await this.levelsService.addXp(round.userId, Number(round.stake));
-
-        const user = await this.prisma.user.findUnique({
-          where: { id: round.userId },
-          select: { username: true },
-        });
-        if (user) {
-          await this.alertsService.checkConsecutiveResults(round.userId, user.username);
-        }
-
-        return {
-          roundId: updatedRound.id,
-          status: updatedRound.status,
-          payout: '0',
-        };
+        return { roundId: updatedRound.id, userId: round.userId, gameType: round.gameType, stake: Number(round.stake), status: updatedRound.status };
       },
-      {
-        isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
-      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
     );
+
+    const user = await this.prisma.user.findUnique({ where: { id: result.userId }, select: { username: true } });
+
+    await this.levelsService.addXp(result.userId, result.stake).catch(console.error);
+
+    if (user) {
+      await this.alertsService.checkConsecutiveResults(result.userId, user.username).catch(console.error);
+
+      const jackpotResult = await this.jackpotService.processJackpot(result.userId, user.username, result.stake, result.gameType).catch(() => ({ won: false }));
+
+      if (jackpotResult.won) {
+        console.log(`🎰 JACKPOT GAGNÉ par ${user.username} : ${jackpotResult.amount} jetons`);
+        this.gatewayService.notifyUser(result.userId, 'jackpot:won', {
+          amount: jackpotResult.amount,
+          message: `🎰 FÉLICITATIONS ! Vous avez remporté le JACKPOT de ${jackpotResult.amount?.toLocaleString()} jetons !`,
+        });
+        this.gatewayService.broadcast('jackpot:won_global', { username: user.username, amount: jackpotResult.amount, gameType: result.gameType });
+        this.gatewayService.notifyAdmins('alert:new', {
+          type: 'JACKPOT_WIN',
+          message: `🎰 JACKPOT remporté par **${user.username}** : ${jackpotResult.amount?.toLocaleString()} jetons sur ${result.gameType}`,
+          username: user.username, createdAt: new Date().toISOString(),
+        });
+      }
+    }
+
+    return { roundId: result.roundId, status: result.status, payout: '0' };
   }
 
   async refundBet(input: RefundBetInput) {

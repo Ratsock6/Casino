@@ -21,6 +21,10 @@ const configs = [
   { key: 'VIP_PRICE_6_MONTHS', value: '200000' },
   { key: 'VIP_PRICE_LIFETIME', value: '500000' },
   { key: 'REPORT_DAILY_HOUR', value: '8' },
+  { key: 'JACKPOT_ENABLED', value: 'true' },
+  { key: 'JACKPOT_CONTRIBUTION_PCT', value: '1' },
+  { key: 'JACKPOT_WIN_PROBABILITY', value: '10000' },
+  { key: 'JACKPOT_MIN_AMOUNT', value: '100000' }, 
 ];
 
 async function main() {

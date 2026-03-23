@@ -9,6 +9,7 @@ import {
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
 import axiosInstance from '../utils/axios.instance';
 import '../styles/pages/blackjack.scss';
+import JackpotBanner from '../components/ui/JackpotBanner';
 
 // Composant carte
 const Card = ({ card, hidden = false, index = 0 }: {
@@ -148,6 +149,7 @@ const BlackjackPage = () => {
         <div className="blackjack__loading">Chargement...</div>
       </div>
     );
+    
   }
 
   return (
@@ -159,6 +161,8 @@ const BlackjackPage = () => {
           Solde : <strong>{balance.toLocaleString()} jetons</strong>
         </p>
       </div>
+
+      <JackpotBanner />
 
       {!game ? (
         /* ── Mise initiale ── */

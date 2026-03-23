@@ -1,0 +1,101 @@
+@import '../variables';
+
+.jackpot-banner {
+  background: linear-gradient(135deg, rgba($color-gold, 0.12), rgba($color-gold, 0.04));
+  border: 1px solid rgba($color-gold, 0.4);
+  border-radius: $radius-lg;
+  padding: $spacing-lg $spacing-xl;
+  display: flex;
+  align-items: center;
+  gap: $spacing-xl;
+  position: relative;
+  overflow: hidden;
+  transition: all $transition-base;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba($color-gold, 0.08), transparent);
+    animation: jackpotShimmer 3s ease-in-out infinite;
+  }
+
+  &--rising {
+    border-color: $color-gold;
+    box-shadow: 0 0 20px rgba($color-gold, 0.3);
+  }
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    flex-shrink: 0;
+  }
+
+  &__icon {
+    font-size: 32px;
+    animation: jackpotPulse 2s ease-in-out infinite;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 800;
+    color: $color-gold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  &__sublabel {
+    font-size: 11px;
+    color: $color-text-muted;
+    margin-top: 2px;
+  }
+
+  &__amount {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+  }
+
+  &__value {
+    font-size: 36px;
+    font-weight: 900;
+    color: $color-gold;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.3s ease;
+
+    &--rising {
+      color: $color-gold-light;
+      transform: scale(1.05);
+      text-shadow: 0 0 20px rgba($color-gold, 0.6);
+    }
+  }
+
+  &__currency {
+    font-size: 24px;
+  }
+
+  &__last {
+    font-size: 12px;
+    color: $color-text-muted;
+    text-align: right;
+    flex-shrink: 0;
+
+    strong { color: $color-gold; }
+  }
+}
+
+@keyframes jackpotShimmer {
+  0%   { left: -100%; }
+  50%  { left: 100%; }
+  100% { left: 100%; }
+}
+
+@keyframes jackpotPulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.1); }
+}

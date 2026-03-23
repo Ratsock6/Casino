@@ -396,7 +396,9 @@ export const ModelName = {
   LoginHistory: 'LoginHistory',
   VipSubscription: 'VipSubscription',
   PlayerLevel: 'PlayerLevel',
-  LevelReward: 'LevelReward'
+  LevelReward: 'LevelReward',
+  Jackpot: 'Jackpot',
+  JackpotWin: 'JackpotWin'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -412,7 +414,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription" | "playerLevel" | "levelReward"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription" | "playerLevel" | "levelReward" | "jackpot" | "jackpotWin"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1378,6 +1380,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    Jackpot: {
+      payload: Prisma.$JackpotPayload<ExtArgs>
+      fields: Prisma.JackpotFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JackpotFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JackpotFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>
+        }
+        findFirst: {
+          args: Prisma.JackpotFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JackpotFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>
+        }
+        findMany: {
+          args: Prisma.JackpotFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>[]
+        }
+        create: {
+          args: Prisma.JackpotCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>
+        }
+        createMany: {
+          args: Prisma.JackpotCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JackpotCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>[]
+        }
+        delete: {
+          args: Prisma.JackpotDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>
+        }
+        update: {
+          args: Prisma.JackpotUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>
+        }
+        deleteMany: {
+          args: Prisma.JackpotDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JackpotUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JackpotUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>[]
+        }
+        upsert: {
+          args: Prisma.JackpotUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotPayload>
+        }
+        aggregate: {
+          args: Prisma.JackpotAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJackpot>
+        }
+        groupBy: {
+          args: Prisma.JackpotGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JackpotGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JackpotCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JackpotCountAggregateOutputType> | number
+        }
+      }
+    }
+    JackpotWin: {
+      payload: Prisma.$JackpotWinPayload<ExtArgs>
+      fields: Prisma.JackpotWinFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.JackpotWinFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.JackpotWinFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>
+        }
+        findFirst: {
+          args: Prisma.JackpotWinFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.JackpotWinFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>
+        }
+        findMany: {
+          args: Prisma.JackpotWinFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>[]
+        }
+        create: {
+          args: Prisma.JackpotWinCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>
+        }
+        createMany: {
+          args: Prisma.JackpotWinCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.JackpotWinCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>[]
+        }
+        delete: {
+          args: Prisma.JackpotWinDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>
+        }
+        update: {
+          args: Prisma.JackpotWinUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>
+        }
+        deleteMany: {
+          args: Prisma.JackpotWinDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.JackpotWinUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.JackpotWinUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>[]
+        }
+        upsert: {
+          args: Prisma.JackpotWinUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$JackpotWinPayload>
+        }
+        aggregate: {
+          args: Prisma.JackpotWinAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateJackpotWin>
+        }
+        groupBy: {
+          args: Prisma.JackpotWinGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JackpotWinGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.JackpotWinCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.JackpotWinCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1611,6 +1761,31 @@ export const LevelRewardScalarFieldEnum = {
 } as const
 
 export type LevelRewardScalarFieldEnum = (typeof LevelRewardScalarFieldEnum)[keyof typeof LevelRewardScalarFieldEnum]
+
+
+export const JackpotScalarFieldEnum = {
+  id: 'id',
+  amount: 'amount',
+  isActive: 'isActive',
+  lastWonAt: 'lastWonAt',
+  lastWonBy: 'lastWonBy',
+  lastWonAmount: 'lastWonAmount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type JackpotScalarFieldEnum = (typeof JackpotScalarFieldEnum)[keyof typeof JackpotScalarFieldEnum]
+
+
+export const JackpotWinScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  amount: 'amount',
+  gameType: 'gameType',
+  createdAt: 'createdAt'
+} as const
+
+export type JackpotWinScalarFieldEnum = (typeof JackpotWinScalarFieldEnum)[keyof typeof JackpotWinScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1963,6 +2138,8 @@ export type GlobalOmitConfig = {
   vipSubscription?: Prisma.VipSubscriptionOmit
   playerLevel?: Prisma.PlayerLevelOmit
   levelReward?: Prisma.LevelRewardOmit
+  jackpot?: Prisma.JackpotOmit
+  jackpotWin?: Prisma.JackpotWinOmit
 }
 
 /* Types for Logging */

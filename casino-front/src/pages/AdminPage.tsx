@@ -48,6 +48,8 @@ import type {
   Alert,
 } from '../api/admin.api';
 
+import { resetJackpotApi } from '../api/jackpot.api';
+
 import { exportToCsv } from '../utils/csv.utils';
 import '../styles/pages/admin.scss';
 import { updateUserRoleApi } from '../api/admin.api';
@@ -519,6 +521,26 @@ const AdminPage = () => {
       label: '👑 Prix VIP à vie',
       description: 'Prix en jetons pour un abonnement VIP à vie.',
     },
+    JACKPOT_ENABLED: {
+      label: '🎰 Jackpot activé',
+      description: 'Active ou désactive le jackpot progressif.',
+    },
+    JACKPOT_CONTRIBUTION_PCT: {
+      label: '% contribution jackpot',
+      description: 'Pourcentage de chaque mise ajouté à la cagnotte (ex: 1 = 1%).',
+    },
+    JACKPOT_WIN_PROBABILITY: {
+      label: 'Probabilité de gain',
+      description: '1 chance sur X de remporter le jackpot (ex: 10000 = 1/10 000).',
+    },
+    JACKPOT_MIN_AMOUNT: {
+      label: 'Montant minimum jackpot',
+      description: 'Montant de départ et de réinitialisation de la cagnotte.',
+    },
+    JACKPOT_MIN_PCT: {
+      label: '% revenu net → jackpot départ',
+      description: 'Pourcentage du revenu net du casino utilisé comme montant de départ du jackpot après reset (ex: 2 = 2%). Toujours au moins JACKPOT_MIN_AMOUNT.',
+    },
   };
 
   const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
@@ -544,6 +566,7 @@ const AdminPage = () => {
     'MAINTENANCE_ROULETTE',
     'MAINTENANCE_BLACKJACK',
     'MAINTENANCE_GLOBAL',
+    'JACKPOT_ENABLED',
   ];
 
   return (
@@ -1336,6 +1359,26 @@ const AdminPage = () => {
               }}
             >
               📤 Envoyer maintenant
+            </button>
+          </div>
+
+          <div className="admin__config-row">
+            <div className="admin__config-info">
+              <span className="admin__config-label">🎰 Jackpot progressif</span>
+              <span className="admin__config-description">
+                Réinitialise la cagnotte au montant minimum configuré (JACKPOT_MIN_AMOUNT).
+              </span>
+            </div>
+            <button
+              className="admin__export-btn"
+              onClick={async () => {
+                if (confirm('Réinitialiser le jackpot ?')) {
+                  await resetJackpotApi();
+                  alert('✅ Jackpot réinitialisé !');
+                }
+              }}
+            >
+              🔄 Réinitialiser
             </button>
           </div>
         </div>

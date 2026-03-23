@@ -10,6 +10,8 @@ import {
   type PublicStats,
 } from '../api/profile.api';
 import '../styles/pages/home.scss';
+import { getJackpotApi, getJackpotHistoryApi, type JackpotData, type JackpotHistoryEntry } from '../api/jackpot.api';
+import JackpotBanner from '../components/ui/JackpotBanner';
 
 const GAME_ICONS: Record<string, string> = {
   SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏',
@@ -54,12 +56,12 @@ const HomePage = () => {
   const { user } = useAuthStore();
   const { balance } = useWalletStore();
 
-  // 👇 useState DANS le composant
   const [winners, setWinners] = useState<RecentWinner[]>([]);
   const [stats, setStats] = useState<PublicStats | null>(null);
   const [maintenanceStatus, setMaintenanceStatus] = useState({
     global: false, SLOTS: false, ROULETTE: false, BLACKJACK: false,
   });
+  const [jackpotHistory, setJackpotHistory] = useState<JackpotHistoryEntry[]>([]);
 
   useEffect(() => {
     axiosInstance.get('/public/maintenance')
@@ -70,12 +72,14 @@ const HomePage = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const [w, s] = await Promise.allSettled([
+        const [w, s, h] = await Promise.allSettled([
           getRecentWinnersApi(),
           getPublicStatsApi(),
+          getJackpotHistoryApi(),
         ]);
         if (w.status === 'fulfilled') setWinners(w.value);
         if (s.status === 'fulfilled') setStats(s.value);
+        if (h.status === 'fulfilled') setJackpotHistory(h.value);
       } catch (err) {
         console.error(err);
       }
@@ -130,6 +134,8 @@ const HomePage = () => {
         </div>
       )}
 
+      <JackpotBanner />
+
       {/* ── JEUX ── */}
       <div className="home__games">
         {games.map((game) => (
@@ -154,6 +160,38 @@ const HomePage = () => {
           </div>
         ))}
       </div>
+
+      {/* ── JACKPOT HISTORY ── */}
+      {jackpotHistory.length > 0 && (
+        <div className="home__section">
+          <h2 className="home__section-title">🏆 Hall of Fame — Gagnants du Jackpot</h2>
+          <div className="home__jackpot-history">
+            {jackpotHistory.map((entry, i) => (
+              <div key={i} className="home__jackpot-entry">
+                <div className="home__jackpot-entry-left">
+                  <span className="home__jackpot-entry-rank">
+                    {i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                  </span>
+                  <div>
+                    <p className="home__jackpot-entry-username">{entry.firstName} {entry.lastName}</p>
+                    <p className="home__jackpot-entry-game">
+                      {entry.gameType === 'SLOTS' ? '🎰' : entry.gameType === 'ROULETTE' ? '🎡' : '🃏'} {entry.gameType}
+                    </p>
+                  </div>
+                </div>
+                <div className="home__jackpot-entry-right">
+                  <span className="home__jackpot-entry-amount">
+                    +{entry.amount.toLocaleString()} 🪙
+                  </span>
+                  <span className="home__jackpot-entry-date">
+                    {new Date(entry.createdAt).toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
     </div>
   );

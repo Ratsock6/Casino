@@ -80,6 +80,7 @@ model User {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
   loginHistory     LoginHistory[]
+  jackpotWins      JackpotWin[]
   discordId        String?   @unique
   discordUsername  String?
   metadata         Json?
@@ -287,4 +288,27 @@ model LevelReward {
 
   @@index([userId, level])
   @@index([isIngame, ingameClaimed])
+}
+
+model Jackpot {
+  id          String    @id @default(cuid())
+  amount      BigInt    @default(0)
+  isActive    Boolean   @default(true)
+  lastWonAt   DateTime?
+  lastWonBy   String?
+  lastWonAmount BigInt?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model JackpotWin {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    BigInt
+  gameType  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

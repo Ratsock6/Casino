@@ -6,6 +6,7 @@ import { SYMBOL_DISPLAY } from '../utils/slots.utils';
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
 import axiosInstance from '../utils/axios.instance';
 import '../styles/pages/slots.scss';
+import JackpotBanner from '../components/ui/JackpotBanner';
 
 const SYMBOLS_LIST = ['🍒', '🍋', '🎰', '7️⃣', '💎'];
 
@@ -202,6 +203,8 @@ const SlotsPage = () => {
           Solde : <strong>{balance.toLocaleString()} jetons</strong>
         </p>
       </div>
+
+      <JackpotBanner />
 
       <div className="slots__machine">
         <div className="slots__reels">
