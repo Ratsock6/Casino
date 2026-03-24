@@ -40,7 +40,7 @@ const LoginPage = () => {
       <div className="login-card">
         <div className="login-card__header">
           <span className="login-card__icon">♠</span>
-          <h1 className="login-card__title">Diamond Casino</h1>
+          <h1 className="login-card__title">Bellagio Casino</h1>
           <p className="login-card__subtitle">Connectez-vous pour jouer</p>
         </div>
 

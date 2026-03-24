@@ -90,6 +90,21 @@ export class JackpotService {
       const roll = Math.floor(Math.random() * winProbability);
       const won = roll === 0;
 
+      const minStake = parseInt(
+        await this.casinoConfigService.get('JACKPOT_MIN_STAKE') || '5000'
+      );
+
+      if (stake < minStake) {
+        const contribution = Math.floor(stake * contributionPct / 100);
+        if (contribution > 0) {
+          await this.prisma.jackpot.updateMany({
+            where: { isActive: true },
+            data: { amount: { increment: BigInt(contribution) } },
+          });
+        }
+        return { won: false };
+      }
+
       if (won) {
         const wonAmount = Number(newAmount);
         const newMinAmount = await this.calculateMinAmount();

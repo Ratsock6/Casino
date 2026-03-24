@@ -24,7 +24,9 @@ const configs = [
   { key: 'JACKPOT_ENABLED', value: 'true' },
   { key: 'JACKPOT_CONTRIBUTION_PCT', value: '1' },
   { key: 'JACKPOT_WIN_PROBABILITY', value: '10000' },
-  { key: 'JACKPOT_MIN_AMOUNT', value: '100000' }, 
+  { key: 'JACKPOT_MIN_AMOUNT', value: '100000' },
+  { key: 'JACKPOT_MIN_PCT', value: '2' },
+  { key: 'JACKPOT_MIN_STAKE', value: '5000' },
 ];
 
 async function main() {

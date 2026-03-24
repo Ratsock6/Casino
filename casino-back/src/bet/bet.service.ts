@@ -189,17 +189,22 @@ export class BetService {
 
       const jackpotResult = await this.jackpotService.processJackpot(result.userId, user.username, result.stake, result.gameType).catch(() => ({ won: false }));
 
-      if (jackpotResult.won) {
+      if (jackpotResult.won && 'amount' in jackpotResult) {
         console.log(`🎰 JACKPOT GAGNÉ par ${user.username} : ${jackpotResult.amount} jetons`);
         this.gatewayService.notifyUser(result.userId, 'jackpot:won', {
           amount: jackpotResult.amount,
           message: `🎰 FÉLICITATIONS ! Vous avez remporté le JACKPOT de ${jackpotResult.amount?.toLocaleString()} jetons !`,
         });
-        this.gatewayService.broadcast('jackpot:won_global', { username: user.username, amount: jackpotResult.amount, gameType: result.gameType });
+        this.gatewayService.broadcast('jackpot:won_global', {
+          username: user.username,
+          amount: jackpotResult.amount,
+          gameType: result.gameType,
+        });
         this.gatewayService.notifyAdmins('alert:new', {
           type: 'JACKPOT_WIN',
           message: `🎰 JACKPOT remporté par **${user.username}** : ${jackpotResult.amount?.toLocaleString()} jetons sur ${result.gameType}`,
-          username: user.username, createdAt: new Date().toISOString(),
+          username: user.username,
+          createdAt: new Date().toISOString(),
         });
       }
     }
@@ -240,7 +245,7 @@ export class BetService {
 
       const jackpotResult = await this.jackpotService.processJackpot(result.userId, user.username, result.stake, result.gameType).catch(() => ({ won: false }));
 
-      if (jackpotResult.won) {
+      if (jackpotResult.won && 'amount' in jackpotResult) {
         console.log(`🎰 JACKPOT GAGNÉ par ${user.username} : ${jackpotResult.amount} jetons`);
         this.gatewayService.notifyUser(result.userId, 'jackpot:won', {
           amount: jackpotResult.amount,

@@ -541,6 +541,10 @@ const AdminPage = () => {
       label: '% revenu net → jackpot départ',
       description: 'Pourcentage du revenu net du casino utilisé comme montant de départ du jackpot après reset (ex: 2 = 2%). Toujours au moins JACKPOT_MIN_AMOUNT.',
     },
+    JACKPOT_MIN_STAKE: {
+      label: 'Mise minimum jackpot',
+      description: 'Mise minimum en jetons pour pouvoir tenter de gagner le jackpot. Les mises inférieures contribuent quand même à la cagnotte.',
+    },
   };
 
   const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
