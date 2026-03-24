@@ -301,6 +301,7 @@ export class AdminService {
 
     const transactions = await this.prisma.walletTransaction.findMany({
       where: {
+        type: { in: ['BET', 'WIN', 'WIN_JACKPOT', 'WIN_LEVEL'] },
         createdAt: { gte: since },
       },
       orderBy: { createdAt: 'asc' },
@@ -319,7 +320,9 @@ export class AdminService {
       if (!byDay[day]) byDay[day] = { bets: 0, wins: 0, revenue: 0 };
 
       if (t.type === 'BET') byDay[day].bets += Number(t.amount);
-      if (t.type === 'WIN') byDay[day].wins += Number(t.amount);
+      if (['WIN', 'WIN_JACKPOT', 'WIN_LEVEL'].includes(t.type)) {
+        byDay[day].wins += Number(t.amount);
+      }
     });
 
     // Remplit les jours manquants

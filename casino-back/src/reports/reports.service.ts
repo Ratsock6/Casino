@@ -87,10 +87,28 @@ export class ReportsService {
       where: { type: 'WIN' },
     });
 
+    const [totalWinAgg, jackpotAgg, levelAgg] = await Promise.all([
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN', createdAt: { gte: since, lt: until } },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN_JACKPOT', createdAt: { gte: since, lt: until } },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN_LEVEL', createdAt: { gte: since, lt: until } },
+      }),
+    ]);
+
     const totalBets = Number(betsAgg._sum.amount || 0);
     const totalWins = Number(winsAgg._sum.amount || 0);
     const revenue = totalBets - totalWins;
     const casinoBalance = Number(totalBetsAllTime._sum.amount || 0) - Number(totalWinsAllTime._sum.amount || 0);
+    const totalJackpot = Number(jackpotAgg._sum.amount || 0);
+    const totalLevel = Number(levelAgg._sum.amount || 0);
+    const grossRevenue = totalBets - totalWins;
 
     const date = since.toLocaleDateString('fr-FR', {
       weekday: 'long', day: '2-digit', month: 'long', year: 'numeric',
@@ -107,6 +125,9 @@ export class ReportsService {
       activePlayers: activePlayers.length,
       logins,
       casinoBalance,
+      totalJackpot,
+      totalLevel,
+      grossRevenue,
     };
   }
 
@@ -121,6 +142,7 @@ export class ReportsService {
 
     const revenueColor = report.revenue >= 0 ? 0x4CAF7D : 0xE05C5C;
     const revenueEmoji = report.revenue >= 0 ? '📈' : '📉';
+    const casinoBalanceEmoji = report.casinoBalance >= 0 ? '🟢' : '🔴';
 
     const body = {
       embeds: [{
@@ -152,6 +174,10 @@ export class ReportsService {
               `Total misé : **${report.totalBets.toLocaleString()} 🪙**`,
               `Total gagné : **${report.totalWins.toLocaleString()} 🪙**`,
               `${revenueEmoji} Revenu net : **${report.revenue >= 0 ? '+' : ''}${report.revenue.toLocaleString()} 🪙**`,
+              `Jackpots : **${report.totalJackpot.toLocaleString()} 🪙**`,
+              `Niveaux : **${report.totalLevel.toLocaleString()} 🪙**`,
+              `Revenu brut : **${report.grossRevenue.toLocaleString()} 🪙**`,
+              `${casinoBalanceEmoji} Solde casino : **${report.casinoBalance.toLocaleString()} 🪙**`,
             ].join('\n'),
             inline: true,
           },
