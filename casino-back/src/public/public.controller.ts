@@ -8,7 +8,7 @@ export class PublicController {
   constructor(
     private readonly prisma: PrismaService,
     private readonly casinoConfigService: CasinoConfigService,
-  ) {}
+  ) { }
 
   @Get('recent-winners')
   async getRecentWinners() {
@@ -62,5 +62,11 @@ export class PublicController {
 
     return { global, SLOTS: slots, ROULETTE: roulette, BLACKJACK: blackjack };
   }
-  
+
+  @Get('jackpot-status')
+  async getJackpotStatus() {
+    const enabled = await this.casinoConfigService.getBoolean('JACKPOT_ENABLED', false);
+    return { enabled };
+  }
+
 }

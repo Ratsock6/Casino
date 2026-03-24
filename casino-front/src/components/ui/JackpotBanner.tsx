@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getJackpotApi, type JackpotData } from '../../api/jackpot.api';
+import axiosInstance from '../../utils/axios.instance';
 import '../../styles/components/jackpot-banner.scss';
 
 const JackpotBanner = () => {
   const [jackpot, setJackpot] = useState<JackpotData | null>(null);
-  const [prevAmount, setPrevAmount] = useState<number>(0);
+  const [enabled, setEnabled] = useState<boolean | null>(null);
   const [isRising, setIsRising] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -13,7 +14,6 @@ const JackpotBanner = () => {
       const data = await getJackpotApi();
       setJackpot((prev) => {
         if (prev && data.amount > prev.amount) {
-          setPrevAmount(prev.amount);
           setIsRising(true);
           setTimeout(() => setIsRising(false), 1000);
         }
@@ -25,15 +25,23 @@ const JackpotBanner = () => {
   };
 
   useEffect(() => {
+    // Vérifie si le jackpot est activé via la maintenance publique
+    axiosInstance.get('/public/jackpot-status')
+      .then((res) => setEnabled(res.data.enabled))
+      .catch(() => setEnabled(false));
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     fetchJackpot();
-    // Rafraîchit toutes les 10 secondes
     intervalRef.current = setInterval(fetchJackpot, 10000);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, []);
+  }, [enabled]);
 
-  if (!jackpot) return null;
+  // Ne rien afficher si désactivé ou en cours de chargement
+  if (enabled === null || !enabled || !jackpot) return null;
 
   return (
     <div className={`jackpot-banner ${isRising ? 'jackpot-banner--rising' : ''}`}>
