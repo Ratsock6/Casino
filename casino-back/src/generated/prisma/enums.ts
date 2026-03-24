@@ -35,7 +35,9 @@ export const WalletTransactionType = {
   WIN: 'WIN',
   LOSS: 'LOSS',
   REFUND: 'REFUND',
-  ADJUSTMENT: 'ADJUSTMENT'
+  ADJUSTMENT: 'ADJUSTMENT',
+  WIN_JACKPOT: 'WIN_JACKPOT',
+  WIN_LEVEL: 'WIN_LEVEL'
 } as const
 
 export type WalletTransactionType = (typeof WalletTransactionType)[keyof typeof WalletTransactionType]

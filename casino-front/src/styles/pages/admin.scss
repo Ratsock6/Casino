@@ -1209,4 +1209,69 @@
       }
     }
   }
+
+  &__stats-revenue {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    &-rows {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+  }
+
+  &__stats-subtitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__revenue-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-sm;
+    font-size: 14px;
+    color: $color-text-muted;
+
+    strong {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    &--sub {
+      background: rgba($color-success, 0.05);
+      border-top: 1px solid $color-border;
+      color: $color-text;
+      margin-top: $spacing-xs;
+      padding-top: $spacing-sm;
+    }
+
+    &--total {
+      background: rgba($color-gold, 0.05);
+      border: 1px solid rgba($color-gold, 0.3);
+      border-radius: $radius-md;
+      color: $color-text;
+      font-weight: 700;
+      padding: $spacing-md;
+      margin-top: $spacing-xs;
+
+      strong {
+        font-size: 18px;
+      }
+    }
+
+    &--separator {
+      border-top: 1px dashed $color-border;
+      margin: $spacing-sm 0;
+      padding: 0;
+    }
+  }
 }

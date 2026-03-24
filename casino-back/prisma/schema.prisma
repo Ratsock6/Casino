@@ -29,6 +29,8 @@ enum WalletTransactionType {
   LOSS
   REFUND
   ADJUSTMENT
+  WIN_JACKPOT
+  WIN_LEVEL
 }
 
 enum GameType {

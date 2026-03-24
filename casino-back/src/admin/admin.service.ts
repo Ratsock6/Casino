@@ -46,40 +46,77 @@ export class AdminService {
   }
 
   async getGlobalStats() {
-    const [totalUsers, totalRounds] = await Promise.all([
+    const [
+      totalUsers,
+      activeUsers,
+      totalRounds,
+      betsAgg,
+      winsAgg,
+      jackpotAgg,
+      levelAgg,
+      adminCreditAgg,
+      adminDebitAgg,
+      roundsByGame, // 👈 ajoute ça
+    ] = await Promise.all([
       this.prisma.user.count(),
+      this.prisma.user.count({ where: { status: 'ACTIVE' } }),
       this.prisma.gameRound.count(),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'BET' },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN' },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN_JACKPOT' },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN_LEVEL' },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'ADMIN_CREDIT' },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'ADMIN_DEBIT' },
+      }),
+      this.prisma.gameRound.groupBy({ // 👈 ajoute ça
+        by: ['gameType'],
+        _count: { id: true },
+      }),
     ]);
 
-    const totalBetAgg = await this.prisma.walletTransaction.aggregate({
-      _sum: { amount: true },
-      where: { type: 'BET' },
-    });
-
-    const totalWinAgg = await this.prisma.walletTransaction.aggregate({
-      _sum: { amount: true },
-      where: { type: 'WIN' },
-    });
-
-    const roundsByGame = await this.prisma.gameRound.groupBy({
-      by: ['gameType'],
-      _count: { id: true },
-    });
-
-    const totalBet = Number(totalBetAgg._sum.amount || 0);
-    const totalWin = Number(totalWinAgg._sum.amount || 0);
-    const casinoRevenue = totalBet - totalWin;
+    const totalBets = Number(betsAgg._sum.amount || 0);
+    const totalWins = Number(winsAgg._sum.amount || 0);
+    const totalJackpot = Number(jackpotAgg._sum.amount || 0);
+    const totalLevel = Number(levelAgg._sum.amount || 0);
+    const totalCredit = Number(adminCreditAgg._sum.amount || 0);
+    const totalDebit = Number(adminDebitAgg._sum.amount || 0);
+    const grossRevenue = totalBets - totalWins;
+    const netRevenue = grossRevenue - totalJackpot - totalLevel;
 
     return {
       totalUsers,
+      activeUsers,
       totalRounds,
-      totalBet,
-      totalWin,
-      casinoRevenue,
       roundsByGame: roundsByGame.map((r) => ({
         gameType: r.gameType,
         count: r._count.id,
       })),
+      totalBet: totalBets,
+      totalWin: totalWins,
+      totalJackpot,
+      totalLevel,
+      totalCredit,
+      totalDebit,
+      grossRevenue,
+      netRevenue,
+      casinoRevenue: netRevenue,
     };
   }
 

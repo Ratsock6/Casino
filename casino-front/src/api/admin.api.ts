@@ -14,11 +14,18 @@ export interface AdminUser {
 
 export interface GlobalStats {
   totalUsers: number;
+  activeUsers: number;
   totalRounds: number;
+  roundsByGame: { gameType: string; count: number }[];
   totalBet: number;
   totalWin: number;
+  totalJackpot: number;
+  totalLevel: number;
+  totalCredit: number;
+  totalDebit: number;
+  grossRevenue: number;
+  netRevenue: number;
   casinoRevenue: number;
-  roundsByGame: { gameType: string; count: number }[];
 }
 
 export interface UserStats {

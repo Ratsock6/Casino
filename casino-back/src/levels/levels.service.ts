@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { WalletService } from '../wallet/wallet.service';
 import { VipService } from '../vip/vip.service';
 
 // XP requis pour atteindre le niveau N
@@ -125,7 +124,6 @@ const LEVEL_REWARDS: Record<number, {
 export class LevelsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly walletService: WalletService,
     private readonly vipService: VipService,
   ) { }
 
@@ -219,12 +217,27 @@ export class LevelsService {
     if (!rewardDef) throw new Error('Définition de récompense introuvable');
 
     if (rewardDef.tokens) {
-      await this.walletService.adminCredit(
-        'SYSTEM',
-        userId,
-        rewardDef.tokens,
-        `🎉 Récompense niveau ${reward.level} réclamée`,
-      );
+      const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
+      if (!wallet) throw new Error('Wallet introuvable');
+
+      const balanceBefore = wallet.balance;
+      const balanceAfter = balanceBefore + BigInt(rewardDef.tokens);
+
+      await this.prisma.wallet.update({
+        where: { userId },
+        data: { balance: balanceAfter },
+      });
+
+      await this.prisma.walletTransaction.create({
+        data: {
+          userId,
+          type: 'WIN_LEVEL',
+          amount: BigInt(rewardDef.tokens),
+          balanceBefore,
+          balanceAfter,
+          reason: `🎉 Récompense niveau ${reward.level} réclamée`,
+        },
+      });
     }
 
     if (rewardDef.vipDuration) {

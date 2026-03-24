@@ -604,7 +604,7 @@ const AdminPage = () => {
               { label: 'Parties jouées', value: stats.totalRounds.toLocaleString(), color: '#5cc8e0' },
               { label: 'Total misé', value: `${stats.totalBet.toLocaleString()} 🪙`, color: '#e0a85c' },
               { label: 'Total gagné', value: `${stats.totalWin.toLocaleString()} 🪙`, color: '#4caf7d' },
-              { label: 'Revenu casino', value: `${stats.casinoRevenue.toLocaleString()} 🪙`, color: stats.casinoRevenue >= 0 ? '#4caf7d' : '#e05c5c' },
+              { label: 'Revenu net', value: `${stats.netRevenue.toLocaleString()} 🪙`, color: stats.netRevenue >= 0 ? '#4caf7d' : '#e05c5c' },
             ].map((kpi) => (
               <div key={kpi.label} className="admin__kpi">
                 <span className="admin__kpi-label">{kpi.label}</span>
@@ -645,32 +645,43 @@ const AdminPage = () => {
           </div>
 
           <div className="admin__section">
-            <h2 className="admin__section-title">Répartition financière</h2>
-            <div className="admin__finance-bars">
-              {[
-                { label: 'Total misé', value: stats.totalBet, color: '#e0a85c' },
-                { label: 'Total gagné', value: stats.totalWin, color: '#4caf7d' },
-                { label: 'Revenu casino', value: Math.abs(stats.casinoRevenue), color: '#c9a84c' },
-              ].map((item) => {
-                const max = stats.totalBet || 1;
-                const pct = Math.round((item.value / max) * 100);
-                return (
-                  <div key={item.label} className="admin__game-bar-row">
-                    <span className="admin__game-bar-label" style={{ color: item.color }}>
-                      {item.label}
-                    </span>
-                    <div className="admin__game-bar-track">
-                      <div
-                        className="admin__game-bar-fill"
-                        style={{ width: `${pct}%`, background: item.color }}
-                      />
-                    </div>
-                    <span className="admin__game-bar-count">
-                      {item.value.toLocaleString()} 🪙
-                    </span>
-                  </div>
-                );
-              })}
+            <h2 className="admin__section-title">💰 Détail des revenus</h2>
+            <div className="admin__stats-revenue-rows">
+              <div className="admin__revenue-row">
+                <span>Total misé</span>
+                <strong style={{ color: '#e0a85c' }}>{stats.totalBet.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Total gains jeux</span>
+                <strong style={{ color: '#e05c5c' }}>-{stats.totalWin.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row admin__revenue-row--sub">
+                <span>= Revenu brut</span>
+                <strong style={{ color: '#4caf7d' }}>{stats.grossRevenue.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Jackpots distribués</span>
+                <strong style={{ color: '#e05c5c' }}>-{stats.totalJackpot.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Récompenses niveaux</span>
+                <strong style={{ color: '#e05c5c' }}>-{stats.totalLevel.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row admin__revenue-row--total">
+                <span>= Revenu net réel</span>
+                <strong style={{ color: stats.netRevenue >= 0 ? '#4caf7d' : '#e05c5c' }}>
+                  {stats.netRevenue.toLocaleString()} 🪙
+                </strong>
+              </div>
+              <div className="admin__revenue-row admin__revenue-row--separator" />
+              <div className="admin__revenue-row">
+                <span>Crédits admin</span>
+                <strong style={{ color: '#e0a85c' }}>{stats.totalCredit.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Débits admin</span>
+                <strong style={{ color: '#e0a85c' }}>{stats.totalDebit.toLocaleString()} 🪙</strong>
+              </div>
             </div>
           </div>
         </div>

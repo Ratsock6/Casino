@@ -130,7 +130,7 @@ export class JackpotService {
           await tx.walletTransaction.create({
             data: {
               userId,
-              type: 'ADMIN_CREDIT',
+              type: 'WIN_JACKPOT', // 👈
               amount: newAmount,
               balanceBefore: wallet.balance,
               balanceAfter: wallet.balance + newAmount,
