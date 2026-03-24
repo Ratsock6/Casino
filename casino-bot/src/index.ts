@@ -5,6 +5,7 @@ import * as solde from './commands/solde';
 import * as retrait from './commands/retrait';
 import * as sync from './commands/sync';
 import * as credit from './commands/credit';
+import * as setup from './commands/setup';
 import { startWebhook } from './webhook';
 import { getLinkedUsers } from './api';
 import { applyDiscordProfile } from './utils';
@@ -47,6 +48,7 @@ commands.set('solde', { data: solde.data, execute: solde.execute });
 commands.set('retrait', { data: retrait.data, execute: retrait.execute });
 commands.set('sync', { data: sync.data, execute: sync.execute });
 commands.set('credit', { data: credit.data, execute: credit.execute });
+commands.set('setup-liaison', { data: setup.data, execute: setup.execute });
 
 client.once(Events.ClientReady, (c) => {
   console.log(`✅ Bot connecté en tant que ${c.user.tag}`);
