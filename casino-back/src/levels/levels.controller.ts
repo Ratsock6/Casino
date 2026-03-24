@@ -8,44 +8,57 @@ import { LevelsService } from './levels.service';
 @Controller('levels')
 @UseGuards(JwtAuthGuard)
 export class LevelsController {
-    constructor(private readonly levelsService: LevelsService) { }
+  constructor(private readonly levelsService: LevelsService) { }
 
-    @Get('me')
-    getMyLevel(@CurrentUser() user: { userId: string }) {
-        return this.levelsService.getMyLevel(user.userId);
-    }
+  @Get('me')
+  getMyLevel(@CurrentUser() user: { userId: string }) {
+    return this.levelsService.getMyLevel(user.userId);
+  }
 
-    @Get('leaderboard')
-    getLeaderboard() {
-        return this.levelsService.getLeaderboard();
-    }
+  @Get('leaderboard')
+  getLeaderboard() {
+    return this.levelsService.getLeaderboard();
+  }
 
-    @Get('rewards')
-    getRewardsTable() {
-        return this.levelsService.getRewardsTable();
-    }
+  @Get('rewards')
+  getRewardsTable() {
+    return this.levelsService.getRewardsTable();
+  }
 
-    @Get('admin/ingame')
-    @UseGuards(RolesGuard)
-    @Roles('ADMIN', 'SUPER_ADMIN')
-    getAllIngameRewards() {
-        return this.levelsService.getAllIngameRewards();
-    }
+  @Get('admin/ingame')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  getAllIngameRewards() {
+    return this.levelsService.getAllIngameRewards();
+  }
 
-    @Get('admin/ingame/pending')
-    @UseGuards(RolesGuard)
-    @Roles('ADMIN', 'SUPER_ADMIN')
-    getPendingIngameRewards() {
-        return this.levelsService.getPendingIngameRewards();
-    }
+  @Get('admin/ingame/pending')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  getPendingIngameRewards() {
+    return this.levelsService.getPendingIngameRewards();
+  }
 
-    @Patch('admin/ingame/:rewardId/claim')
-    @UseGuards(RolesGuard)
-    @Roles('ADMIN', 'SUPER_ADMIN')
-    claimIngameReward(
-        @Param('rewardId') rewardId: string,
-        @CurrentUser() admin: { userId: string },
-    ) {
-        return this.levelsService.claimIngameReward(rewardId, admin.userId);
-    }
+  @Patch('admin/ingame/:rewardId/claim')
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN', 'SUPER_ADMIN')
+  claimIngameReward(
+    @Param('rewardId') rewardId: string,
+    @CurrentUser() admin: { userId: string },
+  ) {
+    return this.levelsService.claimIngameReward(rewardId, admin.userId);
+  }
+
+  @Get('me/unclaimed')
+  getUnclaimedRewards(@CurrentUser() user: { userId: string }) {
+    return this.levelsService.getUnclaimedRewards(user.userId);
+  }
+
+  @Patch('me/claim/:rewardId')
+  claimReward(
+    @CurrentUser() user: { userId: string },
+    @Param('rewardId') rewardId: string,
+  ) {
+    return this.levelsService.claimReward(user.userId, rewardId);
+  }
 }

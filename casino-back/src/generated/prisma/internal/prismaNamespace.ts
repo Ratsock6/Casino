@@ -1757,6 +1757,7 @@ export const LevelRewardScalarFieldEnum = {
   ingameClaimed: 'ingameClaimed',
   ingameClaimedAt: 'ingameClaimedAt',
   ingameClaimedBy: 'ingameClaimedBy',
+  claimed: 'claimed',
   claimedAt: 'claimedAt'
 } as const
 

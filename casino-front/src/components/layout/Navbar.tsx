@@ -1,15 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth.store';
 import { useWalletStore } from '../../store/wallet.store';
 import { getWalletApi } from '../../api/wallet.api';
 import '../../styles/components/navbar.scss';
+import { getUnclaimedRewardsApi } from '../../api/levels.api';
 
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
   const { balance, setBalance } = useWalletStore();
+  const [unclaimedCount, setUnclaimedCount] = useState(0);
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -22,6 +24,13 @@ const Navbar = () => {
     };
     fetchWallet();
   }, []);
+
+  useEffect(() => {
+    if (!user) return;
+    getUnclaimedRewardsApi()
+      .then((rewards) => setUnclaimedCount(rewards.length))
+      .catch(() => { });
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -83,6 +92,9 @@ const Navbar = () => {
           isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
         }>
           ⭐ Niveau
+          {unclaimedCount > 0 && (
+            <span className="navbar__notif-badge">{unclaimedCount}</span>
+          )}
         </NavLink>
 
         {(user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN') && (

@@ -6,24 +6,26 @@ import {
   getRewardsTableApi,
   type PlayerLevel,
   type RewardTableEntry,
+  getUnclaimedRewardsApi,
+  claimRewardApi,
 } from '../api/levels.api';
 import '../styles/pages/level.scss';
 
 type Tab = 'progression' | 'rewards' | 'leaderboard';
 
 const BADGE_COLORS: Record<string, string> = {
-  '🥈 Argent':    '#a8a8a8',
-  '🥇 Or':        '#c9a84c',
-  '💎 Platine':   '#5cc8e0',
-  '🌟 Diamant':   '#e05c5c',
+  '🥈 Argent': '#a8a8a8',
+  '🥇 Or': '#c9a84c',
+  '💎 Platine': '#5cc8e0',
+  '🌟 Diamant': '#e05c5c',
   '👑 Légendaire': '#c9a84c',
 };
 
 const getLevelColor = (level: number): string => {
   if (level >= 100) return '#c9a84c';
-  if (level >= 75)  return '#e05c5c';
-  if (level >= 50)  return '#5cc8e0';
-  if (level >= 25)  return '#4caf7d';
+  if (level >= 75) return '#e05c5c';
+  if (level >= 50) return '#5cc8e0';
+  if (level >= 25) return '#4caf7d';
   return '#888888';
 };
 
@@ -34,9 +36,13 @@ const LevelPage = () => {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [rewardsTable, setRewardsTable] = useState<RewardTableEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [unclaimedRewards, setUnclaimedRewards] = useState<any[]>([]);
+  const [claimLoading, setClaimLoading] = useState<string | null>(null);
+  const [claimMsg, setClaimMsg] = useState('');
 
   useEffect(() => {
     getMyLevelApi().then(setPlayerLevel).catch(console.error).finally(() => setLoading(false));
+    getUnclaimedRewardsApi().then(setUnclaimedRewards).catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -51,6 +57,22 @@ const LevelPage = () => {
   if (loading || !playerLevel) return null;
 
   const levelColor = getLevelColor(playerLevel.level);
+
+  const handleClaim = async (rewardId: string) => {
+    setClaimLoading(rewardId);
+    setClaimMsg('');
+    try {
+      const data = await claimRewardApi(rewardId);
+      setClaimMsg(`✅ ${data.message}`);
+      setUnclaimedRewards((prev) => prev.filter((r) => r.id !== rewardId));
+      const newLevel = await getMyLevelApi();
+      setPlayerLevel(newLevel);
+    } catch (err: any) {
+      setClaimMsg('❌ ' + (err.response?.data?.message || 'Erreur'));
+    } finally {
+      setClaimLoading(null);
+    }
+  };
 
   return (
     <div className="level">
@@ -96,6 +118,43 @@ const LevelPage = () => {
         </div>
       </div>
 
+      {/* Récompenses à réclamer */}
+      {unclaimedRewards.length > 0 && (
+        <div className="level__unclaimed">
+          <div className="level__unclaimed-header">
+            <h2 className="level__unclaimed-title">
+              🎁 Récompenses à réclamer
+              <span className="level__unclaimed-badge">{unclaimedRewards.length}</span>
+            </h2>
+            <p className="level__unclaimed-hint">
+              Réclamez vos récompenses pour recevoir vos jetons !
+            </p>
+          </div>
+          <div className="level__unclaimed-list">
+            {unclaimedRewards.map((r) => (
+              <div key={r.id} className="level__unclaimed-item">
+                <div className="level__unclaimed-item-left">
+                  <span className="level__unclaimed-item-level">Niv. {r.level}</span>
+                  <span className="level__unclaimed-item-value">{r.rewardValue}</span>
+                </div>
+                <button
+                  className="level__unclaimed-item-btn"
+                  onClick={() => handleClaim(r.id)}
+                  disabled={claimLoading === r.id}
+                >
+                  {claimLoading === r.id ? '⏳ Réclamation...' : '🎁 Réclamer'}
+                </button>
+              </div>
+            ))}
+          </div>
+          {claimMsg && (
+            <p className={`level__unclaimed-msg ${claimMsg.startsWith('✅') ? 'level__unclaimed-msg--success' : 'level__unclaimed-msg--error'}`}>
+              {claimMsg}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* Prochaine récompense */}
       {playerLevel.nextReward && playerLevel.level < 100 && (
         <div className="level__next-reward">
@@ -108,7 +167,7 @@ const LevelPage = () => {
       <div className="level__tabs">
         {[
           { key: 'progression', label: '📊 Progression' },
-          { key: 'rewards',     label: '🎁 Récompenses' },
+          { key: 'rewards', label: '🎁 Récompenses' },
           { key: 'leaderboard', label: '🏆 Classement' },
         ].map((tab) => (
           <button

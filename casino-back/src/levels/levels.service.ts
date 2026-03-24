@@ -192,24 +192,6 @@ export class LevelsService {
     level: number,
     reward: typeof LEVEL_REWARDS[number],
   ) {
-    if (reward.tokens) {
-      await this.walletService.adminCredit(
-        'SYSTEM',
-        userId,
-        reward.tokens,
-        `🎉 Récompense niveau ${level}`,
-      );
-    }
-
-    if (reward.vipDuration) {
-      await this.vipService.adminGrantVip(
-        'SYSTEM',
-        userId,
-        reward.vipDuration as any,
-      );
-    }
-
-    // Enregistre la récompense
     await this.prisma.levelReward.create({
       data: {
         userId,
@@ -218,8 +200,65 @@ export class LevelsService {
         rewardValue: reward.description,
         isIngame: !!reward.ingame,
         ingameClaimed: false,
+        claimed: false,
       },
     });
+  }
+
+  async claimReward(userId: string, rewardId: string) {
+    const reward = await this.prisma.levelReward.findUnique({
+      where: { id: rewardId },
+    });
+
+    if (!reward) throw new Error('Récompense introuvable');
+    if (reward.userId !== userId) throw new Error('Cette récompense ne vous appartient pas');
+    if (reward.claimed) throw new Error('Cette récompense a déjà été réclamée');
+    if (reward.isIngame) throw new Error('Les lots in-game sont récupérés en jeu');
+
+    const rewardDef = LEVEL_REWARDS[reward.level];
+    if (!rewardDef) throw new Error('Définition de récompense introuvable');
+
+    if (rewardDef.tokens) {
+      await this.walletService.adminCredit(
+        'SYSTEM',
+        userId,
+        rewardDef.tokens,
+        `🎉 Récompense niveau ${reward.level} réclamée`,
+      );
+    }
+
+    if (rewardDef.vipDuration) {
+      await this.vipService.adminGrantVip(
+        'SYSTEM',
+        userId,
+        rewardDef.vipDuration as any,
+      );
+    }
+
+    await this.prisma.levelReward.update({
+      where: { id: rewardId },
+      data: { claimed: true },
+    });
+
+    return {
+      message: `✅ Récompense réclamée : ${rewardDef.description}`,
+      tokens: rewardDef.tokens || 0,
+    };
+  }
+
+  async getUnclaimedRewards(userId: string) {
+    const rewards = await this.prisma.levelReward.findMany({
+      where: { userId, claimed: false, isIngame: false },
+      orderBy: { level: 'asc' },
+    });
+
+    return rewards.map((r) => ({
+      id: r.id,
+      level: r.level,
+      rewardType: r.rewardType,
+      rewardValue: r.rewardValue,
+      claimedAt: r.claimedAt,
+    }));
   }
 
   async getMyLevel(userId: string) {

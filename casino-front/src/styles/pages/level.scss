@@ -22,7 +22,10 @@
     &::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: radial-gradient(ellipse at top left, rgba(var(--level-color), 0.05) 0%, transparent 60%);
       pointer-events: none;
     }
@@ -106,8 +109,11 @@
     &::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
       animation: shimmer 2s infinite;
     }
   }
@@ -160,7 +166,9 @@
     border-bottom: 2px solid transparent;
     transition: all $transition-fast;
 
-    &:hover { color: $color-text; }
+    &:hover {
+      color: $color-text;
+    }
 
     &--active {
       color: $color-gold;
@@ -286,8 +294,16 @@
     gap: 4px;
     text-align: center;
 
-    span { font-size: 12px; color: $color-text-muted; }
-    strong { font-size: 18px; color: $color-gold; font-weight: 800; }
+    span {
+      font-size: 12px;
+      color: $color-text-muted;
+    }
+
+    strong {
+      font-size: 18px;
+      color: $color-gold;
+      font-weight: 800;
+    }
   }
 
   // Table des récompenses
@@ -307,7 +323,9 @@
     gap: $spacing-xs;
     transition: all $transition-fast;
 
-    &:hover { border-color: rgba($color-gold, 0.3); }
+    &:hover {
+      border-color: rgba($color-gold, 0.3);
+    }
 
     &--past {
       opacity: 0.5;
@@ -362,7 +380,9 @@
     border-radius: $radius-md;
     transition: background $transition-fast;
 
-    &:hover { background: $color-surface-2; }
+    &:hover {
+      background: $color-surface-2;
+    }
 
     &--me {
       border-color: $color-gold;
@@ -395,9 +415,138 @@
     text-align: right;
     min-width: 100px;
   }
+
+  &__unclaimed {
+    background: linear-gradient(135deg, rgba($color-gold, 0.08), rgba($color-gold, 0.02));
+    border: 1px solid rgba($color-gold, 0.4);
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    animation: fadeInUp 0.4s ease both;
+
+    &-header {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+
+    &-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: $color-gold;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+    }
+
+    &-badge {
+      background: $color-gold;
+      color: #0d0d0d;
+      font-size: 12px;
+      font-weight: 800;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &-hint {
+      font-size: 13px;
+      color: $color-text-muted;
+    }
+
+    &-list {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-md $spacing-lg;
+      background: $color-surface;
+      border: 1px solid rgba($color-gold, 0.2);
+      border-radius: $radius-md;
+      gap: $spacing-md;
+
+      &-left {
+        display: flex;
+        align-items: center;
+        gap: $spacing-md;
+        flex: 1;
+      }
+
+      &-level {
+        font-size: 12px;
+        font-weight: 700;
+        color: $color-gold;
+        background: rgba($color-gold, 0.1);
+        border: 1px solid rgba($color-gold, 0.3);
+        border-radius: $radius-sm;
+        padding: 2px 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      &-value {
+        font-size: 13px;
+        color: $color-text;
+      }
+
+      &-btn {
+        padding: 8px $spacing-lg;
+        background: $color-gold;
+        color: #0d0d0d;
+        font-size: 13px;
+        font-weight: 700;
+        border-radius: $radius-sm;
+        transition: background $transition-fast;
+        white-space: nowrap;
+        flex-shrink: 0;
+
+        &:hover:not(:disabled) {
+          background: $color-gold-light;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    &-msg {
+      font-size: 13px;
+      padding: $spacing-sm $spacing-md;
+      border-radius: $radius-sm;
+
+      &--success {
+        color: $color-success;
+        background: rgba($color-success, 0.1);
+        border: 1px solid rgba($color-success, 0.3);
+      }
+
+      &--error {
+        color: $color-error;
+        background: rgba($color-error, 0.1);
+        border: 1px solid rgba($color-error, 0.3);
+      }
+    }
+  }
 }
 
 @keyframes shimmer {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
 }

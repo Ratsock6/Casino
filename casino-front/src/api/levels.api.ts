@@ -79,3 +79,13 @@ export const getPendingIngameRewardsApi = async (): Promise<IngameReward[]> => {
 export const claimIngameRewardApi = async (rewardId: string): Promise<void> => {
   await axiosInstance.patch(`/levels/admin/ingame/${rewardId}/claim`);
 };
+
+export const getUnclaimedRewardsApi = async () => {
+  const res = await axiosInstance.get('/levels/me/unclaimed');
+  return res.data;
+};
+
+export const claimRewardApi = async (rewardId: string): Promise<{ message: string; tokens: number }> => {
+  const res = await axiosInstance.patch(`/levels/me/claim/${rewardId}`);
+  return res.data;
+};

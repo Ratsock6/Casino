@@ -282,6 +282,7 @@ model LevelReward {
   ingameClaimed   Boolean   @default(false)
   ingameClaimedAt DateTime?
   ingameClaimedBy String?   // adminId qui a validé
+  claimed         Boolean   @default(false)
   claimedAt       DateTime  @default(now())
 
   playerLevel     PlayerLevel @relation(fields: [userId], references: [userId], onDelete: Cascade)

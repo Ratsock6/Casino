@@ -44,6 +44,7 @@ export type LevelRewardMinAggregateOutputType = {
   ingameClaimed: boolean | null
   ingameClaimedAt: Date | null
   ingameClaimedBy: string | null
+  claimed: boolean | null
   claimedAt: Date | null
 }
 
@@ -57,6 +58,7 @@ export type LevelRewardMaxAggregateOutputType = {
   ingameClaimed: boolean | null
   ingameClaimedAt: Date | null
   ingameClaimedBy: string | null
+  claimed: boolean | null
   claimedAt: Date | null
 }
 
@@ -70,6 +72,7 @@ export type LevelRewardCountAggregateOutputType = {
   ingameClaimed: number
   ingameClaimedAt: number
   ingameClaimedBy: number
+  claimed: number
   claimedAt: number
   _all: number
 }
@@ -93,6 +96,7 @@ export type LevelRewardMinAggregateInputType = {
   ingameClaimed?: true
   ingameClaimedAt?: true
   ingameClaimedBy?: true
+  claimed?: true
   claimedAt?: true
 }
 
@@ -106,6 +110,7 @@ export type LevelRewardMaxAggregateInputType = {
   ingameClaimed?: true
   ingameClaimedAt?: true
   ingameClaimedBy?: true
+  claimed?: true
   claimedAt?: true
 }
 
@@ -119,6 +124,7 @@ export type LevelRewardCountAggregateInputType = {
   ingameClaimed?: true
   ingameClaimedAt?: true
   ingameClaimedBy?: true
+  claimed?: true
   claimedAt?: true
   _all?: true
 }
@@ -219,6 +225,7 @@ export type LevelRewardGroupByOutputType = {
   ingameClaimed: boolean
   ingameClaimedAt: Date | null
   ingameClaimedBy: string | null
+  claimed: boolean
   claimedAt: Date
   _count: LevelRewardCountAggregateOutputType | null
   _avg: LevelRewardAvgAggregateOutputType | null
@@ -255,6 +262,7 @@ export type LevelRewardWhereInput = {
   ingameClaimed?: Prisma.BoolFilter<"LevelReward"> | boolean
   ingameClaimedAt?: Prisma.DateTimeNullableFilter<"LevelReward"> | Date | string | null
   ingameClaimedBy?: Prisma.StringNullableFilter<"LevelReward"> | string | null
+  claimed?: Prisma.BoolFilter<"LevelReward"> | boolean
   claimedAt?: Prisma.DateTimeFilter<"LevelReward"> | Date | string
   playerLevel?: Prisma.XOR<Prisma.PlayerLevelScalarRelationFilter, Prisma.PlayerLevelWhereInput>
 }
@@ -269,6 +277,7 @@ export type LevelRewardOrderByWithRelationInput = {
   ingameClaimed?: Prisma.SortOrder
   ingameClaimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ingameClaimedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  claimed?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
   playerLevel?: Prisma.PlayerLevelOrderByWithRelationInput
 }
@@ -286,6 +295,7 @@ export type LevelRewardWhereUniqueInput = Prisma.AtLeast<{
   ingameClaimed?: Prisma.BoolFilter<"LevelReward"> | boolean
   ingameClaimedAt?: Prisma.DateTimeNullableFilter<"LevelReward"> | Date | string | null
   ingameClaimedBy?: Prisma.StringNullableFilter<"LevelReward"> | string | null
+  claimed?: Prisma.BoolFilter<"LevelReward"> | boolean
   claimedAt?: Prisma.DateTimeFilter<"LevelReward"> | Date | string
   playerLevel?: Prisma.XOR<Prisma.PlayerLevelScalarRelationFilter, Prisma.PlayerLevelWhereInput>
 }, "id">
@@ -300,6 +310,7 @@ export type LevelRewardOrderByWithAggregationInput = {
   ingameClaimed?: Prisma.SortOrder
   ingameClaimedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   ingameClaimedBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  claimed?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
   _count?: Prisma.LevelRewardCountOrderByAggregateInput
   _avg?: Prisma.LevelRewardAvgOrderByAggregateInput
@@ -321,6 +332,7 @@ export type LevelRewardScalarWhereWithAggregatesInput = {
   ingameClaimed?: Prisma.BoolWithAggregatesFilter<"LevelReward"> | boolean
   ingameClaimedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"LevelReward"> | Date | string | null
   ingameClaimedBy?: Prisma.StringNullableWithAggregatesFilter<"LevelReward"> | string | null
+  claimed?: Prisma.BoolWithAggregatesFilter<"LevelReward"> | boolean
   claimedAt?: Prisma.DateTimeWithAggregatesFilter<"LevelReward"> | Date | string
 }
 
@@ -333,6 +345,7 @@ export type LevelRewardCreateInput = {
   ingameClaimed?: boolean
   ingameClaimedAt?: Date | string | null
   ingameClaimedBy?: string | null
+  claimed?: boolean
   claimedAt?: Date | string
   playerLevel: Prisma.PlayerLevelCreateNestedOneWithoutRewardsInput
 }
@@ -347,6 +360,7 @@ export type LevelRewardUncheckedCreateInput = {
   ingameClaimed?: boolean
   ingameClaimedAt?: Date | string | null
   ingameClaimedBy?: string | null
+  claimed?: boolean
   claimedAt?: Date | string
 }
 
@@ -359,6 +373,7 @@ export type LevelRewardUpdateInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   playerLevel?: Prisma.PlayerLevelUpdateOneRequiredWithoutRewardsNestedInput
 }
@@ -373,6 +388,7 @@ export type LevelRewardUncheckedUpdateInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -386,6 +402,7 @@ export type LevelRewardCreateManyInput = {
   ingameClaimed?: boolean
   ingameClaimedAt?: Date | string | null
   ingameClaimedBy?: string | null
+  claimed?: boolean
   claimedAt?: Date | string
 }
 
@@ -398,6 +415,7 @@ export type LevelRewardUpdateManyMutationInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -411,6 +429,7 @@ export type LevelRewardUncheckedUpdateManyInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -434,6 +453,7 @@ export type LevelRewardCountOrderByAggregateInput = {
   ingameClaimed?: Prisma.SortOrder
   ingameClaimedAt?: Prisma.SortOrder
   ingameClaimedBy?: Prisma.SortOrder
+  claimed?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
 }
 
@@ -451,6 +471,7 @@ export type LevelRewardMaxOrderByAggregateInput = {
   ingameClaimed?: Prisma.SortOrder
   ingameClaimedAt?: Prisma.SortOrder
   ingameClaimedBy?: Prisma.SortOrder
+  claimed?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
 }
 
@@ -464,6 +485,7 @@ export type LevelRewardMinOrderByAggregateInput = {
   ingameClaimed?: Prisma.SortOrder
   ingameClaimedAt?: Prisma.SortOrder
   ingameClaimedBy?: Prisma.SortOrder
+  claimed?: Prisma.SortOrder
   claimedAt?: Prisma.SortOrder
 }
 
@@ -522,6 +544,7 @@ export type LevelRewardCreateWithoutPlayerLevelInput = {
   ingameClaimed?: boolean
   ingameClaimedAt?: Date | string | null
   ingameClaimedBy?: string | null
+  claimed?: boolean
   claimedAt?: Date | string
 }
 
@@ -534,6 +557,7 @@ export type LevelRewardUncheckedCreateWithoutPlayerLevelInput = {
   ingameClaimed?: boolean
   ingameClaimedAt?: Date | string | null
   ingameClaimedBy?: string | null
+  claimed?: boolean
   claimedAt?: Date | string
 }
 
@@ -576,6 +600,7 @@ export type LevelRewardScalarWhereInput = {
   ingameClaimed?: Prisma.BoolFilter<"LevelReward"> | boolean
   ingameClaimedAt?: Prisma.DateTimeNullableFilter<"LevelReward"> | Date | string | null
   ingameClaimedBy?: Prisma.StringNullableFilter<"LevelReward"> | string | null
+  claimed?: Prisma.BoolFilter<"LevelReward"> | boolean
   claimedAt?: Prisma.DateTimeFilter<"LevelReward"> | Date | string
 }
 
@@ -588,6 +613,7 @@ export type LevelRewardCreateManyPlayerLevelInput = {
   ingameClaimed?: boolean
   ingameClaimedAt?: Date | string | null
   ingameClaimedBy?: string | null
+  claimed?: boolean
   claimedAt?: Date | string
 }
 
@@ -600,6 +626,7 @@ export type LevelRewardUpdateWithoutPlayerLevelInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -612,6 +639,7 @@ export type LevelRewardUncheckedUpdateWithoutPlayerLevelInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -624,6 +652,7 @@ export type LevelRewardUncheckedUpdateManyWithoutPlayerLevelInput = {
   ingameClaimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ingameClaimedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   ingameClaimedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  claimed?: Prisma.BoolFieldUpdateOperationsInput | boolean
   claimedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -639,6 +668,7 @@ export type LevelRewardSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   ingameClaimed?: boolean
   ingameClaimedAt?: boolean
   ingameClaimedBy?: boolean
+  claimed?: boolean
   claimedAt?: boolean
   playerLevel?: boolean | Prisma.PlayerLevelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["levelReward"]>
@@ -653,6 +683,7 @@ export type LevelRewardSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   ingameClaimed?: boolean
   ingameClaimedAt?: boolean
   ingameClaimedBy?: boolean
+  claimed?: boolean
   claimedAt?: boolean
   playerLevel?: boolean | Prisma.PlayerLevelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["levelReward"]>
@@ -667,6 +698,7 @@ export type LevelRewardSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   ingameClaimed?: boolean
   ingameClaimedAt?: boolean
   ingameClaimedBy?: boolean
+  claimed?: boolean
   claimedAt?: boolean
   playerLevel?: boolean | Prisma.PlayerLevelDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["levelReward"]>
@@ -681,10 +713,11 @@ export type LevelRewardSelectScalar = {
   ingameClaimed?: boolean
   ingameClaimedAt?: boolean
   ingameClaimedBy?: boolean
+  claimed?: boolean
   claimedAt?: boolean
 }
 
-export type LevelRewardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "level" | "rewardType" | "rewardValue" | "isIngame" | "ingameClaimed" | "ingameClaimedAt" | "ingameClaimedBy" | "claimedAt", ExtArgs["result"]["levelReward"]>
+export type LevelRewardOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "level" | "rewardType" | "rewardValue" | "isIngame" | "ingameClaimed" | "ingameClaimedAt" | "ingameClaimedBy" | "claimed" | "claimedAt", ExtArgs["result"]["levelReward"]>
 export type LevelRewardInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   playerLevel?: boolean | Prisma.PlayerLevelDefaultArgs<ExtArgs>
 }
@@ -710,6 +743,7 @@ export type $LevelRewardPayload<ExtArgs extends runtime.Types.Extensions.Interna
     ingameClaimed: boolean
     ingameClaimedAt: Date | null
     ingameClaimedBy: string | null
+    claimed: boolean
     claimedAt: Date
   }, ExtArgs["result"]["levelReward"]>
   composites: {}
@@ -1144,6 +1178,7 @@ export interface LevelRewardFieldRefs {
   readonly ingameClaimed: Prisma.FieldRef<"LevelReward", 'Boolean'>
   readonly ingameClaimedAt: Prisma.FieldRef<"LevelReward", 'DateTime'>
   readonly ingameClaimedBy: Prisma.FieldRef<"LevelReward", 'String'>
+  readonly claimed: Prisma.FieldRef<"LevelReward", 'Boolean'>
   readonly claimedAt: Prisma.FieldRef<"LevelReward", 'DateTime'>
 }
     
