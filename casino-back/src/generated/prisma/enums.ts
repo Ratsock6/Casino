@@ -84,3 +84,14 @@ export const BlackjackGameStatus = {
 } as const
 
 export type BlackjackGameStatus = (typeof BlackjackGameStatus)[keyof typeof BlackjackGameStatus]
+
+
+export const BattleBoxStatus = {
+  WAITING: 'WAITING',
+  READY: 'READY',
+  PLAYING: 'PLAYING',
+  FINISHED: 'FINISHED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type BattleBoxStatus = (typeof BattleBoxStatus)[keyof typeof BattleBoxStatus]

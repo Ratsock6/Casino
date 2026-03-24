@@ -21,6 +21,7 @@ import { DiscordModule } from './discord/discord.module';
 import { VipModule } from './vip/vip.module';
 import { LevelsModule } from './levels/levels.module';
 import { JackpotModule } from './jackpot/jackpot.module';
+import { BattleBoxModule } from './battle-box/battle-box.module';
 
 
 @Module({
@@ -54,6 +55,7 @@ import { JackpotModule } from './jackpot/jackpot.module';
     VipModule,
     LevelsModule,
     JackpotModule,
+    BattleBoxModule,
   ],
 })
 export class AppModule {}

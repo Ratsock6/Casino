@@ -27,6 +27,13 @@ const configs = [
   { key: 'JACKPOT_MIN_AMOUNT', value: '100000' },
   { key: 'JACKPOT_MIN_PCT', value: '2' },
   { key: 'JACKPOT_MIN_STAKE', value: '5000' },
+
+  { key: 'BATTLEBOX_ENABLED', value: 'true' },
+  { key: 'BATTLEBOX_COMMISSION_PCT', value: '5' },
+  { key: 'BATTLEBOX_VIP_COMMISSION_PCT', value: '2' },
+  { key: 'BATTLEBOX_MAX_STAKE_PLAYER', value: '50000' },
+  { key: 'BATTLEBOX_MAX_STAKE_VIP', value: '100000' },
+  { key: 'MAINTENANCE_BATTLEBOX', value: 'false' },
 ];
 
 async function main() {

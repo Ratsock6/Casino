@@ -83,6 +83,7 @@ model User {
   updatedAt        DateTime   @updatedAt
   loginHistory     LoginHistory[]
   jackpotWins      JackpotWin[]
+  battleBoxPlayers BattleBoxPlayer[]
   discordId        String?   @unique
   discordUsername  String?
   metadata         Json?
@@ -313,5 +314,54 @@ model JackpotWin {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+}
+
+enum BattleBoxStatus {
+  WAITING
+  READY
+  PLAYING
+  FINISHED
+  CANCELLED
+}
+
+model BattleBoxGame {
+  id           String            @id @default(cuid())
+  status       BattleBoxStatus   @default(WAITING)
+  maxPlayers   Int               @default(2)
+  teamSize     Int               @default(1)
+  isPrivate    Boolean           @default(false)
+  inviteCode   String?           @unique
+  boxTypes     Json              // { STANDARD: 2, PREMIUM: 1 } etc...
+  totalStake   BigInt            @default(0)
+  commissionPct Float            @default(5)
+  winnerId     String?
+  winnerTeam   Int?
+  createdAt    DateTime          @default(now())
+  startedAt    DateTime?
+  settledAt    DateTime?
+
+  players      BattleBoxPlayer[]
+
+  @@index([status, isPrivate])
+  @@index([inviteCode])
+}
+
+model BattleBoxPlayer {
+  id          String        @id @default(cuid())
+  gameId      String
+  userId      String
+  teamIndex   Int           @default(0)
+  stake       BigInt
+  items       Json?         // objets obtenus après ouverture
+  totalValue  BigInt?       // valeur totale des objets
+  isWinner    Boolean       @default(false)
+  joinedAt    DateTime      @default(now())
+
+  game        BattleBoxGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, userId])
+  @@index([gameId])
   @@index([userId])
 }

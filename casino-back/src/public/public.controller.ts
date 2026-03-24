@@ -69,4 +69,10 @@ export class PublicController {
     return { enabled };
   }
 
+  @Get('battlebox-status')
+  async getBattleBoxStatus() {
+    const enabled = await this.casinoConfigService.getBoolean('BATTLEBOX_ENABLED', true);
+    return { enabled };
+  }
+
 }

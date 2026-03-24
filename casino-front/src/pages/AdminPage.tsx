@@ -48,6 +48,7 @@ import type {
   Alert,
 } from '../api/admin.api';
 
+import { getAdminBattleBoxGamesApi, type AdminBattleBoxGame } from '../api/battle-box.api';
 import { resetJackpotApi } from '../api/jackpot.api';
 
 import { exportToCsv } from '../utils/csv.utils';
@@ -59,7 +60,7 @@ import { getAllIngameRewardsApi, claimIngameRewardApi, type IngameReward } from 
 
 
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame';;
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame' | 'battlebox';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -120,6 +121,9 @@ const AdminPage = () => {
   const [newPassword, setNewPassword] = useState<string | null>(null);
   const [ingameRewards, setIngameRewards] = useState<IngameReward[]>([]);
   const [ingameFilter, setIngameFilter] = useState<'all' | 'pending' | 'claimed'>('pending');
+  const [battleBoxGames, setBattleBoxGames] = useState<AdminBattleBoxGame[]>([]);
+  const [battleBoxFilter, setBattleBoxFilter] = useState('');
+  const [selectedBattleBoxGame, setSelectedBattleBoxGame] = useState<AdminBattleBoxGame | null>(null);
 
   const { user } = useAuthStore();
 
@@ -204,6 +208,16 @@ const AdminPage = () => {
     }
   };
 
+  const handleBattleBoxFilter = async (username: string) => {
+    setBattleBoxFilter(username);
+    const user = users.find((u) => u.username.toLowerCase().includes(username.toLowerCase()));
+    if (user) {
+      setBattleBoxGames(await getAdminBattleBoxGamesApi(50, 0, user.id));
+    } else if (username === '') {
+      setBattleBoxGames(await getAdminBattleBoxGamesApi());
+    }
+  };
+
 
   // Loading
   const [loading, setLoading] = useState(false);
@@ -257,6 +271,9 @@ const AdminPage = () => {
         const data = await getAlertsApi();
         setAlerts(data);
         setUnreadAlerts(0);
+      }
+      if (tab === 'battlebox' && battleBoxGames.length === 0) {
+        setBattleBoxGames(await getAdminBattleBoxGamesApi());
       }
     } catch (err) {
       console.error(err);
@@ -454,6 +471,7 @@ const AdminPage = () => {
         : '🚨 Alertes'
     },
     { key: 'ingame', label: '🎮 Lots in-game' },
+    { key: 'battlebox', label: '⚔️ Battle Box' },
   ];
 
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
@@ -545,6 +563,31 @@ const AdminPage = () => {
       label: 'Mise minimum jackpot',
       description: 'Mise minimum en jetons pour pouvoir tenter de gagner le jackpot. Les mises inférieures contribuent quand même à la cagnotte.',
     },
+
+    BATTLEBOX_ENABLED: {
+      label: '⚔️ Battle Box visible',
+      description: 'Affiche ou masque le jeu Battle Box pour les joueurs.',
+    },
+    BATTLEBOX_COMMISSION_PCT: {
+      label: '⚔️ Commission Battle Box',
+      description: 'Pourcentage prélevé par le casino sur chaque partie (ex: 5 = 5%).',
+    },
+    BATTLEBOX_VIP_COMMISSION_PCT: {
+      label: '⚔️ Commission Battle Box VIP',
+      description: 'Pourcentage prélevé sur les parties avec des joueurs VIP.',
+    },
+    BATTLEBOX_MAX_STAKE_PLAYER: {
+      label: '⚔️ Mise max Battle Box (joueur)',
+      description: 'Valeur totale maximum des box pour un joueur standard.',
+    },
+    BATTLEBOX_MAX_STAKE_VIP: {
+      label: '⚔️ Mise max Battle Box (VIP)',
+      description: 'Valeur totale maximum des box pour un joueur VIP.',
+    },
+    MAINTENANCE_BATTLEBOX: {
+      label: '🔧 Maintenance Battle Box',
+      description: 'Désactive le jeu Battle Box.',
+    },
   };
 
   const ACTION_LABELS: Record<string, { label: string; color: string; icon: string }> = {
@@ -570,7 +613,9 @@ const AdminPage = () => {
     'MAINTENANCE_ROULETTE',
     'MAINTENANCE_BLACKJACK',
     'MAINTENANCE_GLOBAL',
+    'MAINTENANCE_BATTLEBOX',
     'JACKPOT_ENABLED',
+    'BATTLEBOX_ENABLED',
   ];
 
   return (
@@ -1743,6 +1788,135 @@ const AdminPage = () => {
               </tbody>
             </table>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'battlebox' && (
+        <div className="admin__section">
+          <div className="admin__section-title-row">
+            <h2 className="admin__section-title">⚔️ Historique Battle Box</h2>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input
+                type="text"
+                className="admin__search"
+                placeholder="Filtrer par joueur..."
+                value={battleBoxFilter}
+                onChange={(e) => handleBattleBoxFilter(e.target.value)}
+                style={{ width: 200 }}
+              />
+              {battleBoxFilter && (
+                <button
+                  className="admin__export-btn admin__export-btn--small"
+                  onClick={() => handleBattleBoxFilter('')}
+                >
+                  ✕ Effacer
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="admin__table-wrapper">
+            <table className="admin__table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Joueurs</th>
+                  <th>Box</th>
+                  <th>Mise totale</th>
+                  <th>Commission</th>
+                  <th>Statut</th>
+                  <th>Gagnant</th>
+                  <th>Détail</th>
+                </tr>
+              </thead>
+              <tbody>
+                {battleBoxGames.map((game) => {
+                  const winner = game.players.find((p) => p.isWinner);
+                  const boxDesc = Object.entries(game.boxTypes as Record<string, number>)
+                    .map(([type, count]) => `${count}× ${type}`)
+                    .join(' + ');
+                  const commission = Math.floor(game.totalStake * game.commissionPct / 100);
+
+                  return (
+                    <tr key={game.id}>
+                      <td className="admin__table-date">{formatDate(game.createdAt)}</td>
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                          {game.players.map((p) => (
+                            <span key={p.userId} style={{ fontSize: 12 }}>
+                              {p.isWinner ? '👑 ' : ''}{p.username}
+                              {p.totalValue !== null && (
+                                <span style={{ color: '#888', marginLeft: 4 }}>
+                                  ({p.totalValue.toLocaleString()} 🪙)
+                                </span>
+                              )}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+                      <td style={{ fontSize: 12, color: '#888' }}>{boxDesc}</td>
+                      <td className="admin__table-muted">{game.totalStake.toLocaleString()} 🪙</td>
+                      <td style={{ color: '#4caf7d', fontSize: 13 }}>+{commission.toLocaleString()} 🪙</td>
+                      <td>
+                        <span className="admin__badge" style={{
+                          color: game.status === 'FINISHED' ? '#4caf7d' :
+                            game.status === 'CANCELLED' ? '#e05c5c' :
+                              game.status === 'WAITING' ? '#e0a85c' : '#5cc8e0',
+                          borderColor: game.status === 'FINISHED' ? '#4caf7d' :
+                            game.status === 'CANCELLED' ? '#e05c5c' :
+                              game.status === 'WAITING' ? '#e0a85c' : '#5cc8e0',
+                        }}>
+                          {game.status}
+                        </span>
+                      </td>
+                      <td style={{ fontWeight: 600, color: '#c9a84c' }}>
+                        {winner ? winner.username : '—'}
+                      </td>
+                      <td>
+                        <button
+                          className="admin__export-btn admin__export-btn--small"
+                          onClick={() => setSelectedBattleBoxGame(
+                            selectedBattleBoxGame?.id === game.id ? null : game
+                          )}
+                        >
+                          {selectedBattleBoxGame?.id === game.id ? '▲ Fermer' : '▼ Voir'}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Détail d'une partie */}
+          {selectedBattleBoxGame && (
+            <div className="admin__battlebox-detail">
+              <h3 className="admin__section-title">🎁 Détail des objets — Partie #{selectedBattleBoxGame.id.slice(0, 8)}</h3>
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
+                {selectedBattleBoxGame.players.map((player) => (
+                  <div key={player.userId} className="admin__battlebox-player">
+                    <p className="admin__battlebox-player-name">
+                      {player.isWinner ? '👑 ' : ''}{player.username}
+                      <span style={{ color: '#4caf7d', marginLeft: 8 }}>
+                        Total : {player.totalValue?.toLocaleString() || 0} 🪙
+                      </span>
+                    </p>
+                    <div className="admin__battlebox-items">
+                      {(player.items || []).map((item: any, i: number) => (
+                        <div key={i} className="admin__battlebox-item">
+                          <span>{item.emoji}</span>
+                          <span>{item.name}</span>
+                          <span style={{ color: '#c9a84c' }}>{item.value.toLocaleString()} 🪙</span>
+                          <span style={{ fontSize: 11, color: '#888' }}>{item.rarity}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div >

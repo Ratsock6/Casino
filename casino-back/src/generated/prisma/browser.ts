@@ -92,3 +92,13 @@ export type Jackpot = Prisma.JackpotModel
  * 
  */
 export type JackpotWin = Prisma.JackpotWinModel
+/**
+ * Model BattleBoxGame
+ * 
+ */
+export type BattleBoxGame = Prisma.BattleBoxGameModel
+/**
+ * Model BattleBoxPlayer
+ * 
+ */
+export type BattleBoxPlayer = Prisma.BattleBoxPlayerModel

@@ -5,6 +5,7 @@ import { useWalletStore } from '../../store/wallet.store';
 import { getWalletApi } from '../../api/wallet.api';
 import '../../styles/components/navbar.scss';
 import { getUnclaimedRewardsApi } from '../../api/levels.api';
+import axiosInstance from '../../utils/axios.instance';
 
 
 const Navbar = () => {
@@ -12,6 +13,7 @@ const Navbar = () => {
   const { user, logout } = useAuthStore();
   const { balance, setBalance } = useWalletStore();
   const [unclaimedCount, setUnclaimedCount] = useState(0);
+  const [battleBoxEnabled, setBattleBoxEnabled] = useState(false);
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -36,6 +38,12 @@ const Navbar = () => {
     logout();
     navigate('/login');
   };
+
+  useEffect(() => {
+    axiosInstance.get('/public/battlebox-status')
+      .then((res) => setBattleBoxEnabled(res.data.enabled))
+      .catch(() => setBattleBoxEnabled(false));
+  }, []);
 
   return (
     <nav className="navbar">
@@ -78,6 +86,14 @@ const Navbar = () => {
         >
           Blackjack
         </NavLink>
+
+        {battleBoxEnabled && (
+          <NavLink to="/battle-box" className={({ isActive }) =>
+            isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+          }>
+            ⚔️ Battle Box
+          </NavLink>
+        )}
 
         <NavLink
           to="/vip"

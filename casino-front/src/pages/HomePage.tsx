@@ -10,7 +10,7 @@ import {
   type PublicStats,
 } from '../api/profile.api';
 import '../styles/pages/home.scss';
-import { getJackpotApi, getJackpotHistoryApi, type JackpotData, type JackpotHistoryEntry } from '../api/jackpot.api';
+import { getJackpotHistoryApi, type JackpotHistoryEntry } from '../api/jackpot.api';
 import JackpotBanner from '../components/ui/JackpotBanner';
 
 const GAME_ICONS: Record<string, string> = {
@@ -20,36 +20,6 @@ const GAME_ICONS: Record<string, string> = {
 const GAME_COLORS: Record<string, string> = {
   SLOTS: '#c9a84c', ROULETTE: '#e05c5c', BLACKJACK: '#4caf7d',
 };
-
-const games = [
-  {
-    key: 'slots',
-    title: 'Machines à Sous',
-    description: "Tentez votre chance sur nos machines à sous. Jusqu'à x20 votre mise.",
-    icon: '🎰',
-    path: '/slots',
-    color: '#c9a84c',
-    multiplier: 'x20',
-  },
-  {
-    key: 'roulette',
-    title: 'Roulette',
-    description: 'Roulette européenne complète. Tous les types de paris disponibles.',
-    icon: '🎡',
-    path: '/roulette',
-    color: '#e05c5c',
-    multiplier: 'x36',
-  },
-  {
-    key: 'blackjack',
-    title: 'Blackjack',
-    description: 'Battez le croupier sans dépasser 21. Blackjack naturel payé x2.5.',
-    icon: '🃏',
-    path: '/blackjack',
-    color: '#4caf7d',
-    multiplier: 'x2.5',
-  },
-];
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -62,11 +32,18 @@ const HomePage = () => {
     global: false, SLOTS: false, ROULETTE: false, BLACKJACK: false,
   });
   const [jackpotHistory, setJackpotHistory] = useState<JackpotHistoryEntry[]>([]);
+  const [battleBoxEnabled, setBattleBoxEnabled] = useState(false); // 👈 ajouté
 
   useEffect(() => {
     axiosInstance.get('/public/maintenance')
       .then((res) => setMaintenanceStatus(res.data))
-      .catch(() => { });
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    axiosInstance.get('/public/battlebox-status') // 👈 ajouté
+      .then((res) => setBattleBoxEnabled(res.data.enabled))
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -88,10 +65,50 @@ const HomePage = () => {
   }, []);
 
   const maintenanceMap: Record<string, boolean> = {
-    slots: maintenanceStatus.global || maintenanceStatus.SLOTS,
-    roulette: maintenanceStatus.global || maintenanceStatus.ROULETTE,
-    blackjack: maintenanceStatus.global || maintenanceStatus.BLACKJACK,
+    slots:      maintenanceStatus.global || maintenanceStatus.SLOTS,
+    roulette:   maintenanceStatus.global || maintenanceStatus.ROULETTE,
+    blackjack:  maintenanceStatus.global || maintenanceStatus.BLACKJACK,
+    'battle-box': maintenanceStatus.global, // 👈 ajouté
   };
+
+  const games = [
+    {
+      key: 'slots',
+      title: 'Machines à Sous',
+      description: "Tentez votre chance sur nos machines à sous. Jusqu'à x20 votre mise.",
+      icon: '🎰',
+      path: '/slots',
+      color: '#c9a84c',
+      multiplier: 'x20',
+    },
+    {
+      key: 'roulette',
+      title: 'Roulette',
+      description: 'Roulette européenne complète. Tous les types de paris disponibles.',
+      icon: '🎡',
+      path: '/roulette',
+      color: '#e05c5c',
+      multiplier: 'x36',
+    },
+    {
+      key: 'blackjack',
+      title: 'Blackjack',
+      description: 'Battez le croupier sans dépasser 21. Blackjack naturel payé x2.5.',
+      icon: '🃏',
+      path: '/blackjack',
+      color: '#4caf7d',
+      multiplier: 'x2.5',
+    },
+    ...(battleBoxEnabled ? [{
+      key: 'battle-box',
+      title: 'Battle Box',
+      description: "Affrontez un adversaire en ouvrant des box. Le plus grand total l'emporte !",
+      icon: '⚔️',
+      path: '/battle-box',
+      color: '#e05c5c',
+      multiplier: 'x2',
+    }] : []),
+  ];
 
   return (
     <div className="home">

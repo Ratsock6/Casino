@@ -398,7 +398,9 @@ export const ModelName = {
   PlayerLevel: 'PlayerLevel',
   LevelReward: 'LevelReward',
   Jackpot: 'Jackpot',
-  JackpotWin: 'JackpotWin'
+  JackpotWin: 'JackpotWin',
+  BattleBoxGame: 'BattleBoxGame',
+  BattleBoxPlayer: 'BattleBoxPlayer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -414,7 +416,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription" | "playerLevel" | "levelReward" | "jackpot" | "jackpotWin"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription" | "playerLevel" | "levelReward" | "jackpot" | "jackpotWin" | "battleBoxGame" | "battleBoxPlayer"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1528,6 +1530,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BattleBoxGame: {
+      payload: Prisma.$BattleBoxGamePayload<ExtArgs>
+      fields: Prisma.BattleBoxGameFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BattleBoxGameFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BattleBoxGameFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>
+        }
+        findFirst: {
+          args: Prisma.BattleBoxGameFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BattleBoxGameFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>
+        }
+        findMany: {
+          args: Prisma.BattleBoxGameFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>[]
+        }
+        create: {
+          args: Prisma.BattleBoxGameCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>
+        }
+        createMany: {
+          args: Prisma.BattleBoxGameCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BattleBoxGameCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>[]
+        }
+        delete: {
+          args: Prisma.BattleBoxGameDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>
+        }
+        update: {
+          args: Prisma.BattleBoxGameUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>
+        }
+        deleteMany: {
+          args: Prisma.BattleBoxGameDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BattleBoxGameUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BattleBoxGameUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>[]
+        }
+        upsert: {
+          args: Prisma.BattleBoxGameUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxGamePayload>
+        }
+        aggregate: {
+          args: Prisma.BattleBoxGameAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBattleBoxGame>
+        }
+        groupBy: {
+          args: Prisma.BattleBoxGameGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BattleBoxGameGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BattleBoxGameCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BattleBoxGameCountAggregateOutputType> | number
+        }
+      }
+    }
+    BattleBoxPlayer: {
+      payload: Prisma.$BattleBoxPlayerPayload<ExtArgs>
+      fields: Prisma.BattleBoxPlayerFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BattleBoxPlayerFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BattleBoxPlayerFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>
+        }
+        findFirst: {
+          args: Prisma.BattleBoxPlayerFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BattleBoxPlayerFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>
+        }
+        findMany: {
+          args: Prisma.BattleBoxPlayerFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>[]
+        }
+        create: {
+          args: Prisma.BattleBoxPlayerCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>
+        }
+        createMany: {
+          args: Prisma.BattleBoxPlayerCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BattleBoxPlayerCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>[]
+        }
+        delete: {
+          args: Prisma.BattleBoxPlayerDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>
+        }
+        update: {
+          args: Prisma.BattleBoxPlayerUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>
+        }
+        deleteMany: {
+          args: Prisma.BattleBoxPlayerDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BattleBoxPlayerUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BattleBoxPlayerUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>[]
+        }
+        upsert: {
+          args: Prisma.BattleBoxPlayerUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BattleBoxPlayerPayload>
+        }
+        aggregate: {
+          args: Prisma.BattleBoxPlayerAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBattleBoxPlayer>
+        }
+        groupBy: {
+          args: Prisma.BattleBoxPlayerGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BattleBoxPlayerGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BattleBoxPlayerCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BattleBoxPlayerCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1789,6 +1939,41 @@ export const JackpotWinScalarFieldEnum = {
 export type JackpotWinScalarFieldEnum = (typeof JackpotWinScalarFieldEnum)[keyof typeof JackpotWinScalarFieldEnum]
 
 
+export const BattleBoxGameScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  maxPlayers: 'maxPlayers',
+  teamSize: 'teamSize',
+  isPrivate: 'isPrivate',
+  inviteCode: 'inviteCode',
+  boxTypes: 'boxTypes',
+  totalStake: 'totalStake',
+  commissionPct: 'commissionPct',
+  winnerId: 'winnerId',
+  winnerTeam: 'winnerTeam',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  settledAt: 'settledAt'
+} as const
+
+export type BattleBoxGameScalarFieldEnum = (typeof BattleBoxGameScalarFieldEnum)[keyof typeof BattleBoxGameScalarFieldEnum]
+
+
+export const BattleBoxPlayerScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  userId: 'userId',
+  teamIndex: 'teamIndex',
+  stake: 'stake',
+  items: 'items',
+  totalValue: 'totalValue',
+  isWinner: 'isWinner',
+  joinedAt: 'joinedAt'
+} as const
+
+export type BattleBoxPlayerScalarFieldEnum = (typeof BattleBoxPlayerScalarFieldEnum)[keyof typeof BattleBoxPlayerScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -2031,6 +2216,20 @@ export type EnumBlackjackGameStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
 export type ListEnumBlackjackGameStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BlackjackGameStatus[]'>
     
 
+
+/**
+ * Reference to a field of type 'BattleBoxStatus'
+ */
+export type EnumBattleBoxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BattleBoxStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'BattleBoxStatus[]'
+ */
+export type ListEnumBattleBoxStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BattleBoxStatus[]'>
+    
+
 /**
  * Batch Payload for updateMany & deleteMany & createMany
  */
@@ -2141,6 +2340,8 @@ export type GlobalOmitConfig = {
   levelReward?: Prisma.LevelRewardOmit
   jackpot?: Prisma.JackpotOmit
   jackpotWin?: Prisma.JackpotWinOmit
+  battleBoxGame?: Prisma.BattleBoxGameOmit
+  battleBoxPlayer?: Prisma.BattleBoxPlayerOmit
 }
 
 /* Types for Logging */

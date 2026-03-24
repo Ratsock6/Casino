@@ -65,7 +65,9 @@ export const ModelName = {
   PlayerLevel: 'PlayerLevel',
   LevelReward: 'LevelReward',
   Jackpot: 'Jackpot',
-  JackpotWin: 'JackpotWin'
+  JackpotWin: 'JackpotWin',
+  BattleBoxGame: 'BattleBoxGame',
+  BattleBoxPlayer: 'BattleBoxPlayer'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -304,6 +306,41 @@ export const JackpotWinScalarFieldEnum = {
 } as const
 
 export type JackpotWinScalarFieldEnum = (typeof JackpotWinScalarFieldEnum)[keyof typeof JackpotWinScalarFieldEnum]
+
+
+export const BattleBoxGameScalarFieldEnum = {
+  id: 'id',
+  status: 'status',
+  maxPlayers: 'maxPlayers',
+  teamSize: 'teamSize',
+  isPrivate: 'isPrivate',
+  inviteCode: 'inviteCode',
+  boxTypes: 'boxTypes',
+  totalStake: 'totalStake',
+  commissionPct: 'commissionPct',
+  winnerId: 'winnerId',
+  winnerTeam: 'winnerTeam',
+  createdAt: 'createdAt',
+  startedAt: 'startedAt',
+  settledAt: 'settledAt'
+} as const
+
+export type BattleBoxGameScalarFieldEnum = (typeof BattleBoxGameScalarFieldEnum)[keyof typeof BattleBoxGameScalarFieldEnum]
+
+
+export const BattleBoxPlayerScalarFieldEnum = {
+  id: 'id',
+  gameId: 'gameId',
+  userId: 'userId',
+  teamIndex: 'teamIndex',
+  stake: 'stake',
+  items: 'items',
+  totalValue: 'totalValue',
+  isWinner: 'isWinner',
+  joinedAt: 'joinedAt'
+} as const
+
+export type BattleBoxPlayerScalarFieldEnum = (typeof BattleBoxPlayerScalarFieldEnum)[keyof typeof BattleBoxPlayerScalarFieldEnum]
 
 
 export const SortOrder = {

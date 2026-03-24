@@ -1,0 +1,892 @@
+@import '../variables';
+
+.battlebox {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  max-width: 1000px;
+  margin: 0 auto;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-xl;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    gap: $spacing-lg;
+
+    &-actions {
+      display: flex;
+      gap: $spacing-sm;
+      flex-shrink: 0;
+    }
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 800;
+    color: $color-text;
+  }
+
+  &__subtitle {
+    font-size: 14px;
+    color: $color-text-muted;
+    margin-top: $spacing-xs;
+  }
+
+  &__back {
+    font-size: 14px;
+    color: $color-text-muted;
+
+    &:hover {
+      color: $color-text;
+    }
+  }
+
+  &__section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: $color-text;
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__lobby-count {
+    background: $color-gold;
+    color: #0d0d0d;
+    font-size: 12px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Lobby
+  &__lobby {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+
+  &__lobby-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__lobby-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-lg;
+    padding: $spacing-md $spacing-lg;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $color-gold;
+    }
+  }
+
+  &__lobby-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+  }
+
+  &__lobby-players {
+    display: flex;
+    gap: $spacing-sm;
+    flex-wrap: wrap;
+  }
+
+  &__lobby-player {
+    font-size: 13px;
+    font-weight: 600;
+    color: $color-text;
+    background: rgba($color-gold, 0.1);
+    border: 1px solid rgba($color-gold, 0.3);
+    border-radius: $radius-sm;
+    padding: 2px 8px;
+
+    &--empty {
+      color: $color-text-muted;
+      background: $color-surface-2;
+      border-color: $color-border;
+    }
+  }
+
+  &__lobby-boxes {
+    font-size: 12px;
+    color: $color-text-muted;
+  }
+
+  &__lobby-stake {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    font-size: 16px;
+    font-weight: 700;
+    color: $color-gold;
+    flex-shrink: 0;
+
+    &-label {
+      font-size: 11px;
+      color: $color-text-muted;
+      font-weight: 400;
+    }
+  }
+
+  // Empty
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    padding: $spacing-xl * 2;
+    color: $color-text-muted;
+    font-size: 14px;
+
+    span {
+      font-size: 48px;
+      opacity: 0.3;
+    }
+  }
+
+  // Création
+  &__create {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+  }
+
+  &__catalog {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: $color-text;
+    }
+  }
+
+  &__boxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: $spacing-md;
+  }
+
+  &__box {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    transition: all $transition-base;
+
+    &:hover {
+      border-color: rgba($color-gold, 0.4);
+    }
+
+    &--selected {
+      border-color: $color-gold;
+      background: rgba($color-gold, 0.05);
+    }
+
+    &-header {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+
+    &-emoji {
+      font-size: 28px;
+    }
+
+    &-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    &-price {
+      font-size: 13px;
+      color: $color-gold;
+      font-weight: 600;
+    }
+
+    &-vip {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 800;
+      color: $color-gold;
+      background: rgba($color-gold, 0.15);
+      border: 1px solid rgba($color-gold, 0.4);
+      border-radius: $radius-sm;
+      padding: 2px 6px;
+    }
+
+    &-desc {
+      font-size: 12px;
+      color: $color-text-muted;
+    }
+
+    &-items {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    &-item {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    &-more {
+      font-size: 11px;
+      color: $color-text-muted;
+    }
+
+    &-counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: $spacing-md;
+      margin-top: $spacing-sm;
+
+      button {
+        width: 28px;
+        height: 28px;
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        color: $color-text;
+        font-size: 16px;
+        font-weight: 700;
+        transition: all $transition-fast;
+
+        &:hover:not(:disabled) {
+          border-color: $color-gold;
+          color: $color-gold;
+        }
+
+        &:disabled {
+          opacity: 0.3;
+          cursor: not-allowed;
+        }
+      }
+
+      span {
+        font-size: 18px;
+        font-weight: 700;
+        color: $color-text;
+        min-width: 24px;
+        text-align: center;
+      }
+    }
+  }
+
+  // Options
+  &__options {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: $color-text;
+    }
+  }
+
+  &__option-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $spacing-lg;
+
+    label {
+      font-size: 14px;
+      color: $color-text-muted;
+    }
+  }
+
+  &__option-btns {
+    display: flex;
+    gap: $spacing-xs;
+  }
+
+  &__option-btn {
+    padding: 6px $spacing-md;
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    font-size: 13px;
+    transition: all $transition-fast;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-gold;
+    }
+
+    &--active {
+      border-color: $color-gold;
+      color: $color-gold;
+      background: rgba($color-gold, 0.08);
+    }
+  }
+
+  // Toggle
+  &__toggle {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    position: relative;
+    transition: background $transition-fast;
+    cursor: pointer;
+
+    &--on {
+      background: $color-gold;
+    }
+
+    &--off {
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+    }
+
+    &-dot {
+      position: absolute;
+      top: 3px;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border-radius: 50%;
+      transition: left $transition-fast;
+    }
+
+    &--on &-dot {
+      left: 23px;
+    }
+
+    &--off &-dot {
+      left: 3px;
+    }
+  }
+
+  // Résumé
+  &__summary {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    &-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: $color-text-muted;
+
+      strong {
+        font-size: 16px;
+        font-weight: 700;
+      }
+    }
+  }
+
+  // Attente
+  &__waiting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xl;
+    padding: $spacing-xl * 2;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    text-align: center;
+
+    &-icon {
+      font-size: 48px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    p {
+      font-size: 14px;
+      color: $color-text-muted;
+    }
+
+    &-players {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-sm;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    &-player {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      padding: $spacing-sm $spacing-md;
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      font-size: 14px;
+      font-weight: 600;
+
+      &--empty {
+        opacity: 0.4;
+      }
+    }
+
+    &-ready {
+      margin-left: auto;
+      color: $color-success;
+    }
+  }
+
+  // Code invitation
+  &__invite-code {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-lg;
+    background: rgba($color-gold, 0.05);
+    border: 1px solid rgba($color-gold, 0.3);
+    border-radius: $radius-md;
+
+    p {
+      font-size: 13px;
+      color: $color-text-muted;
+    }
+
+    &-value {
+      font-size: 28px;
+      font-weight: 900;
+      color: $color-gold;
+      letter-spacing: 6px;
+    }
+
+    button {
+      font-size: 13px;
+      color: $color-gold;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // Rejoindre par code
+  &__private-join {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl * 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-lg;
+    text-align: center;
+    max-width: 400px;
+    margin: 0 auto;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    p {
+      font-size: 14px;
+      color: $color-text-muted;
+    }
+  }
+
+  &__private-form {
+    input {
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      padding: 12px $spacing-lg;
+      color: $color-text;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 6px;
+      text-align: center;
+      text-transform: uppercase;
+      width: 200px;
+
+      &:focus {
+        border-color: $color-gold;
+        outline: none;
+      }
+
+      &::placeholder {
+        color: $color-text-muted;
+        letter-spacing: 2px;
+        font-size: 14px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  // Résultats
+  &__result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-xl;
+
+    &-header {
+      text-align: center;
+
+      h2 {
+        font-size: 28px;
+        font-weight: 800;
+        color: $color-text;
+      }
+
+      p {
+        font-size: 14px;
+        color: $color-text-muted;
+        margin-top: $spacing-xs;
+      }
+    }
+
+    &-players {
+      display: flex;
+      gap: $spacing-lg;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: 100%;
+    }
+
+    &-player {
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+      background: $color-surface;
+      border: 1px solid $color-border;
+      border-radius: $radius-lg;
+      padding: $spacing-xl;
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-md;
+      position: relative;
+
+      &--winner {
+        border-color: $color-gold;
+        background: rgba($color-gold, 0.05);
+      }
+
+      h3 {
+        font-size: 18px;
+        font-weight: 700;
+        color: $color-text;
+      }
+    }
+
+    &-crown {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: $color-gold;
+      color: #0d0d0d;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px $spacing-md;
+      border-radius: $radius-sm;
+      white-space: nowrap;
+    }
+
+    &-items {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+
+    &-item {
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+      padding: $spacing-xs $spacing-sm;
+      background: $color-surface-2;
+      border: 1px solid;
+      border-radius: $radius-sm;
+      font-size: 12px;
+
+      &-emoji {
+        font-size: 16px;
+      }
+
+      &-name {
+        flex: 1;
+        color: $color-text;
+      }
+
+      &-value {
+        font-weight: 700;
+      }
+    }
+
+    &-total {
+      font-size: 14px;
+      color: $color-text-muted;
+      border-top: 1px solid $color-border;
+      padding-top: $spacing-sm;
+
+      strong {
+        font-size: 18px;
+        font-weight: 800;
+      }
+    }
+
+    &-payout {
+      font-size: 15px;
+      color: $color-text-muted;
+
+      strong {
+        color: $color-gold;
+        font-weight: 800;
+        font-size: 20px;
+      }
+    }
+  }
+
+  // Boutons
+  &__btn {
+    padding: 10px $spacing-xl;
+    border-radius: $radius-sm;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all $transition-fast;
+    cursor: pointer;
+
+    &--primary {
+      background: $color-gold;
+      color: #0d0d0d;
+
+      &:hover:not(:disabled) {
+        background: $color-gold-light;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    &--secondary {
+      background: $color-surface-2;
+      border: 1px solid $color-border;
+      color: $color-text-muted;
+
+      &:hover {
+        border-color: $color-gold;
+        color: $color-gold;
+      }
+    }
+
+    &--danger {
+      background: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+      color: $color-error;
+
+      &:hover {
+        background: rgba($color-error, 0.2);
+      }
+    }
+
+    &--sm {
+      padding: 6px $spacing-md;
+      font-size: 13px;
+    }
+
+    &--lg {
+      padding: 14px $spacing-xl;
+      font-size: 15px;
+      width: 100%;
+    }
+  }
+
+  &__error {
+    color: $color-error;
+    font-size: 13px;
+    padding: $spacing-sm $spacing-md;
+    background: rgba($color-error, 0.1);
+    border: 1px solid rgba($color-error, 0.3);
+    border-radius: $radius-sm;
+  }
+
+  &__active-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-md $spacing-lg;
+    background: rgba($color-gold, 0.05);
+    border: 1px solid rgba($color-gold, 0.4);
+    border-radius: $radius-md;
+    gap: $spacing-lg;
+
+    &-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+      font-size: 24px;
+    }
+
+    &-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: $color-text;
+    }
+
+    &-status {
+      font-size: 12px;
+      color: $color-text-muted;
+      margin-top: 2px;
+    }
+  }
+
+
+  // Compte à rebours
+  &__countdown {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+
+    &-number {
+      font-size: 120px;
+      font-weight: 900;
+      color: $color-gold;
+      animation: countdownPop 0.8s ease both;
+      text-shadow: 0 0 40px rgba($color-gold, 0.8);
+    }
+  }
+
+}
+
+// Items cachés / révélés
+.battlebox__result-item {
+  transition: all 0.3s ease;
+
+  &--hidden {
+    opacity: 0.4;
+    filter: grayscale(1);
+    background: $color-surface-2 !important;
+  }
+
+  &--revealed {
+    opacity: 1;
+    filter: none;
+    animation: itemReveal 0.4s ease both;
+  }
+}
+
+// Total animé
+.battlebox__result-total {
+  &--animate {
+    animation: valueReveal 0.5s ease both;
+
+    strong {
+      color: $color-gold !important;
+    }
+  }
+}
+
+@keyframes countdownPop {
+  0% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+
+  40% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(0.95);
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes itemReveal {
+  0% {
+    transform: scale(0.8) translateY(10px);
+    opacity: 0;
+  }
+
+  60% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes valueReveal {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
