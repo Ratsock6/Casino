@@ -130,7 +130,7 @@ export class JackpotService {
           await tx.walletTransaction.create({
             data: {
               userId,
-              type: 'WIN_JACKPOT', // 👈
+              type: 'WIN_JACKPOT',
               amount: newAmount,
               balanceBefore: wallet.balance,
               balanceAfter: wallet.balance + newAmount,
@@ -198,7 +198,7 @@ export class JackpotService {
 
     await this.prisma.jackpot.updateMany({
       where: { isActive: true },
-      data: { amount: BigInt(minAmount) }, // 👈 utilise la variable déjà calculée
+      data: { amount: BigInt(minAmount) },
     });
 
     await this.prisma.adminAction.create({

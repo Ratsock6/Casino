@@ -114,7 +114,7 @@ export class BattleBoxService {
           amount: BigInt(stake),
           balanceBefore: wallet.balance,
           balanceAfter: wallet.balance - BigInt(stake),
-          gameType: 'SLOTS', // on utilisera un type custom plus tard
+          gameType: 'BATTLE_BOX',
           reason: 'Battle Box — mise initiale',
         },
       });

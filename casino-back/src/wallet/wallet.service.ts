@@ -29,7 +29,7 @@ export class WalletService {
 
       await tx.wallet.update({ where: { userId }, data: { balance: balanceAfter } });
 
-      const walletTx = await tx.walletTransaction.create({ // 👈 sauvegarde la variable
+      const walletTx = await tx.walletTransaction.create({
         data: {
           userId,
           type: WalletTransactionType.ADMIN_CREDIT,

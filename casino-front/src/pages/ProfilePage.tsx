@@ -20,11 +20,11 @@ const TRANSACTION_COLORS: Record<string, string> = {
 };
 
 const GAME_COLORS: Record<string, string> = {
-  SLOTS: '#c9a84c', ROULETTE: '#e05c5c', BLACKJACK: '#4caf7d',
+  SLOTS: '#c9a84c', ROULETTE: '#e05c5c', BLACKJACK: '#4caf7d', BATTLE_BOX: '#5cc8e0',
 };
 
 const GAME_ICONS: Record<string, string> = {
-  SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏',
+  SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏', BATTLE_BOX: '🎮',
 };
 
 const ProfilePage = () => {

@@ -46,7 +46,8 @@ export type WalletTransactionType = (typeof WalletTransactionType)[keyof typeof 
 export const GameType = {
   ROULETTE: 'ROULETTE',
   BLACKJACK: 'BLACKJACK',
-  SLOTS: 'SLOTS'
+  SLOTS: 'SLOTS',
+  BATTLE_BOX: 'BATTLE_BOX'
 } as const
 
 export type GameType = (typeof GameType)[keyof typeof GameType]

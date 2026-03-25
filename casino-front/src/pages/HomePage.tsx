@@ -13,26 +13,17 @@ import '../styles/pages/home.scss';
 import { getJackpotHistoryApi, type JackpotHistoryEntry } from '../api/jackpot.api';
 import JackpotBanner from '../components/ui/JackpotBanner';
 
-const GAME_ICONS: Record<string, string> = {
-  SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏',
-};
-
-const GAME_COLORS: Record<string, string> = {
-  SLOTS: '#c9a84c', ROULETTE: '#e05c5c', BLACKJACK: '#4caf7d',
-};
-
 const HomePage = () => {
   const navigate = useNavigate();
-  const { user } = useAuthStore();
   const { balance } = useWalletStore();
 
   const [winners, setWinners] = useState<RecentWinner[]>([]);
   const [stats, setStats] = useState<PublicStats | null>(null);
   const [maintenanceStatus, setMaintenanceStatus] = useState({
-    global: false, SLOTS: false, ROULETTE: false, BLACKJACK: false,
+    global: false, SLOTS: false, ROULETTE: false, BLACKJACK: false, BATTLE_BOX: false,
   });
   const [jackpotHistory, setJackpotHistory] = useState<JackpotHistoryEntry[]>([]);
-  const [battleBoxEnabled, setBattleBoxEnabled] = useState(false); // 👈 ajouté
+  const [battleBoxEnabled, setBattleBoxEnabled] = useState(false);
 
   useEffect(() => {
     axiosInstance.get('/public/maintenance')
@@ -41,7 +32,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    axiosInstance.get('/public/battlebox-status') // 👈 ajouté
+    axiosInstance.get('/public/battlebox-status')
       .then((res) => setBattleBoxEnabled(res.data.enabled))
       .catch(() => {});
   }, []);
@@ -68,7 +59,7 @@ const HomePage = () => {
     slots:      maintenanceStatus.global || maintenanceStatus.SLOTS,
     roulette:   maintenanceStatus.global || maintenanceStatus.ROULETTE,
     blackjack:  maintenanceStatus.global || maintenanceStatus.BLACKJACK,
-    'battle-box': maintenanceStatus.global, // 👈 ajouté
+    'battle-box': maintenanceStatus.global || maintenanceStatus.BATTLE_BOX,
   };
 
   const games = [

@@ -185,7 +185,7 @@ const BattleBoxPage = () => {
     for (let i = 3; i >= 1; i--) {
       setCountdown(i);
       playCountdown(i);
-      await new Promise((r) => setTimeout(r, 1000)); // 👈 1s par chiffre
+      await new Promise((r) => setTimeout(r, 1000));
     }
     setCountdown(null);
 

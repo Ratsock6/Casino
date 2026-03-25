@@ -133,7 +133,7 @@ export class ReportsService {
 
   private async sendToDiscord(webhookUrl: string, report: Awaited<ReturnType<typeof this.buildDailyReport>>) {
     const GAME_ICONS: Record<string, string> = {
-      SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏',
+      SLOTS: '🎰', ROULETTE: '🎡', BLACKJACK: '🃏', BATTLE_BOX: '🎮',
     };
 
     const roundsByGameText = report.roundsByGame

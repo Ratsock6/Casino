@@ -37,6 +37,7 @@ enum GameType {
   ROULETTE
   BLACKJACK
   SLOTS
+  BATTLE_BOX
 }
 
 enum GameRoundStatus {

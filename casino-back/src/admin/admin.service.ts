@@ -56,7 +56,7 @@ export class AdminService {
       levelAgg,
       adminCreditAgg,
       adminDebitAgg,
-      roundsByGame, // 👈 ajoute ça
+      roundsByGame,
     ] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { status: 'ACTIVE' } }),
@@ -85,7 +85,7 @@ export class AdminService {
         _sum: { amount: true },
         where: { type: 'ADMIN_DEBIT' },
       }),
-      this.prisma.gameRound.groupBy({ // 👈 ajoute ça
+      this.prisma.gameRound.groupBy({
         by: ['gameType'],
         _count: { id: true },
       }),
