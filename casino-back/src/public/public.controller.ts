@@ -75,4 +75,14 @@ export class PublicController {
     return { enabled };
   }
 
+  @Get('battlebox-max-bet')
+  async getBattleBoxMaxBetVip() {
+    const maxBetVip = await this.casinoConfigService.getNumber('BATTLEBOX_MAX_STAKE_VIP', 100000);
+    const maxBetPlayer = await this.casinoConfigService.getNumber('BATTLEBOX_MAX_STAKE_PLAYER', 50000);
+    return { 
+      maxBetPlayer,
+      maxBetVip,
+    };
+  }
+
 }

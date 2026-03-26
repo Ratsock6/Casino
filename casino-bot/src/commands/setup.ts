@@ -71,6 +71,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
           inline: true,
         },
         {
+          name: '`/credit [montant]`',
+          value: 'Demander un crédit de jetons',
+          inline: true,
+        },
+        {
           name: '━━━━━━━━━━━━━━━━━━━━━━',
           value: '**❓ Besoin d\'aide ?**\nContactez un membre du staff en ouvrant un ticket.',
           inline: false,

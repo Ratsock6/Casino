@@ -307,18 +307,18 @@ export class BattleBoxService {
             });
           }
         }
-
-        await tx.walletTransaction.create({
-          data: {
-            userId: winner.player.userId,
-            type: 'BET',
-            amount: BigInt(commission),
-            balanceBefore: BigInt(0),
-            balanceAfter: BigInt(0),
-            reason: `Battle Box — commission casino (${game.commissionPct}%)`,
-          },
-        }).catch(() => { });
       }
+
+      await tx.walletTransaction.create({
+        data: {
+          userId: winner.player.userId,
+          type: 'BET',
+          amount: BigInt(commission),
+          balanceBefore: BigInt(0),
+          balanceAfter: BigInt(0),
+          reason: `Battle Box — commission casino (${game.commissionPct}%)`,
+        },
+      }).catch(() => { });
 
       // Finalise la partie
       await tx.battleBoxGame.update({
@@ -557,6 +557,14 @@ export class BattleBoxService {
       maxPlayers: g.maxPlayers,
       boxTypes: g.boxTypes,
       totalStake: Number(g.totalStake),
+      totalPot: g.players.reduce((sum, p) => sum + Number(p.stake), 0), // 👈 nouveau — total de tous les joueurs
+      commission: Math.floor(
+        g.players.reduce((sum, p) => sum + Number(p.stake), 0) * g.commissionPct / 100
+      ),
+      casinoNet: Math.floor(
+        g.players.reduce((sum, p) => sum + Number(p.stake), 0) -
+        g.players.reduce((sum, p) => sum + Number(p.totalValue || 0), 0)
+      ),
       commissionPct: g.commissionPct,
       winnerId: g.winnerId,
       createdAt: g.createdAt,

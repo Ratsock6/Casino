@@ -1331,4 +1331,31 @@
       color: $color-text;
     }
   }
+
+  &__battlebox-inline {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+    padding: $spacing-md $spacing-lg;
+    background: $color-surface-2;
+    border-top: 1px solid $color-border;
+  }
+
+  &__config-category {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-xl;
+
+    &-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: $color-text;
+      padding-bottom: $spacing-sm;
+      border-bottom: 1px solid $color-border;
+    }
+  }
 }

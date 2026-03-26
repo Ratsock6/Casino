@@ -18,6 +18,13 @@ export class CasinoConfigService {
     return value === 'true';
   }
 
+  async getNumber(key: string, defaultValue = 0): Promise<number> {
+    const value = await this.get(key);
+    if (value === null) return defaultValue;
+    const num = Number(value);
+    return isNaN(num) ? defaultValue : num;
+  }
+
   async set(key: string, value: string, adminId?: string): Promise<void> {
     await this.prisma.casinoConfig.upsert({
       where: { key },

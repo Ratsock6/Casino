@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, act } from 'react';
+import { useState, useEffect } from 'react';
 import { useWalletStore } from '../store/wallet.store';
 import { useAuthStore } from '../store/auth.store';
 import { useSocket } from '../hooks/useSocket';
@@ -12,6 +12,7 @@ import {
   type BoxConfig, type LobbyGame, type BattleBoxGame,
 } from '../api/battle-box.api';
 import '../styles/pages/battle-box.scss';
+import MaintenanceScreen from '../components/ui/MaintenanceScreen';
 
 type View = 'lobby' | 'create' | 'waiting' | 'playing' | 'result' | 'join-private';
 
@@ -41,7 +42,7 @@ const BattleBoxPage = () => {
   const [privateCode, setPrivateCode] = useState('');
   const [result, setResult] = useState<any>(null);
   const [lobbyInterval, setLobbyInterval] = useState<ReturnType<typeof setInterval> | null>(null);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isMaintenance, setIsMaintenance] = useState(false);
   const [activeGame, setActiveGame] = useState<BattleBoxGame | null>(null);
   const { playBoxOpen, playReveal, playVictory, playDefeat, playCountdown } = useSound();
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -55,7 +56,7 @@ const BattleBoxPage = () => {
   // Vérifie si le Battle Box est activé
   useEffect(() => {
     axiosInstance.get('/public/maintenance')
-      .then((res) => setIsVisible(!res.data.global))
+      .then((res) => setIsMaintenance(res.data.global))
       .catch(() => { });
   }, []);
 
@@ -250,10 +251,26 @@ const BattleBoxPage = () => {
     }
   };
 
+  const [maxStakePlayer, setMaxStakePlayer] = useState(50000);
+  const [maxStakeVip, setMaxStakeVip] = useState(100000);
+
+  // Charge la configuration des mises maximales
+  useEffect(() => {
+    axiosInstance.get('/public/battlebox-max-bet')
+      .then((res) => {
+        setMaxStakePlayer(res.data.maxBetPlayer);
+        setMaxStakeVip(res.data.maxBetVip);
+      })
+      .catch(console.error);
+  }, []);
+
   const totalStake = calculateTotalStake();
   const isVip = user?.role === 'VIP' || user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
-  const maxStake = isVip ? 100000 : 50000;
+  const maxStake = isVip ? maxStakeVip : maxStakePlayer;
 
+  if (isMaintenance) {
+    return <MaintenanceScreen game="Le battle box" />;
+  }
   // ── Vue lobby ──
   if (view === 'lobby') return (
     <div className="battlebox">

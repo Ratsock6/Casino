@@ -474,6 +474,48 @@ const AdminPage = () => {
     { key: 'battlebox', label: '⚔️ Battle Box' },
   ];
 
+  const CONFIG_CATEGORIES: {
+    label: string;
+    icon: string;
+    keys: string[];
+  }[] = [
+      {
+        label: 'Jeux & Maintenance',
+        icon: '🎮',
+        keys: ['MAINTENANCE_GLOBAL', 'MAINTENANCE_SLOTS', 'MAINTENANCE_ROULETTE', 'MAINTENANCE_BLACKJACK', 'MAINTENANCE_BATTLEBOX'],
+      },
+      {
+        label: 'Battle Box',
+        icon: '⚔️',
+        keys: ['BATTLEBOX_ENABLED', 'BATTLEBOX_COMMISSION_PCT', 'BATTLEBOX_VIP_COMMISSION_PCT', 'BATTLEBOX_MAX_STAKE_PLAYER', 'BATTLEBOX_MAX_STAKE_VIP'],
+      },
+      {
+        label: 'Jackpot Progressif',
+        icon: '🎰',
+        keys: ['JACKPOT_ENABLED', 'JACKPOT_CONTRIBUTION_PCT', 'JACKPOT_WIN_PROBABILITY', 'JACKPOT_MIN_AMOUNT', 'JACKPOT_MIN_PCT', 'JACKPOT_MIN_STAKE'],
+      },
+      {
+        label: 'VIP',
+        icon: '👑',
+        keys: ['VIP_PRICE_1_MONTH', 'VIP_PRICE_3_MONTHS', 'VIP_PRICE_6_MONTHS', 'VIP_PRICE_LIFETIME'],
+      },
+      {
+        label: 'Statistiques',
+        icon: '📊',
+        keys: ['ENABLE_PLAYER_STATS', 'ENABLE_PUBLIC_STATS'],
+      },
+      {
+        label: 'Alertes',
+        icon: '🚨',
+        keys: ['ALERT_HIGH_BET_THRESHOLD', 'ALERT_CONSECUTIVE_LOSSES', 'ALERT_CONSECUTIVE_WINS', 'ALERT_CASINO_BALANCE_MIN'],
+      },
+      {
+        label: 'Discord & Rapports',
+        icon: '🤖',
+        keys: ['DISCORD_WEBHOOK_URL', 'DISCORD_BOT_WEBHOOK_URL', 'REPORT_DAILY_HOUR'],
+      },
+    ];
+
   const CONFIG_LABELS: Record<string, { label: string; description: string }> = {
     ENABLE_PLAYER_STATS: {
       label: '📊 Statistiques des joueurs',
@@ -1346,101 +1388,170 @@ const AdminPage = () => {
           <p className="admin__config-hint">
             Ces paramètres affectent le comportement de la plateforme pour tous les joueurs.
           </p>
-          <div className="admin__config-list">
-            {config.map((item) => {
-              const meta = CONFIG_LABELS[item.key];
-              const isEnabled = item.value === 'true';
-              const isBool = BOOL_CONFIGS.includes(item.key);
 
-              return (
-                <div key={item.key} className="admin__config-row">
-                  <div className="admin__config-info">
-                    <span className="admin__config-label">
-                      {meta?.label || item.key}
-                    </span>
-                    <span className="admin__config-description">
-                      {meta?.description || '—'}
-                    </span>
-                    <span className="admin__config-updated">
-                      Dernière modification : {new Date(item.updatedAt).toLocaleString('fr-FR')} par {item.updatedByUsername || '—'}
-                    </span>
-                  </div>
+          {CONFIG_CATEGORIES.map((category) => {
+            const categoryItems = config.filter((item) => category.keys.includes(item.key));
+            if (categoryItems.length === 0) return null;
 
-                  {isBool ? (
-                    <div className="admin__config-toggle">
-                      <button
-                        className={`admin__toggle ${isEnabled ? 'admin__toggle--on' : 'admin__toggle--off'}`}
-                        onClick={() => handleUpdateConfig(item.key, isEnabled ? 'false' : 'true')}
-                        disabled={configLoading}
-                      >
-                        <span className="admin__toggle-dot" />
-                      </button>
-                      <span className={`admin__toggle-label ${isEnabled ? 'admin__toggle-label--on' : 'admin__toggle-label--off'}`}>
-                        {isEnabled ? 'Activé' : 'Désactivé'}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="admin__config-input">
-                      <input
-                        type="text"
-                        defaultValue={item.value}
-                        onBlur={(e) => {
-                          if (e.target.value !== item.value) {
-                            handleUpdateConfig(item.key, e.target.value);
-                          }
-                        }}
-                        placeholder="Valeur..."
-                      />
-                    </div>
-                  )}
+            return (
+              <div key={category.label} className="admin__config-category">
+                <h3 className="admin__config-category-title">
+                  {category.icon} {category.label}
+                </h3>
+                <div className="admin__config-list">
+                  {categoryItems.map((item) => {
+                    const meta = CONFIG_LABELS[item.key];
+                    const isEnabled = item.value === 'true';
+                    const isBool = BOOL_CONFIGS.includes(item.key);
+
+                    return (
+                      <div key={item.key} className="admin__config-row">
+                        <div className="admin__config-info">
+                          <span className="admin__config-label">
+                            {meta?.label || item.key}
+                          </span>
+                          <span className="admin__config-description">
+                            {meta?.description || '—'}
+                          </span>
+                          <span className="admin__config-updated">
+                            Dernière modification : {new Date(item.updatedAt).toLocaleString('fr-FR')} par {item.updatedByUsername || '—'}
+                          </span>
+                        </div>
+
+                        {isBool ? (
+                          <div className="admin__config-toggle">
+                            <button
+                              className={`admin__toggle ${isEnabled ? 'admin__toggle--on' : 'admin__toggle--off'}`}
+                              onClick={() => handleUpdateConfig(item.key, isEnabled ? 'false' : 'true')}
+                              disabled={configLoading}
+                            >
+                              <span className="admin__toggle-dot" />
+                            </button>
+                            <span className={`admin__toggle-label ${isEnabled ? 'admin__toggle-label--on' : 'admin__toggle-label--off'}`}>
+                              {isEnabled ? 'Activé' : 'Désactivé'}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="admin__config-input">
+                            <input
+                              type="text"
+                              defaultValue={item.value}
+                              onBlur={(e) => {
+                                if (e.target.value !== item.value) {
+                                  handleUpdateConfig(item.key, e.target.value);
+                                }
+                              }}
+                              placeholder="Valeur..."
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-            {config.length === 0 && !loading && (
-              <p className="admin__config-empty">Aucune configuration disponible.</p>
-            )}
-          </div>
-          <div className="admin__config-row">
-            <div className="admin__config-info">
-              <span className="admin__config-label">📊 Rapport journalier Discord</span>
-              <span className="admin__config-description">
-                Envoyé automatiquement chaque jour à 8h00. Cliquez pour envoyer un rapport maintenant.
-              </span>
+              </div>
+            );
+          })}
+
+          {/* Configs non catégorisées */}
+          {(() => {
+            const allCategorizedKeys = CONFIG_CATEGORIES.flatMap((c) => c.keys);
+            const uncategorized = config.filter((item) => !allCategorizedKeys.includes(item.key));
+            if (uncategorized.length === 0) return null;
+            return (
+              <div className="admin__config-category">
+                <h3 className="admin__config-category-title">⚙️ Autres</h3>
+                <div className="admin__config-list">
+                  {uncategorized.map((item) => {
+                    const meta = CONFIG_LABELS[item.key];
+                    const isEnabled = item.value === 'true';
+                    const isBool = BOOL_CONFIGS.includes(item.key);
+                    return (
+                      <div key={item.key} className="admin__config-row">
+                        <div className="admin__config-info">
+                          <span className="admin__config-label">{meta?.label || item.key}</span>
+                          <span className="admin__config-description">{meta?.description || '—'}</span>
+                        </div>
+                        {isBool ? (
+                          <div className="admin__config-toggle">
+                            <button
+                              className={`admin__toggle ${isEnabled ? 'admin__toggle--on' : 'admin__toggle--off'}`}
+                              onClick={() => handleUpdateConfig(item.key, isEnabled ? 'false' : 'true')}
+                              disabled={configLoading}
+                            >
+                              <span className="admin__toggle-dot" />
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="admin__config-input">
+                            <input
+                              type="text"
+                              defaultValue={item.value}
+                              onBlur={(e) => {
+                                if (e.target.value !== item.value) handleUpdateConfig(item.key, e.target.value);
+                              }}
+                              placeholder="Valeur..."
+                            />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* Bouton rapport + reset jackpot */}
+          <div className="admin__config-category">
+            <h3 className="admin__config-category-title">🔧 Actions</h3>
+            <div className="admin__config-list">
+              <div className="admin__config-row">
+                <div className="admin__config-info">
+                  <span className="admin__config-label">📊 Rapport journalier Discord</span>
+                  <span className="admin__config-description">
+                    Envoyé automatiquement chaque jour à l'heure configurée. Cliquez pour envoyer maintenant.
+                  </span>
+                </div>
+                <button
+                  className="admin__export-btn"
+                  onClick={async () => {
+                    try {
+                      await triggerDailyReportApi();
+                      alert('✅ Rapport envoyé sur Discord !');
+                    } catch {
+                      alert('❌ Erreur — vérifiez que le webhook Discord est configuré.');
+                    }
+                  }}
+                >
+                  📤 Envoyer maintenant
+                </button>
+              </div>
+              <div className="admin__config-row">
+                <div className="admin__config-info">
+                  <span className="admin__config-label">🎰 Jackpot progressif</span>
+                  <span className="admin__config-description">
+                    Réinitialise la cagnotte au montant calculé (% du revenu net).
+                  </span>
+                </div>
+                <button
+                  className="admin__export-btn"
+                  onClick={async () => {
+                    if (confirm('Réinitialiser le jackpot ?')) {
+                      await resetJackpotApi();
+                      alert('✅ Jackpot réinitialisé !');
+                    }
+                  }}
+                >
+                  🔄 Réinitialiser
+                </button>
+              </div>
             </div>
-            <button
-              className="admin__export-btn"
-              onClick={async () => {
-                try {
-                  await triggerDailyReportApi();
-                  alert('✅ Rapport envoyé sur Discord !');
-                } catch {
-                  alert('❌ Erreur — vérifiez que le webhook Discord est configuré.');
-                }
-              }}
-            >
-              📤 Envoyer maintenant
-            </button>
           </div>
 
-          <div className="admin__config-row">
-            <div className="admin__config-info">
-              <span className="admin__config-label">🎰 Jackpot progressif</span>
-              <span className="admin__config-description">
-                Réinitialise la cagnotte au montant minimum configuré (JACKPOT_MIN_AMOUNT).
-              </span>
-            </div>
-            <button
-              className="admin__export-btn"
-              onClick={async () => {
-                if (confirm('Réinitialiser le jackpot ?')) {
-                  await resetJackpotApi();
-                  alert('✅ Jackpot réinitialisé !');
-                }
-              }}
-            >
-              🔄 Réinitialiser
-            </button>
-          </div>
+          {config.length === 0 && !loading && (
+            <p className="admin__config-empty">Aucune configuration disponible.</p>
+          )}
         </div>
       )}
 
@@ -1823,100 +1934,115 @@ const AdminPage = () => {
                   <th>Joueurs</th>
                   <th>Box</th>
                   <th>Mise totale</th>
-                  <th>Commission</th>
+                  <th>Casino net</th>
                   <th>Statut</th>
                   <th>Gagnant</th>
-                  <th>Détail</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {battleBoxGames.map((game) => {
-                  const winner = game.players.find((p) => p.isWinner);
+                {battleBoxGames.map((game: any) => {
+                  const winner = game.players.find((p: any) => p.isWinner);
                   const boxDesc = Object.entries(game.boxTypes as Record<string, number>)
                     .map(([type, count]) => `${count}× ${type}`)
                     .join(' + ');
-                  const commission = Math.floor(game.totalStake * game.commissionPct / 100);
+                  const isExpanded = selectedBattleBoxGame?.id === game.id;
 
                   return (
-                    <tr key={game.id}>
-                      <td className="admin__table-date">{formatDate(game.createdAt)}</td>
-                      <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                          {game.players.map((p) => (
-                            <span key={p.userId} style={{ fontSize: 12 }}>
-                              {p.isWinner ? '👑 ' : ''}{p.username}
-                              {p.totalValue !== null && (
-                                <span style={{ color: '#888', marginLeft: 4 }}>
-                                  ({p.totalValue.toLocaleString()} 🪙)
-                                </span>
-                              )}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td style={{ fontSize: 12, color: '#888' }}>{boxDesc}</td>
-                      <td className="admin__table-muted">{game.totalStake.toLocaleString()} 🪙</td>
-                      <td style={{ color: '#4caf7d', fontSize: 13 }}>+{commission.toLocaleString()} 🪙</td>
-                      <td>
-                        <span className="admin__badge" style={{
-                          color: game.status === 'FINISHED' ? '#4caf7d' :
-                            game.status === 'CANCELLED' ? '#e05c5c' :
-                              game.status === 'WAITING' ? '#e0a85c' : '#5cc8e0',
-                          borderColor: game.status === 'FINISHED' ? '#4caf7d' :
-                            game.status === 'CANCELLED' ? '#e05c5c' :
-                              game.status === 'WAITING' ? '#e0a85c' : '#5cc8e0',
-                        }}>
-                          {game.status}
-                        </span>
-                      </td>
-                      <td style={{ fontWeight: 600, color: '#c9a84c' }}>
-                        {winner ? winner.username : '—'}
-                      </td>
-                      <td>
-                        <button
-                          className="admin__export-btn admin__export-btn--small"
-                          onClick={() => setSelectedBattleBoxGame(
-                            selectedBattleBoxGame?.id === game.id ? null : game
+                    <>
+                      <tr key={game.id}>
+                        <td className="admin__table-date">{formatDate(game.createdAt)}</td>
+                        <td>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            {game.players.map((p: any) => (
+                              <span key={p.userId} style={{ fontSize: 12 }}>
+                                {p.isWinner ? '👑 ' : ''}{p.username}
+                                {p.totalValue !== null && (
+                                  <span style={{ color: '#888', marginLeft: 4 }}>
+                                    ({p.totalValue.toLocaleString()})
+                                  </span>
+                                )}
+                              </span>
+                            ))}
+                          </div>
+                        </td>
+                        <td style={{ fontSize: 12, color: '#888' }}>{boxDesc}</td>
+                        <td className="admin__table-muted">{game.totalPot.toLocaleString()} 🪙</td>
+                        <td>
+                          <span style={{
+                            color: game.casinoNet >= 0 ? '#4caf7d' : '#e05c5c',
+                            fontWeight: 700,
+                            fontSize: 13,
+                          }}>
+                            {game.casinoNet >= 0 ? '+' : ''}{game.casinoNet.toLocaleString()} 🪙
+                          </span>
+                          <div style={{ fontSize: 11, color: '#888' }}>
+                            comm. {game.commission.toLocaleString()} 🪙
+                          </div>
+                        </td>
+                        <td>
+                          <span className="admin__badge" style={{
+                            color: game.status === 'FINISHED' ? '#4caf7d' :
+                              game.status === 'CANCELLED' ? '#e05c5c' :
+                                game.status === 'WAITING' ? '#e0a85c' : '#5cc8e0',
+                            borderColor: game.status === 'FINISHED' ? '#4caf7d' :
+                              game.status === 'CANCELLED' ? '#e05c5c' :
+                                game.status === 'WAITING' ? '#e0a85c' : '#5cc8e0',
+                          }}>
+                            {game.status}
+                          </span>
+                        </td>
+                        <td style={{ fontWeight: 600, color: '#c9a84c' }}>
+                          {winner ? winner.username : '—'}
+                        </td>
+                        <td>
+                          {game.status === 'FINISHED' && (
+                            <button
+                              className="admin__export-btn admin__export-btn--small"
+                              onClick={() => setSelectedBattleBoxGame(isExpanded ? null : game)}
+                              disabled={exportLoading}
+                            >
+                              {isExpanded ? '▲' : '▼'}
+                            </button>
                           )}
-                        >
-                          {selectedBattleBoxGame?.id === game.id ? '▲ Fermer' : '▼ Voir'}
-                        </button>
-                      </td>
-                    </tr>
+                        </td>
+                      </tr>
+
+                      {/* Détail inline */}
+                      {isExpanded && (
+                        <tr key={`${game.id}-detail`}>
+                          <td colSpan={8} style={{ padding: 0 }}>
+                            <div className="admin__battlebox-inline">
+                              {game.players.map((player: any) => (
+                                <div key={player.userId} className="admin__battlebox-player">
+                                  <p className="admin__battlebox-player-name">
+                                    {player.isWinner ? '👑 ' : ''}{player.username}
+                                    <span style={{ color: '#4caf7d', marginLeft: 8 }}>
+                                      Total objets : {(player.totalValue || 0).toLocaleString()} 🪙
+                                    </span>
+                                  </p>
+                                  <div className="admin__battlebox-items">
+                                    {(player.items || []).map((item: any, i: number) => (
+                                      <div key={i} className="admin__battlebox-item">
+                                        <span>{item.emoji}</span>
+                                        <span>{item.name}</span>
+                                        <span style={{ color: '#c9a84c' }}>{item.value.toLocaleString()} 🪙</span>
+                                        <span style={{ fontSize: 11, color: '#888' }}>{item.rarity}</span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
                   );
                 })}
               </tbody>
             </table>
           </div>
-
-          {/* Détail d'une partie */}
-          {selectedBattleBoxGame && (
-            <div className="admin__battlebox-detail">
-              <h3 className="admin__section-title">🎁 Détail des objets — Partie #{selectedBattleBoxGame.id.slice(0, 8)}</h3>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
-                {selectedBattleBoxGame.players.map((player) => (
-                  <div key={player.userId} className="admin__battlebox-player">
-                    <p className="admin__battlebox-player-name">
-                      {player.isWinner ? '👑 ' : ''}{player.username}
-                      <span style={{ color: '#4caf7d', marginLeft: 8 }}>
-                        Total : {player.totalValue?.toLocaleString() || 0} 🪙
-                      </span>
-                    </p>
-                    <div className="admin__battlebox-items">
-                      {(player.items || []).map((item: any, i: number) => (
-                        <div key={i} className="admin__battlebox-item">
-                          <span>{item.emoji}</span>
-                          <span>{item.name}</span>
-                          <span style={{ color: '#c9a84c' }}>{item.value.toLocaleString()} 🪙</span>
-                          <span style={{ fontSize: 11, color: '#888' }}>{item.rarity}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
     </div >
