@@ -54,7 +54,6 @@ export class CasinoGateway implements OnGatewayConnection, OnGatewayDisconnect {
       }
 
       this.connectedUsers.set(payload.sub, client.id);
-      console.log(`✅ Socket connecté : ${payload.username}`);
     } catch {
       client.disconnect();
     }
@@ -63,7 +62,6 @@ export class CasinoGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleDisconnect(client: Socket) {
     if (client.data.userId) {
       this.connectedUsers.delete(client.data.userId);
-      console.log(`❌ Socket déconnecté : ${client.data.username}`);
     }
   }
 

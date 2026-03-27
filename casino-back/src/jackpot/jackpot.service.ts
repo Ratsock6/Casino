@@ -39,15 +39,26 @@ export class JackpotService {
 
   // Récupère le jackpot actuel
   async getJackpot() {
-    const jackpot = await this.prisma.jackpot.findFirst({
+    let jackpot = await this.prisma.jackpot.findFirst({
       where: { isActive: true },
       orderBy: { createdAt: 'desc' },
     });
 
+    // Crée le jackpot s'il n'existe pas
+    if (!jackpot) {
+      const minAmount = await this.calculateMinAmount();
+      jackpot = await this.prisma.jackpot.create({
+        data: {
+          amount: BigInt(minAmount),
+          isActive: true,
+        },
+      });
+    }
+
     return {
-      amount: Number(jackpot?.amount || 0),
-      lastWonAt: jackpot?.lastWonAt || null,
-      lastWonAmount: Number(jackpot?.lastWonAmount || 0),
+      amount: Number(jackpot.amount),
+      lastWonAt: jackpot.lastWonAt || null,
+      lastWonAmount: Number(jackpot.lastWonAmount || 0),
     };
   }
 
@@ -76,12 +87,21 @@ export class JackpotService {
     const contribution = Math.floor(stake * contributionPct / 100);
 
     return this.prisma.$transaction(async (tx) => {
-      const jackpot = await tx.jackpot.findFirst({
+      let jackpot = await tx.jackpot.findFirst({
         where: { isActive: true },
         orderBy: { createdAt: 'desc' },
       });
 
-      if (!jackpot) return { won: false };
+      // 👇 Crée le jackpot s'il n'existe pas
+      if (!jackpot) {
+        const minAmount = await this.calculateMinAmount();
+        jackpot = await tx.jackpot.create({
+          data: {
+            amount: BigInt(minAmount),
+            isActive: true,
+          },
+        });
+      }
 
       // Ajoute la contribution
       const newAmount = jackpot.amount + BigInt(contribution);
