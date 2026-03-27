@@ -124,3 +124,13 @@ export type BattleBoxGame = Prisma.BattleBoxGameModel
  * 
  */
 export type BattleBoxPlayer = Prisma.BattleBoxPlayerModel
+/**
+ * Model RewardCode
+ * 
+ */
+export type RewardCode = Prisma.RewardCodeModel
+/**
+ * Model RewardCodeUse
+ * 
+ */
+export type RewardCodeUse = Prisma.RewardCodeUseModel

@@ -26,6 +26,7 @@ export interface GlobalStats {
   grossRevenue: number;
   netRevenue: number;
   casinoRevenue: number;
+  totalRewardCodes: number;
 }
 
 export interface UserStats {
@@ -269,6 +270,48 @@ export const deanonymizeUserApi = async (userId: string): Promise<{ message: str
 export const resetPasswordApi = async (userId: string): Promise<{ message: string; newPassword: string }> => {
   const res = await axiosInstance.patch(`/admin/users/${userId}/reset-password`);
   return res.data;
+};
+
+
+export interface RewardCode {
+  id: string;
+  code: string;
+  description: string | null;
+  rewardType: string;
+  rewardValue: string;
+  maxUses: number | null;
+  currentUses: number;
+  expiresAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+  isExpired: boolean;
+  isFull: boolean;
+  recentUses: { username: string; usedAt: string }[];
+}
+
+export const getRewardCodesApi = async (): Promise<RewardCode[]> => {
+  const res = await axiosInstance.get('/reward-codes/admin');
+  return res.data;
+};
+
+export const createRewardCodeApi = async (data: {
+  code: string;
+  description?: string;
+  rewardType: string;
+  rewardValue: string;
+  maxUses?: number;
+  expiresAt?: string;
+}): Promise<RewardCode> => {
+  const res = await axiosInstance.post('/reward-codes/admin', data);
+  return res.data;
+};
+
+export const toggleRewardCodeApi = async (codeId: string): Promise<void> => {
+  await axiosInstance.patch(`/reward-codes/admin/${codeId}/toggle`);
+};
+
+export const deleteRewardCodeApi = async (codeId: string): Promise<void> => {
+  await axiosInstance.delete(`/reward-codes/admin/${codeId}`);
 };
 
 

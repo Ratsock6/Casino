@@ -67,7 +67,9 @@ export const ModelName = {
   Jackpot: 'Jackpot',
   JackpotWin: 'JackpotWin',
   BattleBoxGame: 'BattleBoxGame',
-  BattleBoxPlayer: 'BattleBoxPlayer'
+  BattleBoxPlayer: 'BattleBoxPlayer',
+  RewardCode: 'RewardCode',
+  RewardCodeUse: 'RewardCodeUse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -341,6 +343,33 @@ export const BattleBoxPlayerScalarFieldEnum = {
 } as const
 
 export type BattleBoxPlayerScalarFieldEnum = (typeof BattleBoxPlayerScalarFieldEnum)[keyof typeof BattleBoxPlayerScalarFieldEnum]
+
+
+export const RewardCodeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  description: 'description',
+  rewardType: 'rewardType',
+  rewardValue: 'rewardValue',
+  maxUses: 'maxUses',
+  currentUses: 'currentUses',
+  expiresAt: 'expiresAt',
+  isActive: 'isActive',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type RewardCodeScalarFieldEnum = (typeof RewardCodeScalarFieldEnum)[keyof typeof RewardCodeScalarFieldEnum]
+
+
+export const RewardCodeUseScalarFieldEnum = {
+  id: 'id',
+  codeId: 'codeId',
+  userId: 'userId',
+  usedAt: 'usedAt'
+} as const
+
+export type RewardCodeUseScalarFieldEnum = (typeof RewardCodeUseScalarFieldEnum)[keyof typeof RewardCodeUseScalarFieldEnum]
 
 
 export const SortOrder = {

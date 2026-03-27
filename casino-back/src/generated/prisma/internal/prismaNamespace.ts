@@ -400,7 +400,9 @@ export const ModelName = {
   Jackpot: 'Jackpot',
   JackpotWin: 'JackpotWin',
   BattleBoxGame: 'BattleBoxGame',
-  BattleBoxPlayer: 'BattleBoxPlayer'
+  BattleBoxPlayer: 'BattleBoxPlayer',
+  RewardCode: 'RewardCode',
+  RewardCodeUse: 'RewardCodeUse'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -416,7 +418,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription" | "playerLevel" | "levelReward" | "jackpot" | "jackpotWin" | "battleBoxGame" | "battleBoxPlayer"
+    modelProps: "user" | "wallet" | "walletTransaction" | "refreshToken" | "adminAction" | "gameRound" | "idempotencyRequest" | "blackjackGame" | "casinoConfig" | "loginHistory" | "vipSubscription" | "playerLevel" | "levelReward" | "jackpot" | "jackpotWin" | "battleBoxGame" | "battleBoxPlayer" | "rewardCode" | "rewardCodeUse"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1678,6 +1680,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    RewardCode: {
+      payload: Prisma.$RewardCodePayload<ExtArgs>
+      fields: Prisma.RewardCodeFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RewardCodeFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RewardCodeFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>
+        }
+        findFirst: {
+          args: Prisma.RewardCodeFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RewardCodeFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>
+        }
+        findMany: {
+          args: Prisma.RewardCodeFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>[]
+        }
+        create: {
+          args: Prisma.RewardCodeCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>
+        }
+        createMany: {
+          args: Prisma.RewardCodeCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RewardCodeCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>[]
+        }
+        delete: {
+          args: Prisma.RewardCodeDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>
+        }
+        update: {
+          args: Prisma.RewardCodeUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>
+        }
+        deleteMany: {
+          args: Prisma.RewardCodeDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RewardCodeUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RewardCodeUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>[]
+        }
+        upsert: {
+          args: Prisma.RewardCodeUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodePayload>
+        }
+        aggregate: {
+          args: Prisma.RewardCodeAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRewardCode>
+        }
+        groupBy: {
+          args: Prisma.RewardCodeGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RewardCodeGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RewardCodeCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RewardCodeCountAggregateOutputType> | number
+        }
+      }
+    }
+    RewardCodeUse: {
+      payload: Prisma.$RewardCodeUsePayload<ExtArgs>
+      fields: Prisma.RewardCodeUseFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.RewardCodeUseFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.RewardCodeUseFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>
+        }
+        findFirst: {
+          args: Prisma.RewardCodeUseFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.RewardCodeUseFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>
+        }
+        findMany: {
+          args: Prisma.RewardCodeUseFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>[]
+        }
+        create: {
+          args: Prisma.RewardCodeUseCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>
+        }
+        createMany: {
+          args: Prisma.RewardCodeUseCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.RewardCodeUseCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>[]
+        }
+        delete: {
+          args: Prisma.RewardCodeUseDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>
+        }
+        update: {
+          args: Prisma.RewardCodeUseUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>
+        }
+        deleteMany: {
+          args: Prisma.RewardCodeUseDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.RewardCodeUseUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.RewardCodeUseUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>[]
+        }
+        upsert: {
+          args: Prisma.RewardCodeUseUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$RewardCodeUsePayload>
+        }
+        aggregate: {
+          args: Prisma.RewardCodeUseAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateRewardCodeUse>
+        }
+        groupBy: {
+          args: Prisma.RewardCodeUseGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RewardCodeUseGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.RewardCodeUseCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.RewardCodeUseCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1972,6 +2122,33 @@ export const BattleBoxPlayerScalarFieldEnum = {
 } as const
 
 export type BattleBoxPlayerScalarFieldEnum = (typeof BattleBoxPlayerScalarFieldEnum)[keyof typeof BattleBoxPlayerScalarFieldEnum]
+
+
+export const RewardCodeScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  description: 'description',
+  rewardType: 'rewardType',
+  rewardValue: 'rewardValue',
+  maxUses: 'maxUses',
+  currentUses: 'currentUses',
+  expiresAt: 'expiresAt',
+  isActive: 'isActive',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt'
+} as const
+
+export type RewardCodeScalarFieldEnum = (typeof RewardCodeScalarFieldEnum)[keyof typeof RewardCodeScalarFieldEnum]
+
+
+export const RewardCodeUseScalarFieldEnum = {
+  id: 'id',
+  codeId: 'codeId',
+  userId: 'userId',
+  usedAt: 'usedAt'
+} as const
+
+export type RewardCodeUseScalarFieldEnum = (typeof RewardCodeUseScalarFieldEnum)[keyof typeof RewardCodeUseScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -2342,6 +2519,8 @@ export type GlobalOmitConfig = {
   jackpotWin?: Prisma.JackpotWinOmit
   battleBoxGame?: Prisma.BattleBoxGameOmit
   battleBoxPlayer?: Prisma.BattleBoxPlayerOmit
+  rewardCode?: Prisma.RewardCodeOmit
+  rewardCodeUse?: Prisma.RewardCodeUseOmit
 }
 
 /* Types for Logging */

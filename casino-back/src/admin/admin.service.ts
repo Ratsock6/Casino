@@ -56,6 +56,7 @@ export class AdminService {
       levelAgg,
       adminCreditAgg,
       adminDebitAgg,
+      rewardCodesAgg,
       roundsByGame,
     ] = await Promise.all([
       this.prisma.user.count(),
@@ -85,6 +86,13 @@ export class AdminService {
         _sum: { amount: true },
         where: { type: 'ADMIN_DEBIT' },
       }),
+      this.prisma.walletTransaction.aggregate({ // 👈 ajouté
+        _sum: { amount: true },
+        where: {
+          type: 'ADMIN_CREDIT',
+          reason: { startsWith: '🎁 Code promo' },
+        },
+      }),
       this.prisma.gameRound.groupBy({
         by: ['gameType'],
         _count: { id: true },
@@ -97,8 +105,9 @@ export class AdminService {
     const totalLevel = Number(levelAgg._sum.amount || 0);
     const totalCredit = Number(adminCreditAgg._sum.amount || 0);
     const totalDebit = Number(adminDebitAgg._sum.amount || 0);
+    const totalRewardCodes = Number(rewardCodesAgg._sum.amount || 0);
     const grossRevenue = totalBets - totalWins;
-    const netRevenue = grossRevenue - totalJackpot - totalLevel;
+    const netRevenue = grossRevenue - totalJackpot - totalLevel - totalRewardCodes;
 
     return {
       totalUsers,
@@ -114,6 +123,7 @@ export class AdminService {
       totalLevel,
       totalCredit,
       totalDebit,
+      totalRewardCodes,
       grossRevenue,
       netRevenue,
       casinoRevenue: netRevenue,

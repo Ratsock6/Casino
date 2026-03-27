@@ -31,6 +31,8 @@ import {
   anonymizeUserApi,
   deanonymizeUserApi,
   resetPasswordApi,
+  getRewardCodesApi, createRewardCodeApi,
+  toggleRewardCodeApi, deleteRewardCodeApi,
 } from '../api/admin.api';
 
 import type {
@@ -46,6 +48,7 @@ import type {
   GamesHistoryEntry,
   AuditLog,
   Alert,
+  RewardCode,
 } from '../api/admin.api';
 
 import { getAdminBattleBoxGamesApi, type AdminBattleBoxGame } from '../api/battle-box.api';
@@ -60,7 +63,7 @@ import { getAllIngameRewardsApi, claimIngameRewardApi, type IngameReward } from 
 
 
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame' | 'battlebox';
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame' | 'battlebox' | 'codes';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -124,6 +127,13 @@ const AdminPage = () => {
   const [battleBoxGames, setBattleBoxGames] = useState<AdminBattleBoxGame[]>([]);
   const [battleBoxFilter, setBattleBoxFilter] = useState('');
   const [selectedBattleBoxGame, setSelectedBattleBoxGame] = useState<AdminBattleBoxGame | null>(null);
+  const [rewardCodes, setRewardCodes] = useState<RewardCode[]>([]);
+  const [newCode, setNewCode] = useState({
+    code: '', description: '', rewardType: 'TOKENS',
+    rewardValue: '', maxUses: '', expiresAt: '',
+  });
+  const [codeMsg, setCodeMsg] = useState('');
+  const [codeError, setCodeError] = useState('');
 
   const { user } = useAuthStore();
 
@@ -275,11 +285,45 @@ const AdminPage = () => {
       if (tab === 'battlebox' && battleBoxGames.length === 0) {
         setBattleBoxGames(await getAdminBattleBoxGamesApi());
       }
+      if (tab === 'codes' && rewardCodes.length === 0) {
+        setRewardCodes(await getRewardCodesApi());
+      }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCreateCode = async () => {
+    setCodeError('');
+    setCodeMsg('');
+    try {
+      await createRewardCodeApi({
+        code: newCode.code,
+        description: newCode.description || undefined,
+        rewardType: newCode.rewardType,
+        rewardValue: newCode.rewardValue,
+        maxUses: newCode.maxUses ? parseInt(newCode.maxUses) : undefined,
+        expiresAt: newCode.expiresAt || undefined,
+      });
+      setCodeMsg('✅ Code créé avec succès !');
+      setNewCode({ code: '', description: '', rewardType: 'TOKENS', rewardValue: '', maxUses: '', expiresAt: '' });
+      setRewardCodes(await getRewardCodesApi());
+    } catch (err: any) {
+      setCodeError('❌ ' + (err.response?.data?.message || 'Erreur'));
+    }
+  };
+
+  const handleToggleCode = async (codeId: string) => {
+    await toggleRewardCodeApi(codeId);
+    setRewardCodes(await getRewardCodesApi());
+  };
+
+  const handleDeleteCode = async (codeId: string) => {
+    if (!confirm('Supprimer ce code ?')) return;
+    await deleteRewardCodeApi(codeId);
+    setRewardCodes(await getRewardCodesApi());
   };
 
   const handleChartDaysChange = async (days: number) => {
@@ -472,6 +516,7 @@ const AdminPage = () => {
     },
     { key: 'ingame', label: '🎮 Lots in-game' },
     { key: 'battlebox', label: '⚔️ Battle Box' },
+    { key: 'codes', label: '🎟️ Codes promo' },
   ];
 
   const CONFIG_CATEGORIES: {
@@ -692,6 +737,7 @@ const AdminPage = () => {
               { label: 'Total misé', value: `${stats.totalBet.toLocaleString()} 🪙`, color: '#e0a85c' },
               { label: 'Total gagné', value: `${stats.totalWin.toLocaleString()} 🪙`, color: '#4caf7d' },
               { label: 'Revenu net', value: `${stats.netRevenue.toLocaleString()} 🪙`, color: stats.netRevenue >= 0 ? '#4caf7d' : '#e05c5c' },
+
             ].map((kpi) => (
               <div key={kpi.label} className="admin__kpi">
                 <span className="admin__kpi-label">{kpi.label}</span>
@@ -745,6 +791,10 @@ const AdminPage = () => {
               <div className="admin__revenue-row admin__revenue-row--sub">
                 <span>= Revenu brut</span>
                 <strong style={{ color: '#4caf7d' }}>{stats.grossRevenue.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Codes promo distribués</span>
+                <strong style={{ color: '#e05c5c' }}>-{stats.totalRewardCodes.toLocaleString()} 🪙</strong>
               </div>
               <div className="admin__revenue-row">
                 <span>Jackpots distribués</span>
@@ -2040,6 +2090,212 @@ const AdminPage = () => {
                     </>
                   );
                 })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'codes' && (
+        <div className="admin__section">
+          <h2 className="admin__section-title">🎁 Codes promo</h2>
+
+          {/* Formulaire création */}
+          <div className="admin__code-form">
+            <h3 className="admin__code-form-title">Créer un nouveau code</h3>
+            <div className="admin__code-form-grid">
+              <div className="admin__code-field">
+                <label>Code *</label>
+                <input
+                  type="text"
+                  value={newCode.code}
+                  onChange={(e) => setNewCode({ ...newCode, code: e.target.value.toUpperCase() })}
+                  placeholder="BELLAGIO2026"
+                />
+              </div>
+              <div className="admin__code-field">
+                <label>Description</label>
+                <input
+                  type="text"
+                  value={newCode.description}
+                  onChange={(e) => setNewCode({ ...newCode, description: e.target.value })}
+                  placeholder="Code de lancement..."
+                />
+              </div>
+              <div className="admin__code-field">
+                <label>Type de récompense *</label>
+                <select
+                  value={newCode.rewardType}
+                  onChange={(e) => setNewCode({ ...newCode, rewardType: e.target.value, rewardValue: '' })}
+                >
+                  <option value="TOKENS">💰 Jetons</option>
+                  <option value="VIP">👑 VIP</option>
+                  <option value="BADGE">🏅 Badge</option>
+                  <option value="INGAME">🎮 Lot in-game</option>
+                </select>
+              </div>
+              <div className="admin__code-field">
+                <label>
+                  {newCode.rewardType === 'TOKENS' && 'Montant (jetons) *'}
+                  {newCode.rewardType === 'VIP' && 'Durée VIP *'}
+                  {newCode.rewardType === 'BADGE' && 'Nom du badge *'}
+                  {newCode.rewardType === 'INGAME' && 'Description du lot *'}
+                </label>
+                {newCode.rewardType === 'VIP' ? (
+                  <select
+                    value={newCode.rewardValue}
+                    onChange={(e) => setNewCode({ ...newCode, rewardValue: e.target.value })}
+                  >
+                    <option value="">Choisir...</option>
+                    <option value="1_MONTH">1 mois</option>
+                    <option value="3_MONTHS">3 mois</option>
+                    <option value="6_MONTHS">6 mois</option>
+                    <option value="LIFETIME">À vie</option>
+                  </select>
+                ) : (
+                  <input
+                    type={newCode.rewardType === 'TOKENS' ? 'number' : 'text'}
+                    value={newCode.rewardValue}
+                    onChange={(e) => setNewCode({ ...newCode, rewardValue: e.target.value })}
+                    placeholder={
+                      newCode.rewardType === 'TOKENS' ? '50000' :
+                        newCode.rewardType === 'BADGE' ? '🌟 Fondateur' :
+                          'Supercar + Appartement downtown'
+                    }
+                  />
+                )}
+              </div>
+              <div className="admin__code-field">
+                <label>Utilisations max (vide = illimité)</label>
+                <input
+                  type="number"
+                  value={newCode.maxUses}
+                  onChange={(e) => setNewCode({ ...newCode, maxUses: e.target.value })}
+                  placeholder="100"
+                  min={1}
+                />
+              </div>
+              <div className="admin__code-field">
+                <label>Expire le (vide = jamais)</label>
+                <input
+                  type="datetime-local"
+                  value={newCode.expiresAt}
+                  onChange={(e) => setNewCode({ ...newCode, expiresAt: e.target.value })}
+                />
+              </div>
+            </div>
+            {codeError && <p className="admin__code-msg admin__code-msg--error">{codeError}</p>}
+            {codeMsg && <p className="admin__code-msg admin__code-msg--success">{codeMsg}</p>}
+            <button
+              className="admin__export-btn"
+              onClick={handleCreateCode}
+              disabled={!newCode.code || !newCode.rewardValue}
+            >
+              ✅ Créer le code
+            </button>
+          </div>
+
+          {/* Liste des codes */}
+          <div className="admin__table-wrapper">
+            <table className="admin__table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Description</th>
+                  <th>Récompense</th>
+                  <th>Utilisations</th>
+                  <th>Expiration</th>
+                  <th>Statut</th>
+                  <th>Dernières utilisations</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rewardCodes.map((code) => (
+                  <tr key={code.id}>
+                    <td>
+                      <code style={{ fontSize: 14, fontWeight: 700, color: '#c9a84c', letterSpacing: 2 }}>
+                        {code.code}
+                      </code>
+                    </td>
+                    <td className="admin__table-muted" style={{ fontSize: 12 }}>
+                      {code.description || '—'}
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <span style={{ fontSize: 12, fontWeight: 600 }}>
+                          {code.rewardType === 'TOKENS' ? '💰' :
+                            code.rewardType === 'VIP' ? '👑' :
+                              code.rewardType === 'BADGE' ? '🏅' : '🎮'}
+                          {' '}{code.rewardType}
+                        </span>
+                        <span style={{ fontSize: 11, color: '#888' }}>{code.rewardValue}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: 13 }}>
+                        {code.currentUses}
+                        {code.maxUses ? ` / ${code.maxUses}` : ' / ∞'}
+                      </span>
+                      {code.isFull && (
+                        <span style={{ fontSize: 10, color: '#e05c5c', marginLeft: 4 }}>ÉPUISÉ</span>
+                      )}
+                    </td>
+                    <td className="admin__table-date" style={{ fontSize: 11 }}>
+                      {code.expiresAt
+                        ? new Date(code.expiresAt).toLocaleString('fr-FR')
+                        : '∞ Jamais'}
+                      {code.isExpired && (
+                        <span style={{ color: '#e05c5c', display: 'block', fontSize: 10 }}>EXPIRÉ</span>
+                      )}
+                    </td>
+                    <td>
+                      <span className="admin__badge" style={{
+                        color: code.isActive && !code.isExpired && !code.isFull ? '#4caf7d' : '#e05c5c',
+                        borderColor: code.isActive && !code.isExpired && !code.isFull ? '#4caf7d' : '#e05c5c',
+                      }}>
+                        {code.isActive && !code.isExpired && !code.isFull ? '✅ Actif' : '❌ Inactif'}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        {code.recentUses.length === 0 ? (
+                          <span style={{ fontSize: 11, color: '#888' }}>Aucune utilisation</span>
+                        ) : (
+                          code.recentUses.map((use, i) => (
+                            <span key={i} style={{ fontSize: 11, color: '#888' }}>
+                              {use.username} — {new Date(use.usedAt).toLocaleDateString('fr-FR')}
+                            </span>
+                          ))
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        <button
+                          className="admin__export-btn admin__export-btn--small"
+                          onClick={() => handleToggleCode(code.id)}
+                        >
+                          {code.isActive ? '⏸ Désactiver' : '▶ Activer'}
+                        </button>
+                        <button
+                          className="admin__export-btn admin__export-btn--small"
+                          onClick={() => handleDeleteCode(code.id)}
+                          style={{ color: '#e05c5c', borderColor: '#e05c5c' }}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {rewardCodes.length === 0 && (
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: 'center', color: '#888', padding: '24px' }}>
+                      Aucun code créé pour le moment.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

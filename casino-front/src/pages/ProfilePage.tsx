@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   getProfileApi, getMyTransactionsApi,
   getMyGameRoundsApi, getMyStatsApi,
+  useRewardCodeApi
 } from '../api/profile.api';
 import type { UserProfile, UserTransaction, UserGameRound, UserStats } from '../api/profile.api';
 import '../styles/pages/profile.scss';
@@ -11,7 +12,7 @@ import { linkDiscordApi, unlinkDiscordApi, changePasswordApi } from '../api/prof
 import { getVipStatusApi, type VipStatus } from '../api/vip.api';
 
 
-type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord' | 'password';
+type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord' | 'password' | 'codes';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -46,6 +47,11 @@ const ProfilePage = () => {
   const [passwordMsg, setPasswordMsg] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [passwordLoading, setPasswordLoading] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
+  const [promoMsg, setPromoMsg] = useState('');
+  const [promoError, setPromoError] = useState('');
+  const [promoLoading, setPromoLoading] = useState(false);
+  const [promoResult, setPromoResult] = useState<any>(null);
 
 
   const handleLinkDiscord = async () => {
@@ -157,6 +163,28 @@ const ProfilePage = () => {
     return '🌐 Navigateur inconnu';
   };
 
+  const handleUsePromoCode = async () => {
+    setPromoMsg('');
+    setPromoError('');
+    setPromoResult(null);
+    setPromoLoading(true);
+    try {
+      const result = await useRewardCodeApi(promoCode);
+      setPromoMsg(result.message);
+      setPromoResult(result);
+      setPromoCode('');
+      // Rafraîchit le solde si jetons
+      if (result.rewardType === 'TOKENS') {
+        const updated = await axiosInstance.get('/wallet/me');
+        setBalance(parseFloat(updated.data.balance));
+      }
+    } catch (err: any) {
+      setPromoError(err.response?.data?.message || 'Code invalide ou déjà utilisé.');
+    } finally {
+      setPromoLoading(false);
+    }
+  };
+
   const formatDate = (d: string) =>
     new Date(d).toLocaleString('fr-FR', {
       day: '2-digit', month: '2-digit', year: '2-digit',
@@ -170,6 +198,7 @@ const ProfilePage = () => {
     { key: 'connections', label: '🔐 Connexions' },
     { key: 'discord', label: '🔗 Discord' },
     { key: 'password', label: '🔒 Sécurité' },
+    { key: 'codes', label: '🎟️ Codes' },
     ...(statsEnabled ? [{ key: 'stats' as Tab, label: '📊 Statistiques' }] : []),
   ];
 
@@ -573,6 +602,56 @@ const ProfilePage = () => {
               {passwordLoading ? 'Modification...' : '🔑 Modifier le mot de passe'}
             </button>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'codes' && (
+        <div className="profile__promo">
+          <h3 className="profile__section-title">🎁 Entrer un code promo</h3>
+          <p className="profile__section-hint">
+            Entrez un code promotionnel pour recevoir des récompenses exclusives.
+          </p>
+
+          <div className="profile__promo-form">
+            <input
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              placeholder="Entrez votre code..."
+              maxLength={30}
+              onKeyDown={(e) => e.key === 'Enter' && handleUsePromoCode()}
+            />
+            <button
+              className="profile__promo-btn"
+              onClick={handleUsePromoCode}
+              disabled={promoLoading || promoCode.length < 2}
+            >
+              {promoLoading ? '⏳ Validation...' : '🎁 Valider'}
+            </button>
+          </div>
+
+          {promoError && <p className="profile__promo-error">{promoError}</p>}
+
+          {promoResult && (
+            <div className="profile__promo-result">
+              <div className="profile__promo-result-icon">
+                {promoResult.rewardType === 'TOKENS' ? '💰' :
+                  promoResult.rewardType === 'VIP' ? '👑' :
+                    promoResult.rewardType === 'BADGE' ? '🏅' : '🎮'}
+              </div>
+              <div>
+                <p className="profile__promo-result-msg">{promoMsg}</p>
+                {promoResult.description && (
+                  <p className="profile__promo-result-desc">{promoResult.description}</p>
+                )}
+                {promoResult.isIngame && (
+                  <p className="profile__promo-result-ingame">
+                    ⚠️ Contactez un membre du staff en jeu pour récupérer votre lot.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

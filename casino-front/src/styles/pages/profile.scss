@@ -633,4 +633,105 @@
       }
     }
   }
+
+  &__promo {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+    max-width: 500px;
+
+    &-form {
+      display: flex;
+      gap: $spacing-sm;
+
+      input {
+        flex: 1;
+        background: $color-surface-2;
+        border: 1px solid $color-border;
+        border-radius: $radius-sm;
+        padding: 12px $spacing-md;
+        color: $color-text;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        transition: border-color $transition-fast;
+
+        &:focus {
+          border-color: $color-gold;
+          outline: none;
+        }
+
+        &::placeholder {
+          color: $color-text-muted;
+          letter-spacing: 0;
+          font-size: 13px;
+          font-weight: 400;
+        }
+      }
+    }
+
+    &-btn {
+      padding: 12px $spacing-xl;
+      background: $color-gold;
+      color: #0d0d0d;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: $radius-sm;
+      transition: background $transition-fast;
+      white-space: nowrap;
+
+      &:hover:not(:disabled) {
+        background: $color-gold-light;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    &-error {
+      font-size: 13px;
+      color: $color-error;
+      padding: $spacing-sm $spacing-md;
+      background: rgba($color-error, 0.1);
+      border: 1px solid rgba($color-error, 0.3);
+      border-radius: $radius-sm;
+    }
+
+    &-result {
+      display: flex;
+      align-items: flex-start;
+      gap: $spacing-md;
+      padding: $spacing-lg;
+      background: rgba($color-success, 0.05);
+      border: 1px solid rgba($color-success, 0.3);
+      border-radius: $radius-lg;
+      animation: fadeInUp 0.4s ease both;
+
+      &-icon {
+        font-size: 32px;
+        flex-shrink: 0;
+      }
+
+      &-msg {
+        font-size: 14px;
+        font-weight: 600;
+        color: $color-success;
+      }
+
+      &-desc {
+        font-size: 13px;
+        color: $color-text-muted;
+        margin-top: $spacing-xs;
+      }
+
+      &-ingame {
+        font-size: 12px;
+        color: $color-warning;
+        margin-top: $spacing-sm;
+      }
+    }
+  }
 }

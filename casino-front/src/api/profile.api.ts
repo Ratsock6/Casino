@@ -130,3 +130,14 @@ export const changePasswordApi = async (
   });
   return res.data;
 };
+
+export const useRewardCodeApi = async (code: string): Promise<{
+  message: string;
+  rewardType: string;
+  rewardValue: string;
+  description: string | null;
+  isIngame: boolean;
+}> => {
+  const res = await axiosInstance.post('/reward-codes/use', { code });
+  return res.data;
+};

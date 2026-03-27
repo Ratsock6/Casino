@@ -328,6 +328,7 @@ export type UserWhereInput = {
   jackpotWins?: Prisma.JackpotWinListRelationFilter
   battleBoxPlayers?: Prisma.BattleBoxPlayerListRelationFilter
   vipSubscriptions?: Prisma.VipSubscriptionListRelationFilter
+  rewardCodeUses?: Prisma.RewardCodeUseListRelationFilter
   playerLevel?: Prisma.XOR<Prisma.PlayerLevelNullableScalarRelationFilter, Prisma.PlayerLevelWhereInput> | null
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
@@ -363,6 +364,7 @@ export type UserOrderByWithRelationInput = {
   jackpotWins?: Prisma.JackpotWinOrderByRelationAggregateInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerOrderByRelationAggregateInput
   vipSubscriptions?: Prisma.VipSubscriptionOrderByRelationAggregateInput
+  rewardCodeUses?: Prisma.RewardCodeUseOrderByRelationAggregateInput
   playerLevel?: Prisma.PlayerLevelOrderByWithRelationInput
   wallet?: Prisma.WalletOrderByWithRelationInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
@@ -401,6 +403,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   jackpotWins?: Prisma.JackpotWinListRelationFilter
   battleBoxPlayers?: Prisma.BattleBoxPlayerListRelationFilter
   vipSubscriptions?: Prisma.VipSubscriptionListRelationFilter
+  rewardCodeUses?: Prisma.RewardCodeUseListRelationFilter
   playerLevel?: Prisma.XOR<Prisma.PlayerLevelNullableScalarRelationFilter, Prisma.PlayerLevelWhereInput> | null
   wallet?: Prisma.XOR<Prisma.WalletNullableScalarRelationFilter, Prisma.WalletWhereInput> | null
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
@@ -488,6 +491,7 @@ export type UserCreateInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -523,6 +527,7 @@ export type UserUncheckedCreateInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -558,6 +563,7 @@ export type UserUpdateInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -593,6 +599,7 @@ export type UserUncheckedUpdateInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -974,6 +981,20 @@ export type UserUpdateOneRequiredWithoutBattleBoxPlayersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBattleBoxPlayersInput, Prisma.UserUpdateWithoutBattleBoxPlayersInput>, Prisma.UserUncheckedUpdateWithoutBattleBoxPlayersInput>
 }
 
+export type UserCreateNestedOneWithoutRewardCodeUsesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardCodeUsesInput, Prisma.UserUncheckedCreateWithoutRewardCodeUsesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardCodeUsesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRewardCodeUsesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRewardCodeUsesInput, Prisma.UserUncheckedCreateWithoutRewardCodeUsesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRewardCodeUsesInput
+  upsert?: Prisma.UserUpsertWithoutRewardCodeUsesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRewardCodeUsesInput, Prisma.UserUpdateWithoutRewardCodeUsesInput>, Prisma.UserUncheckedUpdateWithoutRewardCodeUsesInput>
+}
+
 export type UserCreateWithoutWalletInput = {
   id?: string
   username: string
@@ -998,6 +1019,7 @@ export type UserCreateWithoutWalletInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1032,6 +1054,7 @@ export type UserUncheckedCreateWithoutWalletInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1082,6 +1105,7 @@ export type UserUpdateWithoutWalletInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1116,6 +1140,7 @@ export type UserUncheckedUpdateWithoutWalletInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1150,6 +1175,7 @@ export type UserCreateWithoutTransactionsInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1184,6 +1210,7 @@ export type UserUncheckedCreateWithoutTransactionsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1223,6 +1250,7 @@ export type UserCreateWithoutAdminWalletActionsInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1257,6 +1285,7 @@ export type UserUncheckedCreateWithoutAdminWalletActionsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1307,6 +1336,7 @@ export type UserUpdateWithoutTransactionsInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1341,6 +1371,7 @@ export type UserUncheckedUpdateWithoutTransactionsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1386,6 +1417,7 @@ export type UserUpdateWithoutAdminWalletActionsInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1420,6 +1452,7 @@ export type UserUncheckedUpdateWithoutAdminWalletActionsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1454,6 +1487,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -1488,6 +1522,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -1538,6 +1573,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -1572,6 +1608,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -1606,6 +1643,7 @@ export type UserCreateWithoutAdminActionsMadeInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1640,6 +1678,7 @@ export type UserUncheckedCreateWithoutAdminActionsMadeInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1690,6 +1729,7 @@ export type UserUpdateWithoutAdminActionsMadeInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1724,6 +1764,7 @@ export type UserUncheckedUpdateWithoutAdminActionsMadeInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1758,6 +1799,7 @@ export type UserCreateWithoutGameRoundsInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1792,6 +1834,7 @@ export type UserUncheckedCreateWithoutGameRoundsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1842,6 +1885,7 @@ export type UserUpdateWithoutGameRoundsInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -1876,6 +1920,7 @@ export type UserUncheckedUpdateWithoutGameRoundsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -1910,6 +1955,7 @@ export type UserCreateWithoutIdempotencyRequestsInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -1944,6 +1990,7 @@ export type UserUncheckedCreateWithoutIdempotencyRequestsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -1994,6 +2041,7 @@ export type UserUpdateWithoutIdempotencyRequestsInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2028,6 +2076,7 @@ export type UserUncheckedUpdateWithoutIdempotencyRequestsInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2062,6 +2111,7 @@ export type UserCreateWithoutBlackjackGamesInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2096,6 +2146,7 @@ export type UserUncheckedCreateWithoutBlackjackGamesInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2146,6 +2197,7 @@ export type UserUpdateWithoutBlackjackGamesInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2180,6 +2232,7 @@ export type UserUncheckedUpdateWithoutBlackjackGamesInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2213,6 +2266,7 @@ export type UserCreateWithoutLoginHistoryInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2247,6 +2301,7 @@ export type UserUncheckedCreateWithoutLoginHistoryInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2297,6 +2352,7 @@ export type UserUpdateWithoutLoginHistoryInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2331,6 +2387,7 @@ export type UserUncheckedUpdateWithoutLoginHistoryInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2365,6 +2422,7 @@ export type UserCreateWithoutVipSubscriptionsInput = {
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2399,6 +2457,7 @@ export type UserUncheckedCreateWithoutVipSubscriptionsInput = {
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2449,6 +2508,7 @@ export type UserUpdateWithoutVipSubscriptionsInput = {
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2483,6 +2543,7 @@ export type UserUncheckedUpdateWithoutVipSubscriptionsInput = {
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2518,6 +2579,7 @@ export type UserCreateWithoutPlayerLevelInput = {
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
@@ -2552,6 +2614,7 @@ export type UserUncheckedCreateWithoutPlayerLevelInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
@@ -2602,6 +2665,7 @@ export type UserUpdateWithoutPlayerLevelInput = {
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
@@ -2636,6 +2700,7 @@ export type UserUncheckedUpdateWithoutPlayerLevelInput = {
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
@@ -2669,6 +2734,7 @@ export type UserCreateWithoutJackpotWinsInput = {
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2703,6 +2769,7 @@ export type UserUncheckedCreateWithoutJackpotWinsInput = {
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2753,6 +2820,7 @@ export type UserUpdateWithoutJackpotWinsInput = {
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2787,6 +2855,7 @@ export type UserUncheckedUpdateWithoutJackpotWinsInput = {
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2821,6 +2890,7 @@ export type UserCreateWithoutBattleBoxPlayersInput = {
   loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
   jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
@@ -2855,6 +2925,7 @@ export type UserUncheckedCreateWithoutBattleBoxPlayersInput = {
   loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
   jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedCreateNestedManyWithoutUserInput
   playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
   wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
@@ -2905,6 +2976,7 @@ export type UserUpdateWithoutBattleBoxPlayersInput = {
   loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
   jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
@@ -2939,6 +3011,163 @@ export type UserUncheckedUpdateWithoutBattleBoxPlayersInput = {
   loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
   jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
   vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
+  rewardCodeUses?: Prisma.RewardCodeUseUncheckedUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
+  wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUncheckedUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUncheckedUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRewardCodeUsesInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  discordId?: string | null
+  discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryCreateNestedManyWithoutUserInput
+  jackpotWins?: Prisma.JackpotWinCreateNestedManyWithoutUserInput
+  battleBoxPlayers?: Prisma.BattleBoxPlayerCreateNestedManyWithoutUserInput
+  vipSubscriptions?: Prisma.VipSubscriptionCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelCreateNestedOneWithoutUserInput
+  wallet?: Prisma.WalletCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRewardCodeUsesInput = {
+  id?: string
+  username: string
+  firstName: string
+  lastName: string
+  phoneNumber: string
+  birthDate: Date | string
+  passwordHash: string
+  role?: $Enums.UserRole
+  status?: $Enums.UserStatus
+  failedLoginCount?: number
+  lockedUntil?: Date | string | null
+  lastLoginAt?: Date | string | null
+  hasAcceptedTerms?: boolean
+  termsAcceptedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  discordId?: string | null
+  discordUsername?: string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryUncheckedCreateNestedManyWithoutUserInput
+  jackpotWins?: Prisma.JackpotWinUncheckedCreateNestedManyWithoutUserInput
+  battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedCreateNestedManyWithoutUserInput
+  vipSubscriptions?: Prisma.VipSubscriptionUncheckedCreateNestedManyWithoutUserInput
+  playerLevel?: Prisma.PlayerLevelUncheckedCreateNestedOneWithoutUserInput
+  wallet?: Prisma.WalletUncheckedCreateNestedOneWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  transactions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutUserInput
+  adminWalletActions?: Prisma.WalletTransactionUncheckedCreateNestedManyWithoutAdminInput
+  adminActionsMade?: Prisma.AdminActionUncheckedCreateNestedManyWithoutAdminInput
+  gameRounds?: Prisma.GameRoundUncheckedCreateNestedManyWithoutUserInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUncheckedCreateNestedManyWithoutUserInput
+  blackjackGames?: Prisma.BlackjackGameUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRewardCodeUsesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardCodeUsesInput, Prisma.UserUncheckedCreateWithoutRewardCodeUsesInput>
+}
+
+export type UserUpsertWithoutRewardCodeUsesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRewardCodeUsesInput, Prisma.UserUncheckedUpdateWithoutRewardCodeUsesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRewardCodeUsesInput, Prisma.UserUncheckedCreateWithoutRewardCodeUsesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRewardCodeUsesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRewardCodeUsesInput, Prisma.UserUncheckedUpdateWithoutRewardCodeUsesInput>
+}
+
+export type UserUpdateWithoutRewardCodeUsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryUpdateManyWithoutUserNestedInput
+  jackpotWins?: Prisma.JackpotWinUpdateManyWithoutUserNestedInput
+  battleBoxPlayers?: Prisma.BattleBoxPlayerUpdateManyWithoutUserNestedInput
+  vipSubscriptions?: Prisma.VipSubscriptionUpdateManyWithoutUserNestedInput
+  playerLevel?: Prisma.PlayerLevelUpdateOneWithoutUserNestedInput
+  wallet?: Prisma.WalletUpdateOneWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  transactions?: Prisma.WalletTransactionUpdateManyWithoutUserNestedInput
+  adminWalletActions?: Prisma.WalletTransactionUpdateManyWithoutAdminNestedInput
+  adminActionsMade?: Prisma.AdminActionUpdateManyWithoutAdminNestedInput
+  gameRounds?: Prisma.GameRoundUpdateManyWithoutUserNestedInput
+  idempotencyRequests?: Prisma.IdempotencyRequestUpdateManyWithoutUserNestedInput
+  blackjackGames?: Prisma.BlackjackGameUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRewardCodeUsesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  birthDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  status?: Prisma.EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+  failedLoginCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastLoginAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  hasAcceptedTerms?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  termsAcceptedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  discordId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discordUsername?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  loginHistory?: Prisma.LoginHistoryUncheckedUpdateManyWithoutUserNestedInput
+  jackpotWins?: Prisma.JackpotWinUncheckedUpdateManyWithoutUserNestedInput
+  battleBoxPlayers?: Prisma.BattleBoxPlayerUncheckedUpdateManyWithoutUserNestedInput
+  vipSubscriptions?: Prisma.VipSubscriptionUncheckedUpdateManyWithoutUserNestedInput
   playerLevel?: Prisma.PlayerLevelUncheckedUpdateOneWithoutUserNestedInput
   wallet?: Prisma.WalletUncheckedUpdateOneWithoutUserNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
@@ -2960,6 +3189,7 @@ export type UserCountOutputType = {
   jackpotWins: number
   battleBoxPlayers: number
   vipSubscriptions: number
+  rewardCodeUses: number
   refreshTokens: number
   transactions: number
   adminWalletActions: number
@@ -2974,6 +3204,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   jackpotWins?: boolean | UserCountOutputTypeCountJackpotWinsArgs
   battleBoxPlayers?: boolean | UserCountOutputTypeCountBattleBoxPlayersArgs
   vipSubscriptions?: boolean | UserCountOutputTypeCountVipSubscriptionsArgs
+  rewardCodeUses?: boolean | UserCountOutputTypeCountRewardCodeUsesArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   transactions?: boolean | UserCountOutputTypeCountTransactionsArgs
   adminWalletActions?: boolean | UserCountOutputTypeCountAdminWalletActionsArgs
@@ -3019,6 +3250,13 @@ export type UserCountOutputTypeCountBattleBoxPlayersArgs<ExtArgs extends runtime
  */
 export type UserCountOutputTypeCountVipSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.VipSubscriptionWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRewardCodeUsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RewardCodeUseWhereInput
 }
 
 /**
@@ -3095,6 +3333,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   jackpotWins?: boolean | Prisma.User$jackpotWinsArgs<ExtArgs>
   battleBoxPlayers?: boolean | Prisma.User$battleBoxPlayersArgs<ExtArgs>
   vipSubscriptions?: boolean | Prisma.User$vipSubscriptionsArgs<ExtArgs>
+  rewardCodeUses?: boolean | Prisma.User$rewardCodeUsesArgs<ExtArgs>
   playerLevel?: boolean | Prisma.User$playerLevelArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -3179,6 +3418,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   jackpotWins?: boolean | Prisma.User$jackpotWinsArgs<ExtArgs>
   battleBoxPlayers?: boolean | Prisma.User$battleBoxPlayersArgs<ExtArgs>
   vipSubscriptions?: boolean | Prisma.User$vipSubscriptionsArgs<ExtArgs>
+  rewardCodeUses?: boolean | Prisma.User$rewardCodeUsesArgs<ExtArgs>
   playerLevel?: boolean | Prisma.User$playerLevelArgs<ExtArgs>
   wallet?: boolean | Prisma.User$walletArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
@@ -3200,6 +3440,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     jackpotWins: Prisma.$JackpotWinPayload<ExtArgs>[]
     battleBoxPlayers: Prisma.$BattleBoxPlayerPayload<ExtArgs>[]
     vipSubscriptions: Prisma.$VipSubscriptionPayload<ExtArgs>[]
+    rewardCodeUses: Prisma.$RewardCodeUsePayload<ExtArgs>[]
     playerLevel: Prisma.$PlayerLevelPayload<ExtArgs> | null
     wallet: Prisma.$WalletPayload<ExtArgs> | null
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
@@ -3628,6 +3869,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   jackpotWins<T extends Prisma.User$jackpotWinsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$jackpotWinsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$JackpotWinPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   battleBoxPlayers<T extends Prisma.User$battleBoxPlayersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$battleBoxPlayersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BattleBoxPlayerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vipSubscriptions<T extends Prisma.User$vipSubscriptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$vipSubscriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VipSubscriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  rewardCodeUses<T extends Prisma.User$rewardCodeUsesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$rewardCodeUsesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RewardCodeUsePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   playerLevel<T extends Prisma.User$playerLevelArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$playerLevelArgs<ExtArgs>>): Prisma.Prisma__PlayerLevelClient<runtime.Types.Result.GetResult<Prisma.$PlayerLevelPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   wallet<T extends Prisma.User$walletArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$walletArgs<ExtArgs>>): Prisma.Prisma__WalletClient<runtime.Types.Result.GetResult<Prisma.$WalletPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -4171,6 +4413,30 @@ export type User$vipSubscriptionsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.VipSubscriptionScalarFieldEnum | Prisma.VipSubscriptionScalarFieldEnum[]
+}
+
+/**
+ * User.rewardCodeUses
+ */
+export type User$rewardCodeUsesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RewardCodeUse
+   */
+  select?: Prisma.RewardCodeUseSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RewardCodeUse
+   */
+  omit?: Prisma.RewardCodeUseOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RewardCodeUseInclude<ExtArgs> | null
+  where?: Prisma.RewardCodeUseWhereInput
+  orderBy?: Prisma.RewardCodeUseOrderByWithRelationInput | Prisma.RewardCodeUseOrderByWithRelationInput[]
+  cursor?: Prisma.RewardCodeUseWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RewardCodeUseScalarFieldEnum | Prisma.RewardCodeUseScalarFieldEnum[]
 }
 
 /**

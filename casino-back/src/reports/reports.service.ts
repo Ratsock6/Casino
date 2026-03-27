@@ -87,6 +87,17 @@ export class ReportsService {
       where: { type: 'WIN' },
     });
 
+    const rewardCodesAgg = await this.prisma.walletTransaction.aggregate({
+      _sum: { amount: true },
+      where: {
+        type: 'ADMIN_CREDIT',
+        reason: { startsWith: '🎁 Code promo' },
+        createdAt: { gte: since, lt: until },
+      },
+    });
+
+    const totalRewardCodes = Number(rewardCodesAgg._sum.amount || 0);
+
     const [totalWinAgg, jackpotAgg, levelAgg] = await Promise.all([
       this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
@@ -100,11 +111,12 @@ export class ReportsService {
         _sum: { amount: true },
         where: { type: 'WIN_LEVEL', createdAt: { gte: since, lt: until } },
       }),
+
     ]);
 
     const totalBets = Number(betsAgg._sum.amount || 0);
     const totalWins = Number(winsAgg._sum.amount || 0);
-    const revenue = totalBets - totalWins;
+    const revenue = totalBets - totalWins - totalRewardCodes;
     const casinoBalance = Number(totalBetsAllTime._sum.amount || 0) - Number(totalWinsAllTime._sum.amount || 0);
     const totalJackpot = Number(jackpotAgg._sum.amount || 0);
     const totalLevel = Number(levelAgg._sum.amount || 0);
