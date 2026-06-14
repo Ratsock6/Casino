@@ -10,6 +10,7 @@ import axiosInstance from '../utils/axios.instance';
 import { getMyLoginHistoryApi, type LoginHistoryEntry } from '../api/profile.api';
 import { linkDiscordApi, unlinkDiscordApi, changePasswordApi } from '../api/profile.api';
 import { getVipStatusApi, type VipStatus } from '../api/vip.api';
+import { useWalletStore } from '../store/wallet.store';
 
 
 type Tab = 'info' | 'transactions' | 'games' | 'stats' | 'connections' | 'discord' | 'password' | 'codes';
@@ -29,6 +30,7 @@ const GAME_ICONS: Record<string, string> = {
 };
 
 const ProfilePage = () => {
+  const setBalance = useWalletStore((s) => s.setBalance);
   const [activeTab, setActiveTab] = useState<Tab>('info');
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [transactions, setTransactions] = useState<UserTransaction[]>([]);
