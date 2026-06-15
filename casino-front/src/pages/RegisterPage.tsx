@@ -4,6 +4,7 @@ import { registerApi } from '../api/auth.api';
 import '../styles/pages/register.scss';
 import { useAuthStore } from '../store/auth.store';
 import { loginApi } from '../api/auth.api';
+import bellagioLogo from '../assets/bellagio_logo_white.png';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -61,8 +62,7 @@ const RegisterPage = () => {
     <div className="register-page">
       <div className="register-card">
         <div className="register-card__header">
-          <span className="register-card__icon">♠</span>
-          <h1 className="register-card__title">Bellagio Casino</h1>
+          <img src={bellagioLogo} alt="Bellagio Casino" className="register-card__logo" />
           <p className="register-card__subtitle">Créez votre compte</p>
         </div>
 

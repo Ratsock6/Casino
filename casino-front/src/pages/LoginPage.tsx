@@ -5,6 +5,7 @@ import { loginApi } from '../api/auth.api';
 import '../styles/pages/login.scss';
 import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
+import bellagioLogo from '../assets/bellagio_logo_white.png';
 
 
 const LoginPage = () => {
@@ -39,8 +40,7 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-card">
         <div className="login-card__header">
-          <span className="login-card__icon">♠</span>
-          <h1 className="login-card__title">Bellagio Casino</h1>
+          <img src={bellagioLogo} alt="Bellagio Casino" className="login-card__logo" />
           <p className="login-card__subtitle">Connectez-vous pour jouer</p>
         </div>
 

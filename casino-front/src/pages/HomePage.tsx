@@ -12,6 +12,7 @@ import {
 import '../styles/pages/home.scss';
 import { getJackpotHistoryApi, type JackpotHistoryEntry } from '../api/jackpot.api';
 import JackpotBanner from '../components/ui/JackpotBanner';
+import bellagioLogo from '../assets/bellagio_logo_white.png';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -119,9 +120,7 @@ const HomePage = () => {
           </p>
         </div>
         <div className="home__hero-deco">
-          <span className="home__hero-card">🃏</span>
-          <span className="home__hero-card">🎰</span>
-          <span className="home__hero-card">🎡</span>
+          <img src={bellagioLogo} alt="Bellagio Casino" className="home__hero-logo" />
         </div>
       </div>
 

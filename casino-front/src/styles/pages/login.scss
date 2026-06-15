@@ -21,11 +21,11 @@
     margin-bottom: $spacing-xl;
   }
 
-  &__icon {
-    font-size: 48px;
-    color: $color-gold;
+  &__logo {
     display: block;
-    margin-bottom: $spacing-md;
+    width: 130px;
+    height: auto;
+    margin: 0 auto $spacing-md;
   }
 
   &__title {
