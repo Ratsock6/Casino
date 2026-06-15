@@ -11,11 +11,11 @@ import JackpotBanner from '../components/ui/JackpotBanner';
 const SYMBOLS_LIST = ['🍒', '🍋', '🎰', '7️⃣', '💎'];
 
 const RULES = [
-  { symbol: 'CHERRY', emoji: '🍒', label: 'Cerise', multiplier: 2, color: '#e05c5c' },
-  { symbol: 'LEMON', emoji: '🍋', label: 'Citron', multiplier: 3, color: '#e0c85c' },
-  { symbol: 'BAR', emoji: '🎰', label: 'Bar', multiplier: 5, color: '#c9a84c' },
-  { symbol: 'SEVEN', emoji: '7️⃣', label: 'Seven', multiplier: 10, color: '#4caf7d' },
-  { symbol: 'DIAMOND', emoji: '💎', label: 'Diamond', multiplier: 20, color: '#5cc8e0' },
+  { symbol: 'CHERRY', emoji: '🍒', label: 'Cerise', multiplier: 9, color: '#e05c5c' },
+  { symbol: 'LEMON', emoji: '🍋', label: 'Citron', multiplier: 13, color: '#e0c85c' },
+  { symbol: 'BAR', emoji: '🎰', label: 'Bar', multiplier: 20, color: '#c9a84c' },
+  { symbol: 'SEVEN', emoji: '7️⃣', label: 'Seven', multiplier: 50, color: '#4caf7d' },
+  { symbol: 'DIAMOND', emoji: '💎', label: 'Diamond', multiplier: 110, color: '#5cc8e0' },
 ];
 
 interface SpinResult {
