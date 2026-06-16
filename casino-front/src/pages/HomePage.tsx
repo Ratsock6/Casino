@@ -67,11 +67,11 @@ const HomePage = () => {
     {
       key: 'slots',
       title: 'Machines à Sous',
-      description: "Tentez votre chance sur nos machines à sous. Jusqu'à x20 votre mise.",
+      description: "Tentez votre chance sur nos machines à sous. Jusqu'à x110 votre mise.",
       icon: '🎰',
       path: '/slots',
       color: '#c9a84c',
-      multiplier: 'x20',
+      multiplier: 'x110',
     },
     {
       key: 'roulette',

@@ -17,7 +17,7 @@ Plateforme de casino en ligne fictif développée pour un serveur GTA RP. Les jo
 - Notifications en temps réel (Socket.io)
 
 ### Jeux
-- **Slots** : 5 symboles, multiplicateurs jusqu'à x20, spins en rafale (max 10), animation de défilement
+- **Slots** : 5 symboles, multiplicateurs jusqu'à x110, spins en rafale (max 10), animation de défilement
 - **Roulette** : Tous les paris (Straight, Split, Street, Corner, Six Line, extérieurs), roue animée
 - **Blackjack** : Hit, Stand, Blackjack naturel x2.5, reprise de partie en cours
 
