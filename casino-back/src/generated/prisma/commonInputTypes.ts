@@ -548,6 +548,91 @@ export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
 }
 
+export type EnumRaffleCampaignStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleCampaignStatus | Prisma.EnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleCampaignStatusFilter<$PrismaModel> | $Enums.RaffleCampaignStatus
+}
+
+export type EnumRaffleCampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleCampaignStatus | Prisma.EnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleCampaignStatusWithAggregatesFilter<$PrismaModel> | $Enums.RaffleCampaignStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleCampaignStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleCampaignStatusFilter<$PrismaModel>
+}
+
+export type EnumRaffleDrawStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleDrawStatus | Prisma.EnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleDrawStatusFilter<$PrismaModel> | $Enums.RaffleDrawStatus
+}
+
+export type EnumRaffleDrawStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleDrawStatus | Prisma.EnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleDrawStatusWithAggregatesFilter<$PrismaModel> | $Enums.RaffleDrawStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleDrawStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleDrawStatusFilter<$PrismaModel>
+}
+
+export type EnumRafflePrizeTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RafflePrizeType | Prisma.EnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRafflePrizeTypeFilter<$PrismaModel> | $Enums.RafflePrizeType
+}
+
+export type EnumRafflePrizeTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RafflePrizeType | Prisma.EnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRafflePrizeTypeWithAggregatesFilter<$PrismaModel> | $Enums.RafflePrizeType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRafflePrizeTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRafflePrizeTypeFilter<$PrismaModel>
+}
+
+export type EnumRaffleTicketStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleTicketStatus | Prisma.EnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleTicketStatusFilter<$PrismaModel> | $Enums.RaffleTicketStatus
+}
+
+export type EnumRaffleClaimStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleClaimStatus | Prisma.EnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel> | $Enums.RaffleClaimStatus | null
+}
+
+export type EnumRaffleTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleTicketStatus | Prisma.EnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.RaffleTicketStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleTicketStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleTicketStatusFilter<$PrismaModel>
+}
+
+export type EnumRaffleClaimStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleClaimStatus | Prisma.EnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRaffleClaimStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.RaffleClaimStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -1017,6 +1102,91 @@ export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
   _sum?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _min?: Prisma.NestedIntNullableFilter<$PrismaModel>
   _max?: Prisma.NestedIntNullableFilter<$PrismaModel>
+}
+
+export type NestedEnumRaffleCampaignStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleCampaignStatus | Prisma.EnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleCampaignStatusFilter<$PrismaModel> | $Enums.RaffleCampaignStatus
+}
+
+export type NestedEnumRaffleCampaignStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleCampaignStatus | Prisma.EnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleCampaignStatus[] | Prisma.ListEnumRaffleCampaignStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleCampaignStatusWithAggregatesFilter<$PrismaModel> | $Enums.RaffleCampaignStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleCampaignStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleCampaignStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRaffleDrawStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleDrawStatus | Prisma.EnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleDrawStatusFilter<$PrismaModel> | $Enums.RaffleDrawStatus
+}
+
+export type NestedEnumRaffleDrawStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleDrawStatus | Prisma.EnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleDrawStatus[] | Prisma.ListEnumRaffleDrawStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleDrawStatusWithAggregatesFilter<$PrismaModel> | $Enums.RaffleDrawStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleDrawStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleDrawStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRafflePrizeTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.RafflePrizeType | Prisma.EnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRafflePrizeTypeFilter<$PrismaModel> | $Enums.RafflePrizeType
+}
+
+export type NestedEnumRafflePrizeTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RafflePrizeType | Prisma.EnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RafflePrizeType[] | Prisma.ListEnumRafflePrizeTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRafflePrizeTypeWithAggregatesFilter<$PrismaModel> | $Enums.RafflePrizeType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRafflePrizeTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRafflePrizeTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumRaffleTicketStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleTicketStatus | Prisma.EnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleTicketStatusFilter<$PrismaModel> | $Enums.RaffleTicketStatus
+}
+
+export type NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleClaimStatus | Prisma.EnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel> | $Enums.RaffleClaimStatus | null
+}
+
+export type NestedEnumRaffleTicketStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleTicketStatus | Prisma.EnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RaffleTicketStatus[] | Prisma.ListEnumRaffleTicketStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRaffleTicketStatusWithAggregatesFilter<$PrismaModel> | $Enums.RaffleTicketStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleTicketStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleTicketStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumRaffleClaimStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RaffleClaimStatus | Prisma.EnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  in?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  notIn?: $Enums.RaffleClaimStatus[] | Prisma.ListEnumRaffleClaimStatusFieldRefInput<$PrismaModel> | null
+  not?: Prisma.NestedEnumRaffleClaimStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.RaffleClaimStatus | null
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRaffleClaimStatusNullableFilter<$PrismaModel>
 }
 
 

@@ -1,0 +1,287 @@
+@import '../variables';
+
+.raffle {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+
+  &__loading,
+  &__empty {
+    text-align: center;
+    padding: $spacing-xl 0;
+    color: $color-text-muted;
+  }
+
+  &__empty-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: $spacing-md;
+    opacity: 0.6;
+  }
+
+  &__empty h1 {
+    color: $color-text;
+    margin-bottom: $spacing-sm;
+  }
+
+  // ── Hero ──
+  &__hero {
+    text-align: center;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__title {
+    font-size: 2rem;
+    color: $color-gold;
+    margin-bottom: $spacing-xs;
+  }
+
+  &__desc {
+    color: $color-text-muted;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: $spacing-md;
+  }
+
+  &__stat {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-md $spacing-lg;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &--highlight {
+      border-color: $color-gold;
+      box-shadow: 0 0 0 1px rgba(201, 168, 76, 0.3);
+    }
+  }
+
+  &__stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__stat-label {
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  // ── Message flash ──
+  &__msg {
+    text-align: center;
+    padding: $spacing-sm $spacing-md;
+    border-radius: $radius-sm;
+    margin-bottom: $spacing-lg;
+    font-weight: 600;
+
+    &--success {
+      background: rgba(76, 175, 125, 0.15);
+      color: $color-success;
+      border: 1px solid $color-success;
+    }
+
+    &--error {
+      background: rgba(224, 92, 92, 0.15);
+      color: $color-error;
+      border: 1px solid $color-error;
+    }
+  }
+
+  // ── Sections ──
+  section {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-lg;
+
+    h2 {
+      color: $color-gold;
+      margin-bottom: $spacing-md;
+      font-size: 1.2rem;
+    }
+  }
+
+  // ── Achat ──
+  &__buy-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $spacing-lg;
+  }
+
+  &__qty {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    button {
+      width: 40px;
+      height: 40px;
+      font-size: 1.4rem;
+      border-radius: $radius-sm;
+      border: 1px solid $color-border;
+      background: $color-surface-2;
+      color: $color-text;
+      cursor: pointer;
+      transition: background $transition-fast;
+
+      &:hover:not(:disabled) { background: $color-border; }
+      &:disabled { opacity: 0.4; cursor: not-allowed; }
+    }
+
+    input {
+      width: 80px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.2rem;
+      border-radius: $radius-sm;
+      border: 1px solid $color-border;
+      background: $color-bg;
+      color: $color-text;
+    }
+  }
+
+  &__buy-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    strong { color: $color-gold; }
+  }
+
+  &__buy-remaining {
+    font-size: 0.8rem;
+    color: $color-text-muted;
+  }
+
+  &__buy-btn {
+    margin-left: auto;
+    padding: $spacing-md $spacing-xl;
+    background: $color-gold;
+    color: #000;
+    font-weight: 700;
+    border: none;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: background $transition-fast, transform $transition-fast;
+
+    &:hover:not(:disabled) {
+      background: $color-gold-light;
+      transform: translateY(-1px);
+    }
+
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+
+  &__cap-reached,
+  &__mine-empty {
+    color: $color-text-muted;
+    font-style: italic;
+  }
+
+  // ── Tirages ──
+  &__draws-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: $spacing-md;
+  }
+
+  &__draw {
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+
+    &--done { opacity: 0.55; }
+  }
+
+  &__draw-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-sm;
+    padding-bottom: $spacing-sm;
+    border-bottom: 1px solid $color-border;
+  }
+
+  &__draw-label { font-weight: 700; color: $color-text; }
+  &__draw-status { font-size: 0.8rem; color: $color-text-muted; }
+
+  &__prize-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      color: $color-text;
+      font-size: 0.95rem;
+    }
+  }
+
+  &__prize-qty { color: $color-gold; font-weight: 700; }
+
+  // ── Tickets gagnants ──
+  &__won-card {
+    background: rgba(201, 168, 76, 0.08);
+    border: 1px solid $color-gold;
+    border-radius: $radius-md;
+    padding: $spacing-md;
+    margin-bottom: $spacing-sm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+
+  &__claim {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: $radius-sm;
+
+    &--pending { background: rgba(224, 168, 92, 0.15); color: $color-warning; }
+    &--ok { background: rgba(76, 175, 125, 0.15); color: $color-success; }
+    &--expired { background: rgba(224, 92, 92, 0.15); color: $color-error; }
+  }
+
+  &__won-hint {
+    color: $color-text-muted;
+    font-size: 0.85rem;
+    margin-top: $spacing-sm;
+  }
+
+  // ── Mes tickets actifs ──
+  &__ticket-numbers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+
+  &__ticket-chip {
+    background: $color-surface-2;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    padding: 4px 10px;
+    font-size: 0.85rem;
+    color: $color-text;
+    font-variant-numeric: tabular-nums;
+  }
+}

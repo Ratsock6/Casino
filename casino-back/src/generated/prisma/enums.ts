@@ -37,7 +37,9 @@ export const WalletTransactionType = {
   REFUND: 'REFUND',
   ADJUSTMENT: 'ADJUSTMENT',
   WIN_JACKPOT: 'WIN_JACKPOT',
-  WIN_LEVEL: 'WIN_LEVEL'
+  WIN_LEVEL: 'WIN_LEVEL',
+  RAFFLE_TICKET: 'RAFFLE_TICKET',
+  WIN_RAFFLE: 'WIN_RAFFLE'
 } as const
 
 export type WalletTransactionType = (typeof WalletTransactionType)[keyof typeof WalletTransactionType]
@@ -96,3 +98,46 @@ export const BattleBoxStatus = {
 } as const
 
 export type BattleBoxStatus = (typeof BattleBoxStatus)[keyof typeof BattleBoxStatus]
+
+
+export const RaffleCampaignStatus = {
+  DRAFT: 'DRAFT',
+  OPEN: 'OPEN',
+  ENDED: 'ENDED'
+} as const
+
+export type RaffleCampaignStatus = (typeof RaffleCampaignStatus)[keyof typeof RaffleCampaignStatus]
+
+
+export const RaffleDrawStatus = {
+  PENDING: 'PENDING',
+  DONE: 'DONE'
+} as const
+
+export type RaffleDrawStatus = (typeof RaffleDrawStatus)[keyof typeof RaffleDrawStatus]
+
+
+export const RafflePrizeType = {
+  CHIPS: 'CHIPS',
+  VIP: 'VIP',
+  CUSTOM: 'CUSTOM'
+} as const
+
+export type RafflePrizeType = (typeof RafflePrizeType)[keyof typeof RafflePrizeType]
+
+
+export const RaffleTicketStatus = {
+  ACTIVE: 'ACTIVE',
+  WON: 'WON'
+} as const
+
+export type RaffleTicketStatus = (typeof RaffleTicketStatus)[keyof typeof RaffleTicketStatus]
+
+
+export const RaffleClaimStatus = {
+  UNCLAIMED: 'UNCLAIMED',
+  CLAIMED: 'CLAIMED',
+  EXPIRED: 'EXPIRED'
+} as const
+
+export type RaffleClaimStatus = (typeof RaffleClaimStatus)[keyof typeof RaffleClaimStatus]

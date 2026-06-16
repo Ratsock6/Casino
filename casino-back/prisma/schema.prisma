@@ -31,6 +31,8 @@ enum WalletTransactionType {
   ADJUSTMENT
   WIN_JACKPOT
   WIN_LEVEL
+  RAFFLE_TICKET
+  WIN_RAFFLE
 }
 
 enum GameType {
@@ -91,6 +93,7 @@ model User {
   vipSubscriptions VipSubscription[]
   rewardCodeUses   RewardCodeUse[]
   playerLevel      PlayerLevel?
+  raffleTickets    RaffleTicket[]
 
   wallet              Wallet?
   refreshTokens       RefreshToken[]
@@ -284,6 +287,7 @@ model LevelReward {
   rewardType      String    // 'TOKENS', 'VIP', 'BADGE', 'INGAME'
   rewardValue     String
   isIngame        Boolean   @default(false)
+  ingameValue     Int?      // valeur estimée en jetons du lot RP (compta informative)
   ingameClaimed   Boolean   @default(false)
   ingameClaimedAt DateTime?
   ingameClaimedBy String?   // adminId qui a validé
@@ -398,4 +402,124 @@ model RewardCodeUse {
 
   @@unique([codeId, userId])
   @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOMBOLA / RAFFLE
+// ─────────────────────────────────────────────────────────────────────────────
+
+enum RaffleCampaignStatus {
+  DRAFT // créée, configurée, pas encore ouverte aux achats
+  OPEN  // achats de tickets autorisés
+  ENDED // campagne terminée (dernier tirage passé)
+}
+
+enum RaffleDrawStatus {
+  PENDING // tirage programmé, pas encore exécuté
+  DONE    // tirage exécuté, gagnants désignés
+}
+
+enum RafflePrizeType {
+  CHIPS  // jetons (montant dans `value`)
+  VIP    // abonnement VIP (durée dans `value`, remis en RP par le staff)
+  CUSTOM // objet RP / lot physique (description dans `label`)
+}
+
+enum RaffleTicketStatus {
+  ACTIVE // en lice pour les prochains tirages
+  WON    // a gagné -> retiré du pool
+}
+
+enum RaffleClaimStatus {
+  UNCLAIMED // ticket gagnant, en attente que le joueur ouvre sa réclamation
+  CLAIMED   // lot réclamé/remis par le staff
+  EXPIRED   // délai de réclamation dépassé -> lot perdu
+}
+
+/// Une campagne de tombola (ex : "Tombola de lancement", 2 semaines).
+/// En principe une seule en statut OPEN à la fois.
+model RaffleCampaign {
+  id                String               @id @default(cuid())
+  name              String
+  description       String?
+  status            RaffleCampaignStatus @default(DRAFT)
+  ticketPrice       BigInt // prix d'un ticket en jetons
+  maxTicketsPerUser Int // plafond global sur toute la campagne
+  startsAt          DateTime // ouverture des achats
+  endsAt            DateTime // fin de campagne (après le dernier tirage)
+  createdBy         String // userId admin créateur
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  draws   RaffleDraw[]
+  tickets RaffleTicket[]
+
+  @@index([status])
+  @@index([startsAt, endsAt])
+}
+
+/// Un tirage programmé au sein d'une campagne (un tous les 2 jours, ~7 au total).
+model RaffleDraw {
+  id          String           @id @default(cuid())
+  campaignId  String
+  label       String? // ex : "Tirage #3"
+  scheduledAt DateTime // date/heure prévue du tirage
+  status      RaffleDrawStatus @default(PENDING)
+  executedAt  DateTime? // rempli quand le tirage est exécuté
+  seed        String? // graine RNG conservée pour l'audit
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  campaign   RaffleCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  prizes     RafflePrize[]
+  wonTickets RaffleTicket[] @relation("RaffleTicketWonDraw")
+
+  @@index([campaignId])
+  @@index([status, scheduledAt])
+}
+
+/// Un lot rattaché à un tirage précis (lots fixes définis à l'avance).
+/// `quantity` = nombre de gagnants pour ce lot lors du tirage.
+model RafflePrize {
+  id        String          @id @default(cuid())
+  drawId    String
+  type      RafflePrizeType
+  label     String // "1 000 000 jetons", "VIP 1 mois", "Plaque collector"
+  value     String? // montant (jetons) ou durée VIP ('1_MONTH'...) ; null pour CUSTOM
+  rank      Int             @default(1) // ordre d'affichage / prestige (1 = lot principal)
+  quantity  Int             @default(1) // nombre de gagnants pour ce lot
+  createdAt DateTime        @default(now())
+
+  draw       RaffleDraw     @relation(fields: [drawId], references: [id], onDelete: Cascade)
+  wonTickets RaffleTicket[] @relation("RaffleTicketWonPrize")
+
+  @@index([drawId])
+}
+
+/// Un ticket acheté par un joueur. Cumulatif et permanent jusqu'à victoire.
+model RaffleTicket {
+  id           String             @id @default(cuid())
+  campaignId   String
+  userId       String
+  ticketNumber Int // numéro séquentiel dans la campagne
+  status       RaffleTicketStatus @default(ACTIVE)
+  purchasedAt  DateTime           @default(now())
+
+  // Renseignés uniquement si le ticket a gagné
+  wonDrawId     String?
+  wonPrizeId    String?
+  claimStatus   RaffleClaimStatus? // null tant que ACTIVE ; UNCLAIMED dès qu'il gagne
+  claimDeadline DateTime? // délai pour ouvrir la réclamation (tirage + 3 jours)
+  claimedAt     DateTime?
+
+  campaign RaffleCampaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wonDraw  RaffleDraw?    @relation("RaffleTicketWonDraw", fields: [wonDrawId], references: [id], onDelete: SetNull)
+  wonPrize RafflePrize?   @relation("RaffleTicketWonPrize", fields: [wonPrizeId], references: [id], onDelete: SetNull)
+
+  @@unique([campaignId, ticketNumber])
+  @@index([campaignId, status])
+  @@index([userId, campaignId])
+  @@index([wonDrawId])
+  @@index([claimStatus, claimDeadline])
 }

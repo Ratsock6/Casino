@@ -27,6 +27,12 @@ export interface GlobalStats {
   netRevenue: number;
   casinoRevenue: number;
   totalRewardCodes: number;
+  totalRefund: number;
+  totalRaffleTickets: number;
+  totalRaffleWins: number;
+  totalVipSales: number;
+  totalAdminCreditOther: number;
+  sideIncome: number;
 }
 
 export interface UserStats {
@@ -315,3 +321,100 @@ export const deleteRewardCodeApi = async (codeId: string): Promise<void> => {
 };
 
 
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOMBOLA / RAFFLE (admin)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface AdminRafflePrize {
+  id?: string;
+  type: 'CHIPS' | 'VIP' | 'CUSTOM';
+  label: string;
+  value?: string | null;
+  rank?: number;
+  quantity: number;
+}
+
+export interface AdminRaffleDraw {
+  id?: string;
+  label?: string | null;
+  scheduledAt: string;
+  status?: 'PENDING' | 'DONE';
+  executedAt?: string | null;
+  prizes: AdminRafflePrize[];
+}
+
+export interface AdminRaffleCampaign {
+  id: string;
+  name: string;
+  description?: string | null;
+  status: 'DRAFT' | 'OPEN' | 'ENDED';
+  ticketPrice: string;
+  maxTicketsPerUser: number;
+  startsAt: string;
+  endsAt: string;
+  createdAt: string;
+  totalTicketsSold?: number;
+  draws: AdminRaffleDraw[];
+}
+
+export interface AdminRaffleWinner {
+  ticketId: string;
+  ticketNumber: number;
+  campaign: { id: string; name: string } | null;
+  draw: { id: string; label: string | null; scheduledAt: string; executedAt: string | null } | null;
+  prize: { type: string; label: string; value: string | null } | null;
+  winner: { userId: string; username: string; discordId: string | null; discordUsername: string | null };
+  claimStatus: 'UNCLAIMED' | 'CLAIMED' | 'EXPIRED' | null;
+  claimDeadline: string | null;
+  claimedAt: string | null;
+}
+
+export const getRaffleCampaignsApi = async (): Promise<AdminRaffleCampaign[]> => {
+  const res = await axiosInstance.get('/admin/raffle/campaigns');
+  return res.data;
+};
+
+export const createRaffleCampaignApi = async (data: {
+  name: string;
+  description?: string;
+  ticketPrice: number;
+  maxTicketsPerUser: number;
+  startsAt: string;
+  endsAt: string;
+  draws: {
+    label?: string;
+    scheduledAt: string;
+    prizes: { type: string; label: string; value?: string; rank?: number; quantity: number }[];
+  }[];
+}): Promise<AdminRaffleCampaign> => {
+  const res = await axiosInstance.post('/admin/raffle/campaigns', data);
+  return res.data;
+};
+
+export const openRaffleCampaignApi = async (id: string): Promise<void> => {
+  await axiosInstance.post(`/admin/raffle/campaigns/${id}/open`);
+};
+
+export const endRaffleCampaignApi = async (id: string): Promise<void> => {
+  await axiosInstance.post(`/admin/raffle/campaigns/${id}/end`);
+};
+
+export const deleteRaffleCampaignApi = async (id: string): Promise<void> => {
+  await axiosInstance.delete(`/admin/raffle/campaigns/${id}`);
+};
+
+export const executeRaffleDrawApi = async (drawId: string): Promise<any> => {
+  const res = await axiosInstance.post(`/admin/raffle/draws/${drawId}/execute`);
+  return res.data;
+};
+
+export const getRaffleWinnersApi = async (campaignId?: string): Promise<AdminRaffleWinner[]> => {
+  const q = campaignId ? `?campaignId=${campaignId}` : '';
+  const res = await axiosInstance.get(`/admin/raffle/winners${q}`);
+  return res.data;
+};
+
+export const markRaffleClaimedApi = async (ticketId: string): Promise<void> => {
+  await axiosInstance.post(`/admin/raffle/tickets/${ticketId}/claim`);
+};

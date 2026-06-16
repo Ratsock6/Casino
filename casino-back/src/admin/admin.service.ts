@@ -57,6 +57,10 @@ export class AdminService {
       adminCreditAgg,
       adminDebitAgg,
       rewardCodesAgg,
+      refundAgg,
+      raffleTicketAgg,
+      raffleWinAgg,
+      vipSalesAgg,
       roundsByGame,
     ] = await Promise.all([
       this.prisma.user.count(),
@@ -78,20 +82,42 @@ export class AdminService {
         _sum: { amount: true },
         where: { type: 'WIN_LEVEL' },
       }),
+      // Tous les crédits admin (monnaie offerte par le casino)
       this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
         where: { type: 'ADMIN_CREDIT' },
       }),
+      // Tous les débits admin (inclut les achats VIP, qu'on isole ensuite)
       this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
         where: { type: 'ADMIN_DEBIT' },
       }),
-      this.prisma.walletTransaction.aggregate({ // 👈 ajouté
+      // Sous-ensemble : codes promo (reason préfixé)
+      this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
         where: {
           type: 'ADMIN_CREDIT',
           reason: { startsWith: '🎁 Code promo' },
         },
+      }),
+      // Remboursements de parties annulées
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'REFUND' },
+      }),
+      // Tombola : ventes de tickets (revenu) et gains jetons (sortie)
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'RAFFLE_TICKET' },
+      }),
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'WIN_RAFFLE' },
+      }),
+      // Ventes VIP (enregistrées en ADMIN_DEBIT avec reason "Achat VIP")
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'ADMIN_DEBIT', reason: { startsWith: 'Achat VIP' } },
       }),
       this.prisma.gameRound.groupBy({
         by: ['gameType'],
@@ -106,8 +132,32 @@ export class AdminService {
     const totalCredit = Number(adminCreditAgg._sum.amount || 0);
     const totalDebit = Number(adminDebitAgg._sum.amount || 0);
     const totalRewardCodes = Number(rewardCodesAgg._sum.amount || 0);
-    const grossRevenue = totalBets - totalWins;
-    const netRevenue = grossRevenue - totalJackpot - totalLevel - totalRewardCodes;
+    const totalRefund = Number(refundAgg._sum.amount || 0);
+    const totalRaffleTickets = Number(raffleTicketAgg._sum.amount || 0);
+    const totalRaffleWins = Number(raffleWinAgg._sum.amount || 0);
+    const totalVipSales = Number(vipSalesAgg._sum.amount || 0);
+
+    // Crédits admin "hors codes promo" : monnaie offerte manuellement par le staff.
+    const totalAdminCreditOther = totalCredit - totalRewardCodes;
+
+    // ── Compta ───────────────────────────────────────────────────────────────
+    // Revenu brut des JEUX uniquement : mises − gains − remboursements.
+    const grossRevenue = totalBets - totalWins - totalRefund;
+
+    // Revenus annexes encaissés par le casino : ventes de tickets + ventes VIP.
+    const sideIncome = totalRaffleTickets + totalVipSales;
+
+    // Sorties (monnaie versée/offerte par le casino) :
+    //   jackpots + récompenses de niveau + gains jetons tombola
+    //   + codes promo + crédits admin manuels.
+    const payouts =
+      totalJackpot +
+      totalLevel +
+      totalRaffleWins +
+      totalRewardCodes +
+      totalAdminCreditOther;
+
+    const netRevenue = grossRevenue + sideIncome - payouts;
 
     return {
       totalUsers,
@@ -124,7 +174,13 @@ export class AdminService {
       totalCredit,
       totalDebit,
       totalRewardCodes,
+      totalRefund,
+      totalRaffleTickets,
+      totalRaffleWins,
+      totalVipSales,
+      totalAdminCreditOther,
       grossRevenue,
+      sideIncome,
       netRevenue,
       casinoRevenue: netRevenue,
     };

@@ -134,3 +134,25 @@ export type RewardCode = Prisma.RewardCodeModel
  * 
  */
 export type RewardCodeUse = Prisma.RewardCodeUseModel
+/**
+ * Model RaffleCampaign
+ * Une campagne de tombola (ex : "Tombola de lancement", 2 semaines).
+ * En principe une seule en statut OPEN à la fois.
+ */
+export type RaffleCampaign = Prisma.RaffleCampaignModel
+/**
+ * Model RaffleDraw
+ * Un tirage programmé au sein d'une campagne (un tous les 2 jours, ~7 au total).
+ */
+export type RaffleDraw = Prisma.RaffleDrawModel
+/**
+ * Model RafflePrize
+ * Un lot rattaché à un tirage précis (lots fixes définis à l'avance).
+ * `quantity` = nombre de gagnants pour ce lot lors du tirage.
+ */
+export type RafflePrize = Prisma.RafflePrizeModel
+/**
+ * Model RaffleTicket
+ * Un ticket acheté par un joueur. Cumulatif et permanent jusqu'à victoire.
+ */
+export type RaffleTicket = Prisma.RaffleTicketModel

@@ -95,6 +95,12 @@ const Navbar = () => {
           </NavLink>
         )}
 
+        <NavLink to="/raffle" className={({ isActive }) =>
+          isActive ? 'navbar__link navbar__link--active' : 'navbar__link'
+        }>
+          🎰 Tombola
+        </NavLink>
+
         <NavLink
           to="/vip"
           className={({ isActive }) =>

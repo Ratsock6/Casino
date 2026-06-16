@@ -23,6 +23,7 @@ import { LevelsModule } from './levels/levels.module';
 import { JackpotModule } from './jackpot/jackpot.module';
 import { BattleBoxModule } from './battle-box/battle-box.module';
 import { RewardCodesModule } from './reward-codes/reward-codes.module';
+import { RaffleModule } from './raffle/raffle.module';
 
 
 
@@ -59,6 +60,7 @@ import { RewardCodesModule } from './reward-codes/reward-codes.module';
     JackpotModule,
     BattleBoxModule,
     RewardCodesModule,
+    RaffleModule,
   ],
 })
 export class AppModule {}

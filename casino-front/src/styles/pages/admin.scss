@@ -1436,4 +1436,63 @@
       border: 1px solid rgba($color-error, 0.3);
     }
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // TOMBOLA (onglet admin)
+  // ─────────────────────────────────────────────────────────────────────────
+  &__raffle {
+    h2 { color: $color-gold; margin-bottom: $spacing-md; }
+    h3 { color: $color-text; margin-bottom: $spacing-sm; }
+    h4 { color: $color-text; margin: $spacing-sm 0; }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: $color-text-muted;
+      font-weight: 600;
+    }
+
+    input,
+    select {
+      padding: 8px 10px;
+      border-radius: $radius-sm;
+      border: 1px solid $color-border;
+      background: $color-bg;
+      color: $color-text;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: $color-gold;
+      }
+    }
+  }
+
+  // Carte générique (formulaire, blocs de tirage)
+  &__card {
+    background: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+  }
+
+  // Variantes de bouton manquantes utilisées par la tombola
+  &__btn {
+    &--small {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    &--danger {
+      background: rgba($color-error, 0.15);
+      color: $color-error;
+      border: 1px solid rgba($color-error, 0.3);
+
+      &:hover {
+        background: rgba($color-error, 0.25);
+      }
+    }
+  }
+
 }

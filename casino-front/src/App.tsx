@@ -17,6 +17,7 @@ import ReglementPage from './pages/ReglementPage';
 import VipPage from './pages/VipPage';
 import LevelPage from './pages/LevelPage';
 import BattleBoxPage from './pages/BattleBoxPage';
+import RafflePage from './pages/RafflePage';
 
 
 // Route protégée : redirige vers /login si non connecté
@@ -72,6 +73,7 @@ function App() {
           <Route path="vip" element={<VipPage />} />
           <Route path="level" element={<LevelPage />} />
           <Route path="battle-box" element={<BattleBoxPage />} />
+          <Route path="raffle" element={<RafflePage />} />
         </Route>
 
         {/* Fallback */}

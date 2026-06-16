@@ -69,7 +69,11 @@ export const ModelName = {
   BattleBoxGame: 'BattleBoxGame',
   BattleBoxPlayer: 'BattleBoxPlayer',
   RewardCode: 'RewardCode',
-  RewardCodeUse: 'RewardCodeUse'
+  RewardCodeUse: 'RewardCodeUse',
+  RaffleCampaign: 'RaffleCampaign',
+  RaffleDraw: 'RaffleDraw',
+  RafflePrize: 'RafflePrize',
+  RaffleTicket: 'RaffleTicket'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -370,6 +374,69 @@ export const RewardCodeUseScalarFieldEnum = {
 } as const
 
 export type RewardCodeUseScalarFieldEnum = (typeof RewardCodeUseScalarFieldEnum)[keyof typeof RewardCodeUseScalarFieldEnum]
+
+
+export const RaffleCampaignScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  status: 'status',
+  ticketPrice: 'ticketPrice',
+  maxTicketsPerUser: 'maxTicketsPerUser',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
+  createdBy: 'createdBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RaffleCampaignScalarFieldEnum = (typeof RaffleCampaignScalarFieldEnum)[keyof typeof RaffleCampaignScalarFieldEnum]
+
+
+export const RaffleDrawScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  label: 'label',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  executedAt: 'executedAt',
+  seed: 'seed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RaffleDrawScalarFieldEnum = (typeof RaffleDrawScalarFieldEnum)[keyof typeof RaffleDrawScalarFieldEnum]
+
+
+export const RafflePrizeScalarFieldEnum = {
+  id: 'id',
+  drawId: 'drawId',
+  type: 'type',
+  label: 'label',
+  value: 'value',
+  rank: 'rank',
+  quantity: 'quantity',
+  createdAt: 'createdAt'
+} as const
+
+export type RafflePrizeScalarFieldEnum = (typeof RafflePrizeScalarFieldEnum)[keyof typeof RafflePrizeScalarFieldEnum]
+
+
+export const RaffleTicketScalarFieldEnum = {
+  id: 'id',
+  campaignId: 'campaignId',
+  userId: 'userId',
+  ticketNumber: 'ticketNumber',
+  status: 'status',
+  purchasedAt: 'purchasedAt',
+  wonDrawId: 'wonDrawId',
+  wonPrizeId: 'wonPrizeId',
+  claimStatus: 'claimStatus',
+  claimDeadline: 'claimDeadline',
+  claimedAt: 'claimedAt'
+} as const
+
+export type RaffleTicketScalarFieldEnum = (typeof RaffleTicketScalarFieldEnum)[keyof typeof RaffleTicketScalarFieldEnum]
 
 
 export const SortOrder = {

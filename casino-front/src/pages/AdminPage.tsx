@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import RaffleAdminTab from '../components/admin/RaffleAdminTab';
 import {
   LineChart, Line, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip,
@@ -63,7 +64,7 @@ import { getAllIngameRewardsApi, claimIngameRewardApi, type IngameReward } from 
 
 
 
-type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame' | 'battlebox' | 'codes';
+type Tab = 'stats' | 'leaderboard' | 'games' | 'transactions' | 'players' | 'config' | 'charts' | 'audit' | 'alerts' | 'ingame' | 'battlebox' | 'codes' | 'raffle';
 
 const TRANSACTION_COLORS: Record<string, string> = {
   BET: '#e0a85c', WIN: '#4caf7d', LOSS: '#e05c5c',
@@ -517,6 +518,7 @@ const AdminPage = () => {
     { key: 'ingame', label: '🎮 Lots in-game' },
     { key: 'battlebox', label: '⚔️ Battle Box' },
     { key: 'codes', label: '🎟️ Codes promo' },
+    { key: 'raffle', label: '🎰 Tombola' },
   ];
 
   const CONFIG_CATEGORIES: {
@@ -781,21 +783,35 @@ const AdminPage = () => {
             <h2 className="admin__section-title">💰 Détail des revenus</h2>
             <div className="admin__stats-revenue-rows">
               <div className="admin__revenue-row">
-                <span>Total misé</span>
+                <span>Total misé (jeux)</span>
                 <strong style={{ color: '#e0a85c' }}>{stats.totalBet.toLocaleString()} 🪙</strong>
               </div>
               <div className="admin__revenue-row">
                 <span>Total gains jeux</span>
                 <strong style={{ color: '#e05c5c' }}>-{stats.totalWin.toLocaleString()} 🪙</strong>
               </div>
+              <div className="admin__revenue-row">
+                <span>Remboursements</span>
+                <strong style={{ color: '#e05c5c' }}>-{(stats.totalRefund ?? 0).toLocaleString()} 🪙</strong>
+              </div>
               <div className="admin__revenue-row admin__revenue-row--sub">
-                <span>= Revenu brut</span>
+                <span>= Revenu brut (jeux)</span>
                 <strong style={{ color: '#4caf7d' }}>{stats.grossRevenue.toLocaleString()} 🪙</strong>
               </div>
+
+              <div className="admin__revenue-row admin__revenue-row--separator" />
+
               <div className="admin__revenue-row">
-                <span>Codes promo distribués</span>
-                <strong style={{ color: '#e05c5c' }}>-{stats.totalRewardCodes.toLocaleString()} 🪙</strong>
+                <span>+ Ventes tickets tombola</span>
+                <strong style={{ color: '#4caf7d' }}>+{(stats.totalRaffleTickets ?? 0).toLocaleString()} 🪙</strong>
               </div>
+              <div className="admin__revenue-row">
+                <span>+ Ventes VIP</span>
+                <strong style={{ color: '#4caf7d' }}>+{(stats.totalVipSales ?? 0).toLocaleString()} 🪙</strong>
+              </div>
+
+              <div className="admin__revenue-row admin__revenue-row--separator" />
+
               <div className="admin__revenue-row">
                 <span>Jackpots distribués</span>
                 <strong style={{ color: '#e05c5c' }}>-{stats.totalJackpot.toLocaleString()} 🪙</strong>
@@ -804,19 +820,33 @@ const AdminPage = () => {
                 <span>Récompenses niveaux</span>
                 <strong style={{ color: '#e05c5c' }}>-{stats.totalLevel.toLocaleString()} 🪙</strong>
               </div>
+              <div className="admin__revenue-row">
+                <span>Gains tombola (jetons)</span>
+                <strong style={{ color: '#e05c5c' }}>-{(stats.totalRaffleWins ?? 0).toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Codes promo distribués</span>
+                <strong style={{ color: '#e05c5c' }}>-{stats.totalRewardCodes.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>Crédits admin (hors promo)</span>
+                <strong style={{ color: '#e05c5c' }}>-{(stats.totalAdminCreditOther ?? 0).toLocaleString()} 🪙</strong>
+              </div>
+
               <div className="admin__revenue-row admin__revenue-row--total">
                 <span>= Revenu net réel</span>
                 <strong style={{ color: stats.netRevenue >= 0 ? '#4caf7d' : '#e05c5c' }}>
                   {stats.netRevenue.toLocaleString()} 🪙
                 </strong>
               </div>
+
               <div className="admin__revenue-row admin__revenue-row--separator" />
               <div className="admin__revenue-row">
-                <span>Crédits admin</span>
+                <span>Crédits admin (total)</span>
                 <strong style={{ color: '#e0a85c' }}>{stats.totalCredit.toLocaleString()} 🪙</strong>
               </div>
               <div className="admin__revenue-row">
-                <span>Débits admin</span>
+                <span>Débits admin (total)</span>
                 <strong style={{ color: '#e0a85c' }}>{stats.totalDebit.toLocaleString()} 🪙</strong>
               </div>
             </div>
@@ -2301,6 +2331,9 @@ const AdminPage = () => {
           </div>
         </div>
       )}
+
+      {/* ── TOMBOLA ── */}
+      {activeTab === 'raffle' && <RaffleAdminTab />}
     </div >
   );
 };
