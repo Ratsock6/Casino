@@ -32,6 +32,9 @@ export interface GlobalStats {
   totalRaffleWins: number;
   totalVipSales: number;
   totalAdminCreditOther: number;
+  levelRpCost: number;
+  raffleRpCost: number;
+  totalRpEstimatedCost: number;
   sideIncome: number;
 }
 

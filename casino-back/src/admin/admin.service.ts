@@ -61,6 +61,8 @@ export class AdminService {
       raffleTicketAgg,
       raffleWinAgg,
       vipSalesAgg,
+      levelIngameValueAgg,
+      claimedCustomRaffleTickets,
       roundsByGame,
     ] = await Promise.all([
       this.prisma.user.count(),
@@ -119,6 +121,16 @@ export class AdminService {
         _sum: { amount: true },
         where: { type: 'ADMIN_DEBIT', reason: { startsWith: 'Achat VIP' } },
       }),
+      // Coût RP estimé — lots de niveau remis en jeu (somme des valeurs estimées)
+      this.prisma.levelReward.aggregate({
+        _sum: { ingameValue: true },
+        where: { isIngame: true, ingameClaimed: true },
+      }),
+      // Coût RP estimé — lots de tombola CUSTOM réclamés (value est un String -> somme côté code)
+      this.prisma.raffleTicket.findMany({
+        where: { status: 'WON', claimStatus: 'CLAIMED', wonPrize: { type: 'CUSTOM' } },
+        select: { wonPrize: { select: { value: true } } },
+      }),
       this.prisma.gameRound.groupBy({
         by: ['gameType'],
         _count: { id: true },
@@ -136,6 +148,16 @@ export class AdminService {
     const totalRaffleTickets = Number(raffleTicketAgg._sum.amount || 0);
     const totalRaffleWins = Number(raffleWinAgg._sum.amount || 0);
     const totalVipSales = Number(vipSalesAgg._sum.amount || 0);
+
+    // ── Coût RP estimé distribué (informatif, hors jetons) ─────────────────────
+    // Lots de niveau remis en jeu :
+    const levelRpCost = Number(levelIngameValueAgg._sum.ingameValue || 0);
+    // Lots de tombola CUSTOM réclamés (value est un String -> on somme en nombre) :
+    const raffleRpCost = claimedCustomRaffleTickets.reduce((sum, t) => {
+      const v = Number(t.wonPrize?.value);
+      return sum + (Number.isFinite(v) ? v : 0);
+    }, 0);
+    const totalRpEstimatedCost = levelRpCost + raffleRpCost;
 
     // Crédits admin "hors codes promo" : monnaie offerte manuellement par le staff.
     const totalAdminCreditOther = totalCredit - totalRewardCodes;
@@ -179,6 +201,9 @@ export class AdminService {
       totalRaffleWins,
       totalVipSales,
       totalAdminCreditOther,
+      levelRpCost,
+      raffleRpCost,
+      totalRpEstimatedCost,
       grossRevenue,
       sideIncome,
       netRevenue,

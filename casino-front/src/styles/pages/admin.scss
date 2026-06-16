@@ -1495,4 +1495,40 @@
     }
   }
 
+
+  // Coût RP estimé (bloc distinct dans la vue globale)
+  &__rp-cost {
+    margin-top: $spacing-lg;
+    padding: $spacing-md;
+    background: rgba(156, 124, 244, 0.06);
+    border: 1px solid rgba(156, 124, 244, 0.3);
+    border-radius: $radius-md;
+  }
+
+  &__rp-cost-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: $color-text;
+
+    strong { color: #b79cf4; }
+  }
+
+  &__rp-cost-note {
+    margin: $spacing-sm 0;
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    line-height: 1.4;
+  }
+
+  &__rp-cost-detail {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+  }
+
 }

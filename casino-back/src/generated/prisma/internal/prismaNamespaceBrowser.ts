@@ -279,6 +279,7 @@ export const LevelRewardScalarFieldEnum = {
   rewardType: 'rewardType',
   rewardValue: 'rewardValue',
   isIngame: 'isIngame',
+  ingameValue: 'ingameValue',
   ingameClaimed: 'ingameClaimed',
   ingameClaimedAt: 'ingameClaimedAt',
   ingameClaimedBy: 'ingameClaimedBy',

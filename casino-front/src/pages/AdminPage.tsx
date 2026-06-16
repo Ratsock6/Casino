@@ -850,6 +850,22 @@ const AdminPage = () => {
                 <strong style={{ color: '#e0a85c' }}>{stats.totalDebit.toLocaleString()} 🪙</strong>
               </div>
             </div>
+
+            {/* Coût RP estimé — chiffre distinct, hors revenu net jetons */}
+            <div className="admin__rp-cost">
+              <div className="admin__rp-cost-header">
+                <span>🎭 Coût RP estimé distribué</span>
+                <strong>{(stats.totalRpEstimatedCost ?? 0).toLocaleString()} 🪙</strong>
+              </div>
+              <p className="admin__rp-cost-note">
+                Valeur estimée des lots RP remis (voitures, propriétés, objets…). Indicatif —
+                n'entre pas dans le revenu net en jetons, car ces lots ne sortent pas de la réserve.
+              </p>
+              <div className="admin__rp-cost-detail">
+                <span>Lots de niveau remis : {(stats.levelRpCost ?? 0).toLocaleString()} 🪙</span>
+                <span>Lots de tombola remis : {(stats.raffleRpCost ?? 0).toLocaleString()} 🪙</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
