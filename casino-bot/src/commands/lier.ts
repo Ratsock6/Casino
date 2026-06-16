@@ -10,9 +10,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   try {
     console.log('Génération du code pour:', interaction.user.id, interaction.user.tag);
-    console.log('API URL:', process.env.CASINO_API_URL);
-    console.log('Secret:', process.env.CASINO_BOT_SECRET);
-
     const result = await generateLinkCode(
       interaction.user.id,
       interaction.user.tag,

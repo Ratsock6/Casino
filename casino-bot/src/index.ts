@@ -6,6 +6,7 @@ import * as retrait from './commands/retrait';
 import * as sync from './commands/sync';
 import * as credit from './commands/credit';
 import * as setup from './commands/setup';
+import * as tickets from './commands/tickets';
 import { startWebhook } from './webhook';
 import { getLinkedUsers } from './api';
 import { applyDiscordProfile } from './utils';
@@ -49,6 +50,7 @@ commands.set('retrait', { data: retrait.data, execute: retrait.execute });
 commands.set('sync', { data: sync.data, execute: sync.execute });
 commands.set('credit', { data: credit.data, execute: credit.execute });
 commands.set('setup-liaison', { data: setup.data, execute: setup.execute });
+commands.set('setup-tickets', { data: tickets.data, execute: tickets.execute });
 
 client.once(Events.ClientReady, (c) => {
   console.log(`✅ Bot connecté en tant que ${c.user.tag}`);
@@ -58,6 +60,21 @@ client.once(Events.ClientReady, (c) => {
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
+  // Boutons et modals du système de tickets
+  if (interaction.isButton() || interaction.isModalSubmit()) {
+    try {
+      await tickets.handleTicketInteraction(interaction);
+    } catch (err) {
+      console.error('Erreur interaction ticket:', err);
+      if (interaction.isRepliable() && !interaction.replied && !interaction.deferred) {
+        await interaction
+          .reply({ content: '❌ Une erreur est survenue.', ephemeral: true })
+          .catch(() => {});
+      }
+    }
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) return;
 
   const command = commands.get(interaction.commandName);

@@ -81,7 +81,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
           inline: false,
         },
       )
-      .setFooter({ text: 'Bellagio Casino — Sous la direction de Diego Guerrero' })
+      .setFooter({ text: 'Bellagio Casino' })
       .setTimestamp();
 
     await targetChannel.send({ embeds: [embed] });
