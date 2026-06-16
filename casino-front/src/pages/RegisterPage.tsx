@@ -66,7 +66,7 @@ const RegisterPage = () => {
           <p className="register-card__subtitle">Créez votre compte</p>
         </div>
 
-        {<p className="register-form__warning">Attention veuillez mettre vos vrais informations sous peine de ne pas pouvoir récupérer vos gains.</p>}
+        {<p className="register-form__warning">Tout les virements se feront avec le numéro de téléphone. Veuillez le renseigner correctement. Le nom et prénom peuvent être faussé pour votre anonymat.</p>}
 
         <form className="register-form" onSubmit={handleSubmit}>
           <div className="register-form__field">
