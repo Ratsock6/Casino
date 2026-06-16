@@ -77,7 +77,7 @@ const RegisterPage = () => {
               type="text"
               value={form.firstName}
               onChange={handleChange}
-              placeholder="Diego"
+              placeholder="Prénom"
               required
             />
           </div>
@@ -90,7 +90,7 @@ const RegisterPage = () => {
               type="text"
               value={form.lastName}
               onChange={handleChange}
-              placeholder="Guerrero"
+              placeholder="Nom"
               required
             />
           </div>
@@ -103,7 +103,7 @@ const RegisterPage = () => {
               type="text"
               value={form.username}
               onChange={handleChange}
-              placeholder="DiegoGuerrero"
+              placeholder="nom_utilisateur"
               required
             />
           </div>
