@@ -192,8 +192,6 @@ export const createRequestChannel = async (
       {
         name: '📋 Instructions',
         value: [
-          "• Munissez-vous de votre **carte d'identité RP**",
-          `• Le ${label} se fait **en jeu, en safe zone**`,
           '• Un membre du staff vous contactera pour fixer le rendez-vous',
         ].join('\n'),
         inline: false,
