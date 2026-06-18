@@ -114,6 +114,7 @@ export interface GamesHistoryEntry {
   SLOTS: number;
   ROULETTE: number;
   BLACKJACK: number;
+  BATTLE_BOX: number;
   total: number;
 }
 
@@ -157,6 +158,50 @@ export const getBalanceHistoryApi = async (days = 30): Promise<BalanceHistoryEnt
 
 export const getGamesHistoryApi = async (days = 30): Promise<GamesHistoryEntry[]> => {
   const res = await axiosInstance.get(`/admin/charts/games?days=${days}`);
+  return res.data;
+};
+
+export interface RevenueByGameEntry {
+  gameType: string;
+  rounds: number;
+  staked: number;
+  paid: number;
+  revenue: number;
+}
+
+export interface RaffleSalesEntry {
+  date: string;
+  tickets: number;
+}
+
+export interface SignupsEntry {
+  date: string;
+  signups: number;
+}
+
+export interface VipSalesEntry {
+  date: string;
+  count: number;
+  revenue: number;
+}
+
+export const getRevenueByGameApi = async (days = 30): Promise<RevenueByGameEntry[]> => {
+  const res = await axiosInstance.get(`/admin/charts/revenue-by-game?days=${days}`);
+  return res.data;
+};
+
+export const getRaffleSalesApi = async (days = 30): Promise<RaffleSalesEntry[]> => {
+  const res = await axiosInstance.get(`/admin/charts/raffle-sales?days=${days}`);
+  return res.data;
+};
+
+export const getSignupsApi = async (days = 30): Promise<SignupsEntry[]> => {
+  const res = await axiosInstance.get(`/admin/charts/signups?days=${days}`);
+  return res.data;
+};
+
+export const getVipSalesApi = async (days = 30): Promise<VipSalesEntry[]> => {
+  const res = await axiosInstance.get(`/admin/charts/vip-sales?days=${days}`);
   return res.data;
 };
 

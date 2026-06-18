@@ -392,42 +392,80 @@ export class AdminService {
 
     const transactions = await this.prisma.walletTransaction.findMany({
       where: {
-        type: { in: ['BET', 'WIN', 'WIN_JACKPOT', 'WIN_LEVEL'] },
+        type: {
+          in: [
+            'BET',
+            'WIN',
+            'WIN_JACKPOT',
+            'WIN_LEVEL',
+            'WIN_RAFFLE',
+            'RAFFLE_TICKET',
+            'REFUND',
+            'ADMIN_CREDIT',
+            'ADMIN_DEBIT',
+          ],
+        },
         createdAt: { gte: since },
       },
       orderBy: { createdAt: 'asc' },
-      select: {
-        type: true,
-        amount: true,
-        createdAt: true,
-      },
+      select: { type: true, amount: true, reason: true, createdAt: true },
     });
 
-    // Groupe par jour
-    const byDay: Record<string, { bets: number; wins: number; revenue: number }> = {};
+    // Pour chaque jour : entrées (mises + ventes tickets + ventes VIP)
+    // et sorties (gains jeux + jackpot + niveaux + gains tombola + promo + crédits admin).
+    type Day = { bets: number; wins: number; income: number; payouts: number };
+    const byDay: Record<string, Day> = {};
+    const ensure = (d: string) => (byDay[d] ??= { bets: 0, wins: 0, income: 0, payouts: 0 });
 
     transactions.forEach((t) => {
       const day = t.createdAt.toISOString().split('T')[0];
-      if (!byDay[day]) byDay[day] = { bets: 0, wins: 0, revenue: 0 };
+      const row = ensure(day);
+      const amt = Number(t.amount);
+      const reason = t.reason || '';
+      const isPromo = reason.startsWith('🎁 Code promo');
+      const isVipSale = reason.startsWith('Achat VIP');
 
-      if (t.type === 'BET') byDay[day].bets += Number(t.amount);
-      if (['WIN', 'WIN_JACKPOT', 'WIN_LEVEL'].includes(t.type)) {
-        byDay[day].wins += Number(t.amount);
+      switch (t.type) {
+        case 'BET':
+          row.bets += amt;
+          break;
+        case 'WIN':
+          row.wins += amt;
+          break;
+        case 'WIN_JACKPOT':
+        case 'WIN_LEVEL':
+        case 'WIN_RAFFLE':
+          row.payouts += amt;
+          break;
+        case 'REFUND':
+          // un remboursement annule une mise encaissée
+          row.payouts += amt;
+          break;
+        case 'RAFFLE_TICKET':
+          row.income += amt;
+          break;
+        case 'ADMIN_DEBIT':
+          if (isVipSale) row.income += amt; // vente VIP = revenu
+          break;
+        case 'ADMIN_CREDIT':
+          row.payouts += amt; // promo ou crédit manuel = monnaie offerte
+          break;
       }
     });
 
-    // Remplit les jours manquants
     const result = [];
     for (let i = days - 1; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
       const day = date.toISOString().split('T')[0];
-      const data = byDay[day] || { bets: 0, wins: 0, revenue: 0 };
+      const d = byDay[day] || { bets: 0, wins: 0, income: 0, payouts: 0 };
+      // Revenu net du jour = (mises − gains jeux) + revenus annexes − sorties
+      const revenue = d.bets - d.wins + d.income - d.payouts;
       result.push({
         date: day,
-        bets: data.bets,
-        wins: data.wins,
-        revenue: data.bets - data.wins,
+        bets: d.bets,
+        wins: d.wins,
+        revenue,
       });
     }
 
@@ -444,12 +482,15 @@ export class AdminService {
       orderBy: { createdAt: 'asc' },
     });
 
-    const byDay: Record<string, { SLOTS: number; ROULETTE: number; BLACKJACK: number; total: number }> = {};
+    type DayRow = { SLOTS: number; ROULETTE: number; BLACKJACK: number; BATTLE_BOX: number; total: number };
+    const empty = (): DayRow => ({ SLOTS: 0, ROULETTE: 0, BLACKJACK: 0, BATTLE_BOX: 0, total: 0 });
+    const byDay: Record<string, DayRow> = {};
 
     rounds.forEach((r) => {
       const day = r.createdAt.toISOString().split('T')[0];
-      if (!byDay[day]) byDay[day] = { SLOTS: 0, ROULETTE: 0, BLACKJACK: 0, total: 0 };
-      byDay[day][r.gameType as 'SLOTS' | 'ROULETTE' | 'BLACKJACK']++;
+      if (!byDay[day]) byDay[day] = empty();
+      const key = r.gameType as keyof Omit<DayRow, 'total'>;
+      if (key in byDay[day]) byDay[day][key]++;
       byDay[day].total++;
     });
 
@@ -458,10 +499,120 @@ export class AdminService {
       const date = new Date();
       date.setDate(date.getDate() - i);
       const day = date.toISOString().split('T')[0];
-      const data = byDay[day] || { SLOTS: 0, ROULETTE: 0, BLACKJACK: 0, total: 0 };
+      const data = byDay[day] || empty();
       result.push({ date: day, ...data });
     }
 
+    return result;
+  }
+
+  // ── Répartition du CA par jeu (camembert) ────────────────────────────────────
+  // CA d'un jeu = somme des mises − somme des gains (sur GameRound).
+  async getRevenueByGame(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const grouped = await this.prisma.gameRound.groupBy({
+      by: ['gameType'],
+      where: { createdAt: { gte: since }, status: { in: ['WON', 'LOST'] } },
+      _sum: { stake: true, payout: true },
+      _count: { id: true },
+    });
+
+    return grouped.map((g) => {
+      const staked = Number(g._sum.stake || 0);
+      const paid = Number(g._sum.payout || 0);
+      return {
+        gameType: g.gameType,
+        rounds: g._count.id,
+        staked,
+        paid,
+        revenue: staked - paid,
+      };
+    });
+  }
+
+  // ── Ventes de tickets de tombola par jour ────────────────────────────────────
+  async getRaffleSalesHistory(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const tickets = await this.prisma.raffleTicket.findMany({
+      where: { purchasedAt: { gte: since } },
+      select: { purchasedAt: true },
+      orderBy: { purchasedAt: 'asc' },
+    });
+
+    const byDay: Record<string, number> = {};
+    tickets.forEach((t) => {
+      const day = t.purchasedAt.toISOString().split('T')[0];
+      byDay[day] = (byDay[day] || 0) + 1;
+    });
+
+    const result = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = date.toISOString().split('T')[0];
+      result.push({ date: day, tickets: byDay[day] || 0 });
+    }
+    return result;
+  }
+
+  // ── Nouveaux inscrits par jour ───────────────────────────────────────────────
+  async getSignupsHistory(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const users = await this.prisma.user.findMany({
+      where: { createdAt: { gte: since } },
+      select: { createdAt: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const byDay: Record<string, number> = {};
+    users.forEach((u) => {
+      const day = u.createdAt.toISOString().split('T')[0];
+      byDay[day] = (byDay[day] || 0) + 1;
+    });
+
+    const result = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = date.toISOString().split('T')[0];
+      result.push({ date: day, signups: byDay[day] || 0 });
+    }
+    return result;
+  }
+
+  // ── Abonnements VIP vendus par jour ──────────────────────────────────────────
+  async getVipSalesHistory(days = 30) {
+    const since = new Date();
+    since.setDate(since.getDate() - days);
+
+    const subs = await this.prisma.vipSubscription.findMany({
+      where: { createdAt: { gte: since } },
+      select: { createdAt: true, price: true },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const byDay: Record<string, { count: number; revenue: number }> = {};
+    subs.forEach((s) => {
+      const day = s.createdAt.toISOString().split('T')[0];
+      if (!byDay[day]) byDay[day] = { count: 0, revenue: 0 };
+      byDay[day].count++;
+      byDay[day].revenue += Number(s.price);
+    });
+
+    const result = [];
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const day = date.toISOString().split('T')[0];
+      const d = byDay[day] || { count: 0, revenue: 0 };
+      result.push({ date: day, count: d.count, revenue: d.revenue });
+    }
     return result;
   }
 

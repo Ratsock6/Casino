@@ -4,6 +4,7 @@ import {
   LineChart, Line, BarChart, Bar,
   XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer,
+  PieChart, Pie, Cell,
 } from 'recharts';
 
 import {
@@ -24,6 +25,10 @@ import {
   getAllGameRoundsForExportApi,
   getBalanceHistoryApi,
   getGamesHistoryApi,
+  getRevenueByGameApi,
+  getRaffleSalesApi,
+  getSignupsApi,
+  getVipSalesApi,
   getAuditLogsApi,
   getAlertsApi,
   triggerDailyReportApi,
@@ -47,6 +52,10 @@ import type {
   CasinoConfig,
   BalanceHistoryEntry,
   GamesHistoryEntry,
+  RevenueByGameEntry,
+  RaffleSalesEntry,
+  SignupsEntry,
+  VipSalesEntry,
   AuditLog,
   Alert,
   RewardCode,
@@ -113,6 +122,10 @@ const AdminPage = () => {
   const [exportLoading, setExportLoading] = useState(false);
   const [balanceHistory, setBalanceHistory] = useState<BalanceHistoryEntry[]>([]);
   const [gamesHistory, setGamesHistory] = useState<GamesHistoryEntry[]>([]);
+  const [revenueByGame, setRevenueByGame] = useState<RevenueByGameEntry[]>([]);
+  const [raffleSales, setRaffleSales] = useState<RaffleSalesEntry[]>([]);
+  const [signups, setSignups] = useState<SignupsEntry[]>([]);
+  const [vipSales, setVipSales] = useState<VipSalesEntry[]>([]);
   const [chartDays, setChartDays] = useState(30);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -268,12 +281,20 @@ const AdminPage = () => {
         setIngameRewards(await getAllIngameRewardsApi());
       }
       if (tab === 'charts') {
-        const [b, g] = await Promise.all([
+        const [b, g, rbg, rs, su, vs] = await Promise.all([
           getBalanceHistoryApi(chartDays),
           getGamesHistoryApi(chartDays),
+          getRevenueByGameApi(chartDays),
+          getRaffleSalesApi(chartDays),
+          getSignupsApi(chartDays),
+          getVipSalesApi(chartDays),
         ]);
         setBalanceHistory(b);
         setGamesHistory(g);
+        setRevenueByGame(rbg);
+        setRaffleSales(rs);
+        setSignups(su);
+        setVipSales(vs);
       }
       if (tab === 'audit' && auditLogs.length === 0) {
         setAuditLogs(await getAuditLogsApi());
@@ -331,12 +352,20 @@ const AdminPage = () => {
     setChartDays(days);
     setLoading(true);
     try {
-      const [b, g] = await Promise.all([
+      const [b, g, rbg, rs, su, vs] = await Promise.all([
         getBalanceHistoryApi(days),
         getGamesHistoryApi(days),
+        getRevenueByGameApi(days),
+        getRaffleSalesApi(days),
+        getSignupsApi(days),
+        getVipSalesApi(days),
       ]);
       setBalanceHistory(b);
       setGamesHistory(g);
+      setRevenueByGame(rbg);
+      setRaffleSales(rs);
+      setSignups(su);
+      setVipSales(vs);
     } catch (err) {
       console.error(err);
     } finally {
@@ -1739,6 +1768,7 @@ const AdminPage = () => {
                 <Bar dataKey="SLOTS" name="Slots" fill="#c9a84c" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="ROULETTE" name="Roulette" fill="#e05c5c" radius={[4, 4, 0, 0]} />
                 <Bar dataKey="BLACKJACK" name="Blackjack" fill="#4caf7d" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="BATTLE_BOX" name="Battle Box" fill="#5cc8e0" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -1769,6 +1799,92 @@ const AdminPage = () => {
                   dot={false}
                 />
               </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Camembert : répartition du CA par jeu */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Répartition du revenu par jeu</h3>
+            <p className="admin__chart-subtitle">Revenu net (mises − gains) par jeu sur la période</p>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={revenueByGame.filter((g) => g.revenue > 0)}
+                  dataKey="revenue"
+                  nameKey="gameType"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  label={(e: any) => `${e.gameType}: ${e.revenue.toLocaleString()}`}
+                >
+                  {revenueByGame.filter((g) => g.revenue > 0).map((g) => (
+                    <Cell key={g.gameType} fill={GAME_COLORS[g.gameType] || '#888'} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                  formatter={(value: any) => `${Number(value).toLocaleString()} 🪙`}
+                />
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Ventes de tickets de tombola par jour */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Ventes de tickets de tombola</h3>
+            <p className="admin__chart-subtitle">Nombre de tickets vendus par jour</p>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={raffleSales}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
+                <XAxis dataKey="date" tick={{ fill: '#888', fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
+                <YAxis tick={{ fill: '#888', fontSize: 11 }} allowDecimals={false} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                />
+                <Bar dataKey="tickets" name="Tickets vendus" fill="#c9a84c" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Nouveaux inscrits par jour */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Nouveaux inscrits</h3>
+            <p className="admin__chart-subtitle">Inscriptions par jour</p>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={signups}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
+                <XAxis dataKey="date" tick={{ fill: '#888', fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
+                <YAxis tick={{ fill: '#888', fontSize: 11 }} allowDecimals={false} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                />
+                <Line type="monotone" dataKey="signups" name="Inscriptions" stroke="#4caf7d" strokeWidth={2} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Ventes VIP par jour */}
+          <div className="admin__chart-card">
+            <h3 className="admin__chart-title">Ventes VIP</h3>
+            <p className="admin__chart-subtitle">Abonnements VIP vendus par jour et revenu généré</p>
+            <ResponsiveContainer width="100%" height={250}>
+              <BarChart data={vipSales}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" />
+                <XAxis dataKey="date" tick={{ fill: '#888', fontSize: 11 }} tickFormatter={(v) => v.slice(5)} />
+                <YAxis yAxisId="left" tick={{ fill: '#888', fontSize: 11 }} allowDecimals={false} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fill: '#888', fontSize: 11 }} />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #2e2e2e', borderRadius: 8 }}
+                  labelStyle={{ color: '#f0f0f0' }}
+                />
+                <Legend />
+                <Bar yAxisId="left" dataKey="count" name="Abonnements" fill="#b79cf4" radius={[4, 4, 0, 0]} />
+                <Bar yAxisId="right" dataKey="revenue" name="Revenu (🪙)" fill="#e0a85c" radius={[4, 4, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
 
