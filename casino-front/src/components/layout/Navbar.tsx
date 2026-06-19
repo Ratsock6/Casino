@@ -136,7 +136,7 @@ const Navbar = () => {
 
       <div className="navbar__right">
         <a
-          href="https://discord.gg/VOTRE_LIEN_DISCORD"
+          href="https://discord.gg/X2zf5unaR3"
           target="_blank"
           rel="noopener noreferrer"
           className="navbar__discord"
