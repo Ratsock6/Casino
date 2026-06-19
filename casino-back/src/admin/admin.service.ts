@@ -57,6 +57,8 @@ export class AdminService {
       adminCreditAgg,
       adminCreditPaidAgg,
       adminDebitAgg,
+      withdrawalAgg,
+      walletsAgg,
       rewardCodesAgg,
       refundAgg,
       raffleTicketAgg,
@@ -99,6 +101,15 @@ export class AdminService {
       this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
         where: { type: 'ADMIN_DEBIT' },
+      }),
+      // Retraits : jetons reconvertis en RP par les joueurs (réduit la caisse)
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'ADMIN_DEBIT_WITHDRAWAL' },
+      }),
+      // Jetons actuellement en circulation (somme de tous les soldes joueurs = "dette")
+      this.prisma.wallet.aggregate({
+        _sum: { balance: true },
       }),
       // Sous-ensemble : codes promo (reason préfixé)
       this.prisma.walletTransaction.aggregate({
@@ -150,6 +161,7 @@ export class AdminService {
     const totalCredit = Number(adminCreditAgg._sum.amount || 0);
     const totalCreditPaid = Number(adminCreditPaidAgg._sum.amount || 0);
     const totalDebit = Number(adminDebitAgg._sum.amount || 0);
+    const totalWithdrawal = Number(withdrawalAgg._sum.amount || 0);
     const totalRewardCodes = Number(rewardCodesAgg._sum.amount || 0);
     const totalRefund = Number(refundAgg._sum.amount || 0);
     const totalRaffleTickets = Number(raffleTicketAgg._sum.amount || 0);
@@ -170,24 +182,28 @@ export class AdminService {
     const totalAdminCreditOther = totalCredit - totalRewardCodes;
 
     // ── Compta ───────────────────────────────────────────────────────────────
-    // Revenu brut des JEUX uniquement : mises − gains − remboursements.
-    const grossRevenue = totalBets - totalWins - totalRefund;
-
-    // Revenus annexes encaissés par le casino : ventes de tickets + ventes VIP
-    // + jetons PAYÉS par les joueurs (achats crédités à la main par le staff).
-    const sideIncome = totalRaffleTickets + totalVipSales + totalCreditPaid;
-
-    // Sorties (monnaie versée/offerte par le casino) :
-    //   jackpots + récompenses de niveau + gains jetons tombola
-    //   + codes promo + crédits admin manuels.
+    // (1) BÉNÉFICE JEUX — la seule valeur réellement ACQUISE par le casino.
+    //     Indépendant des achats/retraits de jetons.
+    //     = marge des jeux − tout ce que le casino OFFRE.
+    const grossRevenue = totalBets - totalWins - totalRefund; // marge brute des jeux
     const payouts =
       totalJackpot +
       totalLevel +
       totalRaffleWins +
       totalRewardCodes +
-      totalAdminCreditOther;
+      totalAdminCreditOther; // monnaie offerte (cadeaux)
+    const gameProfit = grossRevenue + totalRaffleTickets + totalVipSales - payouts;
 
-    const netRevenue = grossRevenue + sideIncome - payouts;
+    // (2) CAISSE NETTE — argent RP encaissé net via les ventes/retraits de jetons.
+    //     = jetons vendus (payés) − jetons retirés (reconvertis en RP).
+    const cashBalance = totalCreditPaid - totalWithdrawal;
+
+    // (3) JETONS EN CIRCULATION — la "dette" : total des soldes joueurs actuels.
+    const chipsInCirculation = Number(walletsAgg._sum.balance || 0);
+
+    // Revenu net "global" historique (conservé pour compat) = bénéfice jeux + caisse.
+    const sideIncome = totalRaffleTickets + totalVipSales + totalCreditPaid;
+    const netRevenue = gameProfit + cashBalance;
 
     return {
       totalUsers,
@@ -204,6 +220,10 @@ export class AdminService {
       totalCredit,
       totalCreditPaid,
       totalDebit,
+      totalWithdrawal,
+      gameProfit,
+      cashBalance,
+      chipsInCirculation,
       totalRewardCodes,
       totalRefund,
       totalRaffleTickets,
@@ -413,6 +433,7 @@ export class AdminService {
             'ADMIN_CREDIT',
             'ADMIN_CREDIT_PAID',
             'ADMIN_DEBIT',
+            'ADMIN_DEBIT_WITHDRAWAL',
           ],
         },
         createdAt: { gte: since },
@@ -456,6 +477,9 @@ export class AdminService {
           break;
         case 'ADMIN_DEBIT':
           if (isVipSale) row.income += amt; // vente VIP = revenu
+          break;
+        case 'ADMIN_DEBIT_WITHDRAWAL':
+          row.payouts += amt; // retrait = sortie de caisse (jetons reconvertis en RP)
           break;
         case 'ADMIN_CREDIT':
           row.payouts += amt; // promo ou crédit manuel = monnaie offerte

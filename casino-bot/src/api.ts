@@ -81,3 +81,17 @@ export const creditPaidByDiscord = async (data: {
   });
   return res.data;
 };
+
+// Débite un joueur en RETRAIT (jetons reconvertis en RP) depuis un ticket Discord.
+export const withdrawByDiscord = async (data: {
+  discordId: string;
+  amount: number;
+  adminDiscordId?: string;
+  adminTag?: string;
+}) => {
+  const res = await api.post('/discord/withdraw', {
+    ...data,
+    secret: SECRET,
+  });
+  return res.data;
+};

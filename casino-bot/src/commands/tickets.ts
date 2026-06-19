@@ -15,7 +15,7 @@ import {
   type ButtonInteraction,
   type ModalSubmitInteraction,
 } from 'discord.js';
-import { getUserByDiscordId, creditPaidByDiscord } from '../api';
+import { getUserByDiscordId, creditPaidByDiscord, withdrawByDiscord } from '../api';
 import {
   createRequestChannel,
   createDirectionChannel,
@@ -518,6 +518,79 @@ const handleCreditPaid = async (interaction: ButtonInteraction) => {
   }
 };
 
+// Staff clique sur "Retirer" : débite le joueur (jetons reconvertis en RP),
+// avec traçabilité de l'admin Discord qui a validé.
+const handleWithdraw = async (interaction: ButtonInteraction) => {
+  if (!isStaffMember(interaction)) {
+    await interaction.reply({
+      content: '❌ Seul un membre du staff peut effectuer un retrait.',
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
+  }
+
+  // customId : ticket_withdraw_{discordId}_{montant}
+  const rest = interaction.customId.replace('ticket_withdraw_', '');
+  const sep = rest.lastIndexOf('_');
+  const targetDiscordId = rest.slice(0, sep);
+  const montant = Number(rest.slice(sep + 1));
+
+  if (!targetDiscordId || !Number.isInteger(montant) || montant <= 0) {
+    await interaction.reply({ content: '❌ Données du bouton invalides.', flags: MessageFlags.Ephemeral });
+    return;
+  }
+
+  await interaction.deferReply();
+
+  try {
+    await withdrawByDiscord({
+      discordId: targetDiscordId,
+      amount: montant,
+      adminDiscordId: interaction.user.id,
+      adminTag: interaction.user.tag,
+    });
+
+    const embed = new EmbedBuilder()
+      .setTitle('💸 Retrait effectué')
+      .setColor(0xe05c5c)
+      .setDescription(
+        `**${montant.toLocaleString()} jetons** ont été retirés du compte de <@${targetDiscordId}>.`,
+      )
+      .addFields(
+        { name: '💸 Type', value: 'Retrait (jetons → RP)', inline: true },
+        { name: '👮 Validé par', value: `${interaction.user}`, inline: true },
+      )
+      .setFooter({ text: 'Bellagio Casino' })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed] });
+
+    // Désactive le bouton pour éviter un double retrait
+    try {
+      const msg = interaction.message;
+      if (msg && msg.editable) {
+        const disabledRows = msg.components.map((row: any) => {
+          const newRow = new ActionRowBuilder<ButtonBuilder>();
+          row.components.forEach((c: any) => {
+            const btn = ButtonBuilder.from(c);
+            if (c.customId?.startsWith('ticket_withdraw_')) {
+              btn.setDisabled(true).setLabel('✅ Déjà retiré');
+            }
+            newRow.addComponents(btn);
+          });
+          return newRow;
+        });
+        await msg.edit({ components: disabledRows as any });
+      }
+    } catch (e) {
+      console.error('Impossible de désactiver le bouton retrait:', e);
+    }
+  } catch (err: any) {
+    const message = err.response?.data?.error || 'Une erreur est survenue lors du retrait.';
+    await interaction.editReply(`❌ ${message}`);
+  }
+};
+
 export const handleTicketInteraction = async (
   interaction: Interaction,
 ): Promise<boolean> => {
@@ -530,6 +603,10 @@ export const handleTicketInteraction = async (
     }
     if (id.startsWith('ticket_credit_paid_')) {
       await handleCreditPaid(interaction);
+      return true;
+    }
+    if (id.startsWith('ticket_withdraw_')) {
+      await handleWithdraw(interaction);
       return true;
     }
     if (id === 'ticket_close') {

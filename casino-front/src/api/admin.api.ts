@@ -24,6 +24,10 @@ export interface GlobalStats {
   totalCredit: number;
   totalCreditPaid: number;
   totalDebit: number;
+  totalWithdrawal: number;
+  gameProfit: number;
+  cashBalance: number;
+  chipsInCirculation: number;
   grossRevenue: number;
   netRevenue: number;
   casinoRevenue: number;
@@ -260,8 +264,8 @@ export const creditWalletApi = async (userId: string, amount: number, reason?: s
   return res.data;
 };
 
-export const debitWalletApi = async (userId: string, amount: number, reason?: string) => {
-  const res = await axiosInstance.patch('/admin/wallet/debit', { userId, amount, reason });
+export const debitWalletApi = async (userId: string, amount: number, reason?: string, isWithdrawal?: boolean) => {
+  const res = await axiosInstance.patch('/admin/wallet/debit', { userId, amount, reason, isWithdrawal });
   return res.data;
 };
 

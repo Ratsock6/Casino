@@ -18,4 +18,10 @@ export class AdminWalletActionDto {
   @IsOptional()
   @IsBoolean()
   isPaid?: boolean;
+
+  // (débit) true = RETRAIT (le joueur reconvertit ses jetons en RP, réduit la caisse)
+  // false/absent = débit neutre (sanction, correction)
+  @IsOptional()
+  @IsBoolean()
+  isWithdrawal?: boolean;
 }

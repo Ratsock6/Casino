@@ -1561,4 +1561,46 @@
       font-weight: 600;
     }
   }
+
+  // Cartes d'indicateurs clés (vue globale)
+  &__kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: $spacing-md;
+  }
+
+  &__kpi-card {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    padding: $spacing-md;
+    background: $color-surface;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: $radius-md;
+    border-left: 3px solid $color-gold;
+
+    &--profit { border-left-color: $color-success; }
+    &--cash   { border-left-color: $color-gold; }
+    &--debt   { border-left-color: $color-warning; }
+  }
+
+  &__kpi-label {
+    font-size: 0.8rem;
+    color: $color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__kpi-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__kpi-hint {
+    font-size: 0.75rem;
+    color: $color-text-muted;
+    line-height: 1.4;
+  }
+
 }

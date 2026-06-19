@@ -104,6 +104,7 @@ const AdminPage = () => {
   const [creditAmount, setCreditAmount] = useState('');
   const [creditIsPaid, setCreditIsPaid] = useState(true);
   const [debitAmount, setDebitAmount] = useState('');
+  const [debitIsWithdrawal, setDebitIsWithdrawal] = useState(true);
   const [actionMsg, setActionMsg] = useState('');
   const [creditReason, setCreditReason] = useState('');
   const [debitReason, setDebitReason] = useState('');
@@ -490,10 +491,11 @@ const AdminPage = () => {
   const handleDebit = async () => {
     if (!selectedUser || !debitAmount) return;
     try {
-      await debitWalletApi(selectedUser.id, Number(debitAmount), debitReason || undefined);
-      setActionMsg(`✅ -${Number(debitAmount).toLocaleString()} jetons débités${debitReason ? ` — ${debitReason}` : ''}`);
+      await debitWalletApi(selectedUser.id, Number(debitAmount), debitReason || undefined, debitIsWithdrawal);
+      setActionMsg(`✅ -${Number(debitAmount).toLocaleString()} jetons ${debitIsWithdrawal ? 'retirés' : 'débités'}${debitReason ? ` — ${debitReason}` : ''}`);
       setDebitAmount('');
       setDebitReason('');
+      setDebitIsWithdrawal(true);
       const updated = await getAdminUsersApi();
       setUsers(updated);
       setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
@@ -811,6 +813,27 @@ const AdminPage = () => {
           </div>
 
           <div className="admin__section">
+            <h2 className="admin__section-title">📊 Indicateurs clés</h2>
+            <div className="admin__kpi-grid">
+              <div className="admin__kpi-card admin__kpi-card--profit">
+                <span className="admin__kpi-label">Bénéfice jeux (acquis)</span>
+                <strong className="admin__kpi-value">{(stats.gameProfit ?? 0).toLocaleString()} 🪙</strong>
+                <span className="admin__kpi-hint">Marge des jeux − récompenses. Le vrai gain, indépendant des achats/retraits.</span>
+              </div>
+              <div className="admin__kpi-card admin__kpi-card--cash">
+                <span className="admin__kpi-label">Caisse nette (RP encaissé)</span>
+                <strong className="admin__kpi-value">{(stats.cashBalance ?? 0).toLocaleString()} 🪙</strong>
+                <span className="admin__kpi-hint">Jetons vendus − jetons retirés. L'argent RP réellement encaissé.</span>
+              </div>
+              <div className="admin__kpi-card admin__kpi-card--debt">
+                <span className="admin__kpi-label">Jetons en circulation</span>
+                <strong className="admin__kpi-value">{(stats.chipsInCirculation ?? 0).toLocaleString()} 🪙</strong>
+                <span className="admin__kpi-hint">Total des soldes joueurs. Montant qu'ils pourraient retirer (dette potentielle).</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="admin__section">
             <h2 className="admin__section-title">💰 Détail des revenus</h2>
             <div className="admin__stats-revenue-rows">
               <div className="admin__revenue-row">
@@ -843,6 +866,10 @@ const AdminPage = () => {
               <div className="admin__revenue-row">
                 <span>+ Jetons payés (achats crédités)</span>
                 <strong style={{ color: '#4caf7d' }}>+{(stats.totalCreditPaid ?? 0).toLocaleString()} 🪙</strong>
+              </div>
+              <div className="admin__revenue-row">
+                <span>− Retraits (jetons reconvertis en RP)</span>
+                <strong style={{ color: '#e05c5c' }}>-{(stats.totalWithdrawal ?? 0).toLocaleString()} 🪙</strong>
               </div>
 
               <div className="admin__revenue-row admin__revenue-row--separator" />
@@ -1358,6 +1385,22 @@ const AdminPage = () => {
                     onChange={(e) => setDebitReason(e.target.value)}
                     placeholder="Raison (ex: sanction, correction...)"
                   />
+                  <div className="admin__credit-type">
+                    <button
+                      type="button"
+                      className={`admin__credit-type-btn ${debitIsWithdrawal ? 'admin__credit-type-btn--active' : ''}`}
+                      onClick={() => setDebitIsWithdrawal(true)}
+                    >
+                      💸 Retrait (RP)
+                    </button>
+                    <button
+                      type="button"
+                      className={`admin__credit-type-btn ${!debitIsWithdrawal ? 'admin__credit-type-btn--active' : ''}`}
+                      onClick={() => setDebitIsWithdrawal(false)}
+                    >
+                      ⚙️ Débit (neutre)
+                    </button>
+                  </div>
                   <button className="admin__btn admin__btn--debit" onClick={handleDebit}>
                     − Débiter
                   </button>

@@ -85,8 +85,16 @@ export class WalletService {
     return result;
   }
 
-  async adminDebit(adminId: string, userId: string, amount: number, reason?: string) {
+  async adminDebit(adminId: string, userId: string, amount: number, reason?: string, isWithdrawal = false) {
     if (amount <= 0) throw new BadRequestException('Amount must be greater than 0');
+
+    // Type de débit selon la nature :
+    //  - ADMIN_DEBIT_WITHDRAWAL : retrait (jetons reconvertis en RP, réduit la caisse)
+    //  - ADMIN_DEBIT            : débit neutre (sanction, correction)
+    const txType = isWithdrawal
+      ? WalletTransactionType.ADMIN_DEBIT_WITHDRAWAL
+      : WalletTransactionType.ADMIN_DEBIT;
+    const defaultReason = isWithdrawal ? 'Retrait de jetons' : 'Admin debit';
 
     const result = await this.prisma.$transaction(async (tx) => {
       const wallet = await tx.wallet.findUnique({ where: { userId } });
@@ -102,22 +110,22 @@ export class WalletService {
       const transaction = await tx.walletTransaction.create({
         data: {
           userId,
-          type: WalletTransactionType.ADMIN_DEBIT,
+          type: txType,
           amount: BigInt(amount),
           balanceBefore,
           balanceAfter,
-          reason: reason ?? 'Admin debit',
-          adminId,
+          reason: reason ?? defaultReason,
+          adminId: adminId === 'SYSTEM' ? null : adminId,
         },
       });
 
       await tx.adminAction.create({
         data: {
           adminId: adminId === 'SYSTEM' ? null : adminId,
-          action: 'ADMIN_DEBIT',
+          action: isWithdrawal ? 'ADMIN_DEBIT_WITHDRAWAL' : 'ADMIN_DEBIT',
           targetType: 'WALLET',
           targetId: wallet.id,
-          metadata: { userId, amount, reason: reason ?? 'Admin debit', walletTransactionId: transaction.id },
+          metadata: { userId, amount, isWithdrawal, reason: reason ?? defaultReason, walletTransactionId: transaction.id },
         },
       });
 
@@ -135,7 +143,7 @@ export class WalletService {
     this.gateway.notifyUser(userId, 'wallet:debited', {
       amount,
       newBalance: result.balanceAfter,
-      reason: reason ?? 'Admin debit',
+      reason: reason ?? defaultReason,
       message: `💸 -${amount.toLocaleString()} jetons ont été retirés de votre compte.`,
     });
 

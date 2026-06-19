@@ -236,6 +236,15 @@ export const createRequestChannel = async (
         .setStyle(ButtonStyle.Success),
     );
     components.push(creditRow);
+  } else {
+    // Ticket retrait : bouton staff pour débiter (reconversion jetons -> RP)
+    const withdrawRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`ticket_withdraw_${discordId}_${montant}`)
+        .setLabel(`💸 Retirer ${montant.toLocaleString()} jetons`)
+        .setStyle(ButtonStyle.Danger),
+    );
+    components.push(withdrawRow);
   }
   components.push(buildCloseRow());
 

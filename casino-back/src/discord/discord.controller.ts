@@ -182,4 +182,52 @@ export class DiscordController {
 
     return { success: true, ...result };
   }
+
+  // Appelé par le bot quand un staff clique sur "Retirer" dans un ticket retrait.
+  // Débite le joueur en RETRAIT (jetons reconvertis en RP), avec traçabilité.
+  @Post('withdraw')
+  async withdrawFromDiscord(
+    @Body() body: {
+      secret: string;
+      discordId: string;
+      amount: number;
+      adminDiscordId?: string;
+      adminTag?: string;
+    },
+  ) {
+    const BOT_SECRET = this.configService.get<string>('DISCORD_BOT_SECRET') || process.env.DISCORD_BOT_SECRET;
+    if (body.secret !== BOT_SECRET) {
+      return { error: 'Unauthorized' };
+    }
+
+    if (!body.discordId || !body.amount || body.amount <= 0) {
+      return { error: 'Paramètres invalides' };
+    }
+
+    const userId = await this.discordService.resolveUserIdByDiscordId(body.discordId);
+    if (!userId) {
+      return { error: 'Joueur non lié à un compte casino' };
+    }
+
+    const adminUserId = body.adminDiscordId
+      ? await this.discordService.resolveUserIdByDiscordId(body.adminDiscordId)
+      : null;
+
+    const adminLabel = body.adminTag ? ` (par ${body.adminTag} via Discord)` : ' (via Discord)';
+    const reason = `Retrait de jetons${adminLabel}`;
+
+    try {
+      const result = await this.walletService.adminDebit(
+        adminUserId ?? 'SYSTEM',
+        userId,
+        body.amount,
+        reason,
+        true, // isWithdrawal = true
+      );
+      return { success: true, ...result };
+    } catch (err: any) {
+      // Solde insuffisant ou autre erreur métier
+      return { error: err?.message || 'Erreur lors du retrait' };
+    }
+  }
 }

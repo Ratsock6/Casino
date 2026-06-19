@@ -44,11 +44,11 @@ export class AdminController {
     @Body() dto: AdminWalletActionDto,
   ) {
     const result = await this.walletService.adminDebit(
-      admin.userId, dto.userId, dto.amount, dto.reason,
+      admin.userId, dto.userId, dto.amount, dto.reason, dto.isWithdrawal ?? false,
     );
     await this.adminService.createAuditLog(
       admin.userId, 'WALLET_DEBIT', 'USER', dto.userId,
-      { amount: dto.amount, reason: dto.reason },
+      { amount: dto.amount, reason: dto.reason, isWithdrawal: dto.isWithdrawal ?? false },
     );
     return result;
   }
@@ -163,6 +163,26 @@ export class AdminController {
   @Get('charts/games')
   getGamesHistory(@Query('days') days?: string) {
     return this.adminService.getGameRoundsHistory(days ? parseInt(days) : 30);
+  }
+
+  @Get('charts/revenue-by-game')
+  getRevenueByGame(@Query('days') days?: string) {
+    return this.adminService.getRevenueByGame(days ? parseInt(days) : 30);
+  }
+
+  @Get('charts/raffle-sales')
+  getRaffleSalesHistory(@Query('days') days?: string) {
+    return this.adminService.getRaffleSalesHistory(days ? parseInt(days) : 30);
+  }
+
+  @Get('charts/signups')
+  getSignupsHistory(@Query('days') days?: string) {
+    return this.adminService.getSignupsHistory(days ? parseInt(days) : 30);
+  }
+
+  @Get('charts/vip-sales')
+  getVipSalesHistory(@Query('days') days?: string) {
+    return this.adminService.getVipSalesHistory(days ? parseInt(days) : 30);
   }
 
   @Get('audit-logs')
