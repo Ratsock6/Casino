@@ -45,7 +45,7 @@ const LoginPage = () => {
         </div>
 
         <a
-          href="https://discord.gg/TBW8RjTNvj"
+          href="https://discord.gg/cvYz49ds4Z"
           target="_blank"
           rel="noopener noreferrer"
           className="discord-join-btn"
