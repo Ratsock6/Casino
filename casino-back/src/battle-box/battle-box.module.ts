@@ -3,9 +3,10 @@ import { BattleBoxController } from './battle-box.controller';
 import { BattleBoxService } from './battle-box.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { CasinoConfigModule } from '../casino-config/casino-config.module';
+import { LevelsModule } from '../levels/levels.module';
 
 @Module({
-  imports: [PrismaModule, CasinoConfigModule],
+  imports: [PrismaModule, CasinoConfigModule, LevelsModule],
   controllers: [BattleBoxController],
   providers: [BattleBoxService],
   exports: [BattleBoxService],

@@ -13,6 +13,8 @@ import {
 } from '../api/battle-box.api';
 import '../styles/pages/battle-box.scss';
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
+import MaintenanceBanner from '../components/ui/MaintenanceBanner';
+import { useMaintenance } from '../hooks/useMaintenance';
 
 type View = 'lobby' | 'create' | 'waiting' | 'playing' | 'result' | 'join-private';
 
@@ -42,7 +44,7 @@ const BattleBoxPage = () => {
   const [privateCode, setPrivateCode] = useState('');
   const [result, setResult] = useState<any>(null);
   const [lobbyInterval, setLobbyInterval] = useState<ReturnType<typeof setInterval> | null>(null);
-  const [isMaintenance, setIsMaintenance] = useState(false);
+  const { isMaintenance, rawMaintenance, canBypass } = useMaintenance('BATTLE_BOX');
   const [activeGame, setActiveGame] = useState<BattleBoxGame | null>(null);
   const { playBoxOpen, playReveal, playVictory, playDefeat, playCountdown } = useSound();
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -52,13 +54,6 @@ const BattleBoxPage = () => {
   const [isWinner, setIsWinner] = useState(false);
   const [runningTotals, setRunningTotals] = useState<Record<string, number>>({});
   const [revealComplete, setRevealComplete] = useState(false);
-
-  // Vérifie si le Battle Box est activé
-  useEffect(() => {
-    axiosInstance.get('/public/maintenance')
-      .then((res) => setIsMaintenance(res.data.global))
-      .catch(() => { });
-  }, []);
 
   // Charge le catalogue et le lobby
   useEffect(() => {
@@ -273,6 +268,8 @@ const BattleBoxPage = () => {
   }
   // ── Vue lobby ──
   if (view === 'lobby') return (
+    <>
+      {rawMaintenance && canBypass && <MaintenanceBanner scope="Le Battle Box" />}
     <div className="battlebox">
       <div className="battlebox__header">
         <div>
@@ -372,6 +369,7 @@ const BattleBoxPage = () => {
         )}
       </div>
     </div>
+    </>
   );
 
   // ── Vue rejoindre par code privé ──

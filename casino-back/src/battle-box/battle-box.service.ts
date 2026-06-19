@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule';
 import { PrismaService } from '../prisma/prisma.service';
 import { CasinoConfigService } from '../casino-config/casino-config.service';
 import { CasinoGateway } from '../gateway/casino.gateway';
@@ -9,6 +10,7 @@ import {
 import { CreateBattleBoxGameDto } from './dto/create-game.dto';
 import { JoinBattleBoxGameDto } from './dto/join-game.dto';
 import { Prisma } from '../generated/prisma/client';
+import { LevelsService } from '../levels/levels.service';
 
 @Injectable()
 export class BattleBoxService {
@@ -16,6 +18,7 @@ export class BattleBoxService {
     private readonly prisma: PrismaService,
     private readonly casinoConfigService: CasinoConfigService,
     private readonly gateway: CasinoGateway,
+    private readonly levelsService: LevelsService,
   ) { }
 
   // ─── Catalogue ────────────────────────────────────────────────────────────
@@ -259,81 +262,85 @@ export class BattleBoxService {
       return { player, items, totalValue };
     });
 
-    // Détermine le gagnant
+    // Détermine le(s) gagnant(s) : plus grande valeur d'objets.
     const maxValue = Math.max(...playerResults.map((r) => r.totalValue));
-    const winners = playerResults.filter((r) => r.totalValue === maxValue);
+    const tiedWinners = playerResults.filter((r) => r.totalValue === maxValue);
 
-    // En cas d'égalité → tirage aléatoire
-    const winner = winners[Math.floor(Math.random() * winners.length)];
+    // En cas d'égalité parfaite → tirage au sort entre les ex-æquo.
+    const isTie = tiedWinners.length > 1;
+    const winner = tiedWinners[Math.floor(Math.random() * tiedWinners.length)];
 
-    // Calcule le pot
-    const totalMises = game.players.reduce((sum, p) => sum + Number(p.stake), 0);
-    const commission = Math.floor(totalMises * game.commissionPct / 100);
+    // ── Économie ──
+    // Le gagnant remporte la valeur totale des objets (les siens + ceux de l'adversaire).
+    // Le casino prélève sa commission sur ce gain. La commission n'est jamais versée
+    // (elle reste dans la réserve), donc c'est un revenu net pour le casino.
     const totalObjectsValue = playerResults.reduce((sum, r) => sum + r.totalValue, 0);
+    const commission = Math.floor((totalObjectsValue * game.commissionPct) / 100);
+    const payout = totalObjectsValue - commission; // ce que touche réellement le gagnant
+    const totalMises = game.players.reduce((sum, p) => sum + Number(p.stake), 0);
 
-    const payout = totalObjectsValue;
-
-    // Met à jour les joueurs
-    await this.prisma.$transaction(async (tx) => {
-      for (const result of playerResults) {
-        const isWinner = result.player.id === winner.player.id;
-
-        await tx.battleBoxPlayer.update({
-          where: { id: result.player.id },
-          data: {
-            items: result.items as any,
-            totalValue: BigInt(result.totalValue),
-            isWinner,
-          },
+    // Transaction atomique + anti-rejeu : on verrouille le passage en FINISHED.
+    const settled = await this.prisma.$transaction(
+      async (tx) => {
+        // Garde anti-rejeu : ne passe FINISHED que si la partie est encore PLAYING.
+        // Si une autre exécution a déjà résolu la partie, count = 0 → on abandonne.
+        const lock = await tx.battleBoxGame.updateMany({
+          where: { id: gameId, status: 'PLAYING' },
+          data: { status: 'FINISHED', winnerId: winner.player.userId, settledAt: new Date() },
         });
-
-        if (isWinner) {
-          const wallet = await tx.wallet.findUnique({ where: { userId: result.player.userId } });
-          if (wallet) {
-            await tx.wallet.update({
-              where: { userId: result.player.userId },
-              data: { balance: { increment: BigInt(payout) } },
-            });
-
-            await tx.walletTransaction.create({
-              data: {
-                userId: result.player.userId,
-                type: 'WIN',
-                amount: BigInt(payout),
-                balanceBefore: wallet.balance,
-                balanceAfter: wallet.balance + BigInt(payout),
-                reason: `Battle Box — victoire (${payout.toLocaleString()} jetons d'objets)`,
-              },
-            });
-          }
+        if (lock.count === 0) {
+          return false; // déjà résolue par un autre appel
         }
-      }
 
-      await tx.walletTransaction.create({
-        data: {
-          userId: winner.player.userId,
-          type: 'BET',
-          amount: BigInt(commission),
-          balanceBefore: BigInt(0),
-          balanceAfter: BigInt(0),
-          reason: `Battle Box — commission casino (${game.commissionPct}%)`,
-        },
-      }).catch(() => { });
+        // Enregistre les résultats de chaque joueur
+        for (const result of playerResults) {
+          const isWinner = result.player.id === winner.player.id;
+          await tx.battleBoxPlayer.update({
+            where: { id: result.player.id },
+            data: {
+              items: result.items as any,
+              totalValue: BigInt(result.totalValue),
+              isWinner,
+            },
+          });
+        }
 
-      // Finalise la partie
-      await tx.battleBoxGame.update({
-        where: { id: gameId },
-        data: {
-          status: 'FINISHED',
-          winnerId: winner.player.userId,
-          settledAt: new Date(),
-        },
-      });
-    });
+        // Crédite le gagnant (valeur des objets − commission)
+        const winnerWallet = await tx.wallet.findUnique({
+          where: { userId: winner.player.userId },
+        });
+        if (winnerWallet) {
+          const before = winnerWallet.balance;
+          const after = before + BigInt(payout);
+          await tx.wallet.update({
+            where: { userId: winner.player.userId },
+            data: { balance: after },
+          });
+          await tx.walletTransaction.create({
+            data: {
+              userId: winner.player.userId,
+              type: 'WIN',
+              amount: BigInt(payout),
+              balanceBefore: before,
+              balanceAfter: after,
+              gameType: 'BATTLE_BOX',
+              reason: `Battle Box — victoire (${payout.toLocaleString()} jetons, commission ${game.commissionPct}% = ${commission.toLocaleString()})`,
+            },
+          });
+        }
+
+        return true;
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    );
+
+    // Si la partie était déjà résolue, on s'arrête là (pas de double notif/XP).
+    if (!settled) return;
 
     // Notifie les joueurs du résultat
     const resultPayload = {
       gameId,
+      isTie,
       players: playerResults.map((r) => ({
         username: r.player.user.username,
         userId: r.player.userId,
@@ -354,22 +361,11 @@ export class BattleBoxService {
 
     this.gateway.broadcast(`battlebox:result_${gameId}`, resultPayload);
 
-    // XP pour tous les joueurs
+    // XP pour tous les joueurs — via le service centralisé (applique le seuil XP_MIN_STAKE).
     for (const result of playerResults) {
-      const stake = Number(result.player.stake);
-      await this.prisma.playerLevel.upsert({
-        where: { userId: result.player.userId },
-        update: {
-          currentXp: { increment: Math.floor(stake / 100) + 50 },
-          totalXp: { increment: Math.floor(stake / 100) + 50 },
-        },
-        create: {
-          userId: result.player.userId,
-          level: 0,
-          currentXp: BigInt(Math.floor(stake / 100) + 50),
-          totalXp: BigInt(Math.floor(stake / 100) + 50),
-        },
-      }).catch(console.error);
+      await this.levelsService
+        .addXp(result.player.userId, Number(result.player.stake))
+        .catch(console.error);
     }
   }
 
@@ -579,5 +575,21 @@ export class BattleBoxService {
         items: p.items,
       })),
     }));
+  }
+
+  // ─── Réconciliation : résout les parties bloquées en PLAYING ────────────────
+  // Filet de sécurité si le backend a redémarré pendant le délai de résolution
+  // (le setTimeout est perdu à un redémarrage). Toutes les minutes, on relance
+  // la résolution des parties PLAYING démarrées il y a plus de 30 secondes.
+  @Cron('*/1 * * * *')
+  async reconcileStuckGames() {
+    const cutoff = new Date(Date.now() - 30 * 1000);
+    const stuck = await this.prisma.battleBoxGame.findMany({
+      where: { status: 'PLAYING', startedAt: { lt: cutoff } },
+      select: { id: true },
+    });
+    for (const g of stuck) {
+      await this.resolveGame(g.id).catch(console.error);
+    }
   }
 }

@@ -4,7 +4,8 @@ import { spinSlotsApi } from '../api/slots.api';
 import type { SlotSpinResponse } from '../api/slots.api';
 import { SYMBOL_DISPLAY } from '../utils/slots.utils';
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
-import axiosInstance from '../utils/axios.instance';
+import MaintenanceBanner from '../components/ui/MaintenanceBanner';
+import { useMaintenance } from '../hooks/useMaintenance';
 import '../styles/pages/slots.scss';
 import JackpotBanner from '../components/ui/JackpotBanner';
 
@@ -31,8 +32,7 @@ const SlotsPage = () => {
   // ── Tous les hooks en premier ──
   const { balance, setBalance } = useWalletStore();
 
-  const [isMaintenance, setIsMaintenance] = useState(false);
-  const [maintenanceLoading, setMaintenanceLoading] = useState(true);
+  const { isMaintenance, rawMaintenance, canBypass, loading: maintenanceLoading } = useMaintenance('SLOTS');
   const [bet, setBet] = useState<number>(100);
   const [spinCount, setSpinCount] = useState<number>(1);
   const [currentSpinIndex, setCurrentSpinIndex] = useState<number>(0);
@@ -47,15 +47,6 @@ const SlotsPage = () => {
   const [spinHistory, setSpinHistory] = useState<SpinResult[]>([]);
   const [skipped, setSkipped] = useState(false);
   const skipRef = useRef(false);
-
-  useEffect(() => {
-    axiosInstance.get('/public/maintenance')
-      .then((res) => {
-        setIsMaintenance(res.data.global || res.data.SLOTS);
-      })
-      .catch(() => setIsMaintenance(false))
-      .finally(() => setMaintenanceLoading(false));
-  }, []);
 
   // ── Returns conditionnels après tous les hooks ──
   if (maintenanceLoading) return null;
@@ -197,6 +188,7 @@ const SlotsPage = () => {
 
   return (
     <div className="slots">
+      {rawMaintenance && canBypass && <MaintenanceBanner scope="Les machines à sous" />}
       <div className="slots__header">
         <h1 className="slots__title">Machines à Sous</h1>
         <p className="slots__balance">

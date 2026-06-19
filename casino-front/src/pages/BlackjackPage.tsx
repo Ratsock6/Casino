@@ -7,7 +7,8 @@ import {
   STATUS_LABELS, isGameOver,
 } from '../utils/blackjack.utils';
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
-import axiosInstance from '../utils/axios.instance';
+import MaintenanceBanner from '../components/ui/MaintenanceBanner';
+import { useMaintenance } from '../hooks/useMaintenance';
 import '../styles/pages/blackjack.scss';
 import JackpotBanner from '../components/ui/JackpotBanner';
 
@@ -41,8 +42,7 @@ const Card = ({ card, hidden = false, index = 0 }: {
 const BlackjackPage = () => {
   const { balance, setBalance } = useWalletStore();
 
-  const [isMaintenance, setIsMaintenance] = useState(false);
-  const [maintenanceLoading, setMaintenanceLoading] = useState(true);
+  const { isMaintenance, rawMaintenance, canBypass, loading: maintenanceLoading } = useMaintenance('BLACKJACK');
   const [bet, setBet] = useState<number>(100);
   const [game, setGame] = useState<BlackjackGame | null>(null);
   const [loading, setLoading] = useState(false);
@@ -108,16 +108,6 @@ const BlackjackPage = () => {
   const statusInfo = game ? STATUS_LABELS[game.status] : null;
 
   useEffect(() => {
-    axiosInstance.get('/public/maintenance')
-      .then((res) => {
-        setIsMaintenance(res.data.global || res.data.BLACKJACK);
-      })
-      .catch(() => setIsMaintenance(false))
-      .finally(() => setMaintenanceLoading(false));
-  }, []);
-
-
-  useEffect(() => {
     const checkActiveGame = async () => {
       try {
         const activeGame = await getActiveBlackjackApi();
@@ -154,7 +144,7 @@ const BlackjackPage = () => {
 
   return (
     <div className="blackjack">
-
+      {rawMaintenance && canBypass && <MaintenanceBanner scope="Le blackjack" />}
       <div className="blackjack__header">
         <h1 className="blackjack__title">Blackjack</h1>
         <p className="blackjack__balance">

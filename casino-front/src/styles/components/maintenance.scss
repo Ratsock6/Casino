@@ -43,3 +43,25 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+// Bandeau discret pour les admins (maintenance active mais accès maintenu)
+.maintenance-banner {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  margin: 0 auto $spacing-md;
+  max-width: 1000px;
+  padding: $spacing-sm $spacing-md;
+  background: rgba($color-warning, 0.12);
+  border: 1px solid rgba($color-warning, 0.4);
+  border-radius: $radius-sm;
+  color: $color-warning;
+  font-size: 0.9rem;
+
+  &__icon {
+    font-size: 1.1rem;
+  }
+
+  &__text strong {
+    color: $color-warning;
+  }
+}

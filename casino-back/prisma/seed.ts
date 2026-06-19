@@ -28,6 +28,8 @@ const configs = [
   { key: 'JACKPOT_MIN_PCT', value: '2' },
   { key: 'JACKPOT_MIN_STAKE', value: '5000' },
 
+  { key: 'XP_MIN_STAKE', value: '500' },
+
   { key: 'BATTLEBOX_ENABLED', value: 'true' },
   { key: 'BATTLEBOX_COMMISSION_PCT', value: '5' },
   { key: 'BATTLEBOX_VIP_COMMISSION_PCT', value: '2' },
