@@ -165,3 +165,38 @@
     }
   }
 }
+// Bouton "Rejoindre le Discord" (haut des pages login/register)
+.discord-join-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 24px;
+  padding: 14px 20px;
+  background: #5865F2;
+  color: #ffffff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 14px rgba(88, 101, 242, 0.35);
+
+  &:hover {
+    background: #4752c4;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(88, 101, 242, 0.45);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+  }
+}
+
