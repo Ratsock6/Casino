@@ -1,6 +1,6 @@
 import express from 'express';
 import { client } from './index';
-import { applyDiscordProfile } from './utils';
+import { applyDiscordProfile, removeDiscordProfile } from './utils';
 
 const app = express();
 app.use(express.json());
@@ -18,6 +18,26 @@ app.post('/linked', async (req, res) => {
   try {
     const guild = await client.guilds.fetch(GUILD_ID);
     await applyDiscordProfile(guild, discordId, role, firstName, lastName, phoneNumber);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+app.post('/unlinked', async (req, res) => {
+  if (req.body.secret !== SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { discordId } = req.body;
+  if (!discordId) {
+    return res.status(400).json({ error: 'discordId manquant' });
+  }
+
+  try {
+    const guild = await client.guilds.fetch(GUILD_ID);
+    await removeDiscordProfile(guild, discordId);
     res.json({ success: true });
   } catch (err) {
     console.error(err);

@@ -67,3 +67,17 @@ export const getLinkedUsers = async () => {
     return [];
   }
 };
+
+// Crédite un joueur en jetons PAYÉS (revenu casino) depuis un ticket Discord.
+export const creditPaidByDiscord = async (data: {
+  discordId: string;
+  amount: number;
+  adminDiscordId?: string;
+  adminTag?: string;
+}) => {
+  const res = await api.post('/discord/credit-paid', {
+    ...data,
+    secret: SECRET,
+  });
+  return res.data;
+};

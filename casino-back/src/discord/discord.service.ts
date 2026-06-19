@@ -110,11 +110,28 @@ export class DiscordService {
   }
 
   // Délie un compte Discord
-  async unlinkDiscord(userId: string): Promise<void> {
+  async unlinkDiscord(userId: string): Promise<{ discordId: string | null }> {
+    // Récupère le discordId AVANT de l'effacer, pour pouvoir notifier le bot.
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { discordId: true },
+    });
+
     await this.prisma.user.update({
       where: { id: userId },
       data: { discordId: null, discordUsername: null },
     });
+
+    return { discordId: user?.discordId ?? null };
+  }
+
+  // Résout l'userId casino à partir d'un discordId (ou null si non lié).
+  async resolveUserIdByDiscordId(discordId: string): Promise<string | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { discordId },
+      select: { id: true },
+    });
+    return user?.id ?? null;
   }
 
   async getLinkedUsers() {

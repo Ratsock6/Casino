@@ -1531,4 +1531,34 @@
     color: $color-text-muted;
   }
 
+
+  // Sélecteur payé/offert dans le formulaire de crédit
+  &__credit-type {
+    display: flex;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-sm;
+  }
+
+  &__credit-type-btn {
+    flex: 1;
+    padding: $spacing-xs $spacing-sm;
+    font-size: 0.8rem;
+    background: $color-bg;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: $radius-sm;
+    color: $color-text-muted;
+    cursor: pointer;
+    transition: $transition-fast;
+
+    &:hover {
+      border-color: $color-gold;
+    }
+
+    &--active {
+      background: rgba(201, 168, 76, 0.15);
+      border-color: $color-gold;
+      color: $color-gold;
+      font-weight: 600;
+    }
+  }
 }

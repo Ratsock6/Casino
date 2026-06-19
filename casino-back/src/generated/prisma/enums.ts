@@ -30,6 +30,7 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 export const WalletTransactionType = {
   ADMIN_CREDIT: 'ADMIN_CREDIT',
+  ADMIN_CREDIT_PAID: 'ADMIN_CREDIT_PAID',
   ADMIN_DEBIT: 'ADMIN_DEBIT',
   BET: 'BET',
   WIN: 'WIN',

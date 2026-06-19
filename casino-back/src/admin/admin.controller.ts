@@ -29,11 +29,11 @@ export class AdminController {
     @Body() dto: AdminWalletActionDto,
   ) {
     const result = await this.walletService.adminCredit(
-      admin.userId, dto.userId, dto.amount, dto.reason,
+      admin.userId, dto.userId, dto.amount, dto.reason, dto.isPaid ?? false,
     );
     await this.adminService.createAuditLog(
       admin.userId, 'WALLET_CREDIT', 'USER', dto.userId,
-      { amount: dto.amount, reason: dto.reason },
+      { amount: dto.amount, reason: dto.reason, isPaid: dto.isPaid ?? false },
     );
     return result;
   }

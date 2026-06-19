@@ -102,6 +102,7 @@ const AdminPage = () => {
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [userTransactions, setUserTransactions] = useState<AdminTransaction[]>([]);
   const [creditAmount, setCreditAmount] = useState('');
+  const [creditIsPaid, setCreditIsPaid] = useState(true);
   const [debitAmount, setDebitAmount] = useState('');
   const [actionMsg, setActionMsg] = useState('');
   const [creditReason, setCreditReason] = useState('');
@@ -473,10 +474,11 @@ const AdminPage = () => {
   const handleCredit = async () => {
     if (!selectedUser || !creditAmount) return;
     try {
-      await creditWalletApi(selectedUser.id, Number(creditAmount), creditReason || undefined);
-      setActionMsg(`✅ +${Number(creditAmount).toLocaleString()} jetons crédités${creditReason ? ` — ${creditReason}` : ''}`);
+      await creditWalletApi(selectedUser.id, Number(creditAmount), creditReason || undefined, creditIsPaid);
+      setActionMsg(`✅ +${Number(creditAmount).toLocaleString()} jetons ${creditIsPaid ? 'payés' : 'offerts'}${creditReason ? ` — ${creditReason}` : ''}`);
       setCreditAmount('');
       setCreditReason('');
+      setCreditIsPaid(true);
       const updated = await getAdminUsersApi();
       setUsers(updated);
       setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
@@ -838,6 +840,10 @@ const AdminPage = () => {
                 <span>+ Ventes VIP</span>
                 <strong style={{ color: '#4caf7d' }}>+{(stats.totalVipSales ?? 0).toLocaleString()} 🪙</strong>
               </div>
+              <div className="admin__revenue-row">
+                <span>+ Jetons payés (achats crédités)</span>
+                <strong style={{ color: '#4caf7d' }}>+{(stats.totalCreditPaid ?? 0).toLocaleString()} 🪙</strong>
+              </div>
 
               <div className="admin__revenue-row admin__revenue-row--separator" />
 
@@ -858,7 +864,7 @@ const AdminPage = () => {
                 <strong style={{ color: '#e05c5c' }}>-{stats.totalRewardCodes.toLocaleString()} 🪙</strong>
               </div>
               <div className="admin__revenue-row">
-                <span>Crédits admin (hors promo)</span>
+                <span>Crédits offerts (cadeaux, hors promo)</span>
                 <strong style={{ color: '#e05c5c' }}>-{(stats.totalAdminCreditOther ?? 0).toLocaleString()} 🪙</strong>
               </div>
 
@@ -1314,6 +1320,22 @@ const AdminPage = () => {
                     onChange={(e) => setCreditReason(e.target.value)}
                     placeholder="Raison (ex: compensation, bonus...)"
                   />
+                  <div className="admin__credit-type">
+                    <button
+                      type="button"
+                      className={`admin__credit-type-btn ${creditIsPaid ? 'admin__credit-type-btn--active' : ''}`}
+                      onClick={() => setCreditIsPaid(true)}
+                    >
+                      💵 Payé (achat)
+                    </button>
+                    <button
+                      type="button"
+                      className={`admin__credit-type-btn ${!creditIsPaid ? 'admin__credit-type-btn--active' : ''}`}
+                      onClick={() => setCreditIsPaid(false)}
+                    >
+                      🎁 Offert (cadeau)
+                    </button>
+                  </div>
                   <button className="admin__btn admin__btn--credit" onClick={handleCredit}>
                     + Créditer
                   </button>

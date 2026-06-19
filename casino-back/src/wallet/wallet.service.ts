@@ -17,8 +17,16 @@ export class WalletService {
     private readonly gateway: CasinoGateway,
   ) { }
 
-  async adminCredit(adminId: string, userId: string, amount: number, reason?: string) {
+  async adminCredit(adminId: string, userId: string, amount: number, reason?: string, isPaid = false) {
     if (amount <= 0) throw new BadRequestException('Amount must be greater than 0');
+
+    // Type de transaction selon la nature du crédit :
+    //  - ADMIN_CREDIT_PAID : jetons payés par le joueur (revenu casino)
+    //  - ADMIN_CREDIT       : jetons offerts (sortie : cadeau, compensation)
+    const txType = isPaid
+      ? WalletTransactionType.ADMIN_CREDIT_PAID
+      : WalletTransactionType.ADMIN_CREDIT;
+    const defaultReason = isPaid ? 'Achat de jetons' : 'Admin credit';
 
     const result = await this.prisma.$transaction(async (tx) => {
       const wallet = await tx.wallet.findUnique({ where: { userId } });
@@ -32,11 +40,11 @@ export class WalletService {
       const walletTx = await tx.walletTransaction.create({
         data: {
           userId,
-          type: WalletTransactionType.ADMIN_CREDIT,
+          type: txType,
           amount: BigInt(amount),
           balanceBefore,
           balanceAfter,
-          reason: reason ?? 'Admin credit',
+          reason: reason ?? defaultReason,
           adminId: adminId === 'SYSTEM' ? null : adminId,
         },
       });
@@ -44,13 +52,14 @@ export class WalletService {
       await tx.adminAction.create({
         data: {
           adminId: adminId === 'SYSTEM' ? null : adminId,
-          action: 'ADMIN_CREDIT',
+          action: isPaid ? 'ADMIN_CREDIT_PAID' : 'ADMIN_CREDIT',
           targetType: 'WALLET',
           targetId: wallet.id,
           metadata: {
             userId,
             amount,
-            reason: reason ?? 'Admin credit',
+            isPaid,
+            reason: reason ?? defaultReason,
             walletTransactionId: walletTx.id,
           },
         },
@@ -69,7 +78,7 @@ export class WalletService {
     this.gateway.notifyUser(userId, 'wallet:credited', {
       amount,
       newBalance: result.balanceAfter,
-      reason: reason ?? 'Admin credit',
+      reason: reason ?? defaultReason,
       message: `💰 +${amount.toLocaleString()} jetons ont été ajoutés à votre compte.`,
     });
 

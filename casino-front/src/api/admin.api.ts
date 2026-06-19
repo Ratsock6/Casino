@@ -22,6 +22,7 @@ export interface GlobalStats {
   totalJackpot: number;
   totalLevel: number;
   totalCredit: number;
+  totalCreditPaid: number;
   totalDebit: number;
   grossRevenue: number;
   netRevenue: number;
@@ -254,8 +255,8 @@ export const getUserTransactionsApi = async (userId: string, limit = 50): Promis
   return res.data;
 };
 
-export const creditWalletApi = async (userId: string, amount: number, reason?: string) => {
-  const res = await axiosInstance.patch('/admin/wallet/credit', { userId, amount, reason });
+export const creditWalletApi = async (userId: string, amount: number, reason?: string, isPaid?: boolean) => {
+  const res = await axiosInstance.patch('/admin/wallet/credit', { userId, amount, reason, isPaid });
   return res.data;
 };
 

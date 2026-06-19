@@ -15,7 +15,7 @@ import {
   type ButtonInteraction,
   type ModalSubmitInteraction,
 } from 'discord.js';
-import { getUserByDiscordId } from '../api';
+import { getUserByDiscordId, creditPaidByDiscord } from '../api';
 import {
   createRequestChannel,
   createDirectionChannel,
@@ -445,6 +445,79 @@ const handleDelete = async (interaction: ButtonInteraction) => {
 
 // ===== Routeur principal (appelé depuis index.ts) ============================
 // Renvoie true si l'interaction a été prise en charge par le système de tickets.
+// Staff clique sur "Créditer (payé)" : crédite le joueur en jetons payés (revenu),
+// avec traçabilité de l'admin Discord qui a validé.
+const handleCreditPaid = async (interaction: ButtonInteraction) => {
+  if (!isStaffMember(interaction)) {
+    await interaction.reply({
+      content: '❌ Seul un membre du staff peut créditer un joueur.',
+      flags: MessageFlags.Ephemeral,
+    });
+    return;
+  }
+
+  // customId : ticket_credit_paid_{discordId}_{montant}
+  const rest = interaction.customId.replace('ticket_credit_paid_', '');
+  const sep = rest.lastIndexOf('_');
+  const targetDiscordId = rest.slice(0, sep);
+  const montant = Number(rest.slice(sep + 1));
+
+  if (!targetDiscordId || !Number.isInteger(montant) || montant <= 0) {
+    await interaction.reply({ content: '❌ Données du bouton invalides.', flags: MessageFlags.Ephemeral });
+    return;
+  }
+
+  await interaction.deferReply();
+
+  try {
+    await creditPaidByDiscord({
+      discordId: targetDiscordId,
+      amount: montant,
+      adminDiscordId: interaction.user.id,
+      adminTag: interaction.user.tag,
+    });
+
+    const embed = new EmbedBuilder()
+      .setTitle('✅ Jetons crédités (payé)')
+      .setColor(0x4caf7d)
+      .setDescription(
+        `**${montant.toLocaleString()} jetons** ont été crédités à <@${targetDiscordId}>.`,
+      )
+      .addFields(
+        { name: '💵 Type', value: 'Payé (achat — revenu casino)', inline: true },
+        { name: '👮 Validé par', value: `${interaction.user}`, inline: true },
+      )
+      .setFooter({ text: 'Bellagio Casino' })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed] });
+
+    // Désactive le bouton pour éviter un double crédit
+    try {
+      const msg = interaction.message;
+      if (msg && msg.editable) {
+        const disabledRows = msg.components.map((row: any) => {
+          const newRow = new ActionRowBuilder<ButtonBuilder>();
+          row.components.forEach((c: any) => {
+            const btn = ButtonBuilder.from(c);
+            if (c.customId?.startsWith('ticket_credit_paid_')) {
+              btn.setDisabled(true).setLabel('✅ Déjà crédité');
+            }
+            newRow.addComponents(btn);
+          });
+          return newRow;
+        });
+        await msg.edit({ components: disabledRows as any });
+      }
+    } catch (e) {
+      console.error('Impossible de désactiver le bouton crédit:', e);
+    }
+  } catch (err: any) {
+    const message = err.response?.data?.error || 'Une erreur est survenue lors du crédit.';
+    await interaction.editReply(`❌ ${message}`);
+  }
+};
+
 export const handleTicketInteraction = async (
   interaction: Interaction,
 ): Promise<boolean> => {
@@ -453,6 +526,10 @@ export const handleTicketInteraction = async (
     const id = interaction.customId;
     if (id.startsWith('ticket_open_')) {
       await handleOpenButton(interaction);
+      return true;
+    }
+    if (id.startsWith('ticket_credit_paid_')) {
+      await handleCreditPaid(interaction);
       return true;
     }
     if (id === 'ticket_close') {

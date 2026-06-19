@@ -1,4 +1,4 @@
-import { IsInt, IsOptional, IsString, Length, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString, Length, Min } from 'class-validator';
 
 export class AdminWalletActionDto {
   @IsString()
@@ -12,4 +12,10 @@ export class AdminWalletActionDto {
   @IsString()
   @Length(1, 255)
   reason?: string;
+
+  // true = jetons PAYÉS par le joueur (revenu casino)
+  // false/absent = jetons OFFERTS (sortie, cadeau/compensation)
+  @IsOptional()
+  @IsBoolean()
+  isPaid?: boolean;
 }

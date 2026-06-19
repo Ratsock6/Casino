@@ -55,6 +55,7 @@ export class AdminService {
       jackpotAgg,
       levelAgg,
       adminCreditAgg,
+      adminCreditPaidAgg,
       adminDebitAgg,
       rewardCodesAgg,
       refundAgg,
@@ -88,6 +89,11 @@ export class AdminService {
       this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
         where: { type: 'ADMIN_CREDIT' },
+      }),
+      // Crédits admin PAYÉS par le joueur (achat de jetons = revenu casino)
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { type: 'ADMIN_CREDIT_PAID' },
       }),
       // Tous les débits admin (inclut les achats VIP, qu'on isole ensuite)
       this.prisma.walletTransaction.aggregate({
@@ -142,6 +148,7 @@ export class AdminService {
     const totalJackpot = Number(jackpotAgg._sum.amount || 0);
     const totalLevel = Number(levelAgg._sum.amount || 0);
     const totalCredit = Number(adminCreditAgg._sum.amount || 0);
+    const totalCreditPaid = Number(adminCreditPaidAgg._sum.amount || 0);
     const totalDebit = Number(adminDebitAgg._sum.amount || 0);
     const totalRewardCodes = Number(rewardCodesAgg._sum.amount || 0);
     const totalRefund = Number(refundAgg._sum.amount || 0);
@@ -166,8 +173,9 @@ export class AdminService {
     // Revenu brut des JEUX uniquement : mises − gains − remboursements.
     const grossRevenue = totalBets - totalWins - totalRefund;
 
-    // Revenus annexes encaissés par le casino : ventes de tickets + ventes VIP.
-    const sideIncome = totalRaffleTickets + totalVipSales;
+    // Revenus annexes encaissés par le casino : ventes de tickets + ventes VIP
+    // + jetons PAYÉS par les joueurs (achats crédités à la main par le staff).
+    const sideIncome = totalRaffleTickets + totalVipSales + totalCreditPaid;
 
     // Sorties (monnaie versée/offerte par le casino) :
     //   jackpots + récompenses de niveau + gains jetons tombola
@@ -194,6 +202,7 @@ export class AdminService {
       totalJackpot,
       totalLevel,
       totalCredit,
+      totalCreditPaid,
       totalDebit,
       totalRewardCodes,
       totalRefund,
@@ -402,6 +411,7 @@ export class AdminService {
             'RAFFLE_TICKET',
             'REFUND',
             'ADMIN_CREDIT',
+            'ADMIN_CREDIT_PAID',
             'ADMIN_DEBIT',
           ],
         },
@@ -449,6 +459,9 @@ export class AdminService {
           break;
         case 'ADMIN_CREDIT':
           row.payouts += amt; // promo ou crédit manuel = monnaie offerte
+          break;
+        case 'ADMIN_CREDIT_PAID':
+          row.income += amt; // jetons payés par le joueur = revenu
           break;
       }
     });

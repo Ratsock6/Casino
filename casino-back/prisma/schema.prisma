@@ -23,6 +23,7 @@ enum UserStatus {
 
 enum WalletTransactionType {
   ADMIN_CREDIT
+  ADMIN_CREDIT_PAID
   ADMIN_DEBIT
   BET
   WIN

@@ -68,6 +68,29 @@ export const applyDiscordProfile = async (
     console.error('Erreur applyDiscordProfile:', err);
   }
 };
+
+// Retire tous les rôles casino d'un membre (utilisé au unlink depuis le site).
+// On garde le pseudo tel quel (choix produit) : on ne touche qu'aux rôles.
+export const removeDiscordProfile = async (
+  guild: Guild,
+  discordId: string,
+): Promise<void> => {
+  try {
+    const member = await guild.members.fetch(discordId);
+    const roleMap = getRoleMap();
+    const rolesToRemove = Object.values(roleMap).filter(Boolean) as string[];
+
+    for (const roleId of rolesToRemove) {
+      if (member.roles.cache.has(roleId)) {
+        await member.roles.remove(roleId).catch(console.error);
+      }
+    }
+
+    console.log(`🔻 Rôles casino retirés pour ${discordId}`);
+  } catch (err) {
+    console.error('Erreur removeDiscordProfile:', err);
+  }
+};
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers tickets / demandes (credit, retrait, direction)
 // ─────────────────────────────────────────────────────────────────────────────
@@ -202,10 +225,24 @@ export const createRequestChannel = async (
 
   const staffMention = staffRoleId ? `<@&${staffRoleId}>` : '@staff';
 
+  // Pour les tickets de crédit : bouton staff "Créditer (payé)" qui encode
+  // le discordId du joueur + le montant demandé dans le customId.
+  const components: any[] = [];
+  if (isCredit) {
+    const creditRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`ticket_credit_paid_${discordId}_${montant}`)
+        .setLabel(`💵 Créditer ${montant.toLocaleString()} jetons (payé)`)
+        .setStyle(ButtonStyle.Success),
+    );
+    components.push(creditRow);
+  }
+  components.push(buildCloseRow());
+
   await channel.send({
     content: `${staffMention} — Nouvelle demande de ${label} de <@${discordId}>`,
     embeds: [resumeEmbed],
-    components: [buildCloseRow()],
+    components,
   });
 
   return channel as TextChannel;
