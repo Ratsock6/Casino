@@ -275,7 +275,7 @@ export class VipService {
 
       await tx.adminAction.create({
         data: {
-          adminId,
+          adminId: adminId === 'SYSTEM' ? null : adminId,
           action: 'ADMIN_GRANT_VIP',
           targetType: 'USER',
           targetId: userId,
