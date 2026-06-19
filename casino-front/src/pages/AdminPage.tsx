@@ -17,6 +17,9 @@ import {
   getUserStatsApi,
   getUserLoginHistoryApi,
   getCasinoConfigApi,
+  getStuckRoundsApi,
+  forceResolveRoundApi,
+  type StuckRound,
   updateCasinoConfigApi,
   updateUserStatusApi,
   creditWalletApi,
@@ -96,6 +99,7 @@ const AdminPage = () => {
 
   // Config
   const [config, setConfig] = useState<CasinoConfig[]>([]);
+  const [stuckRounds, setStuckRounds] = useState<StuckRound[]>([]);
   const [configLoading, setConfigLoading] = useState(false);
 
   // Player detail
@@ -278,6 +282,9 @@ const AdminPage = () => {
       if (tab === 'config' && config.length === 0) {
         const data = await getCasinoConfigApi();
         setConfig(data);
+      }
+      if (tab === 'config') {
+        try { setStuckRounds(await getStuckRoundsApi(5)); } catch { /* ignore */ }
       }
       if (tab === 'ingame' && ingameRewards.length === 0) {
         setIngameRewards(await getAllIngameRewardsApi());
@@ -526,6 +533,20 @@ const AdminPage = () => {
       setSelectedUser(updated.find(u => u.id === selectedUser.id) || null);
     } catch {
       setActionMsg('❌ Erreur lors du débit');
+    }
+  };
+
+  const handleRefreshStuckRounds = async () => {
+    try { setStuckRounds(await getStuckRoundsApi(5)); } catch { /* ignore */ }
+  };
+
+  const handleResolveRound = async (roundId: string) => {
+    try {
+      const res = await forceResolveRoundApi(roundId);
+      setStuckRounds((prev) => prev.filter((r) => r.roundId !== roundId));
+      setActionMsg(`✅ Partie débloquée — ${(res.refunded ?? 0).toLocaleString()} 🪙 remboursés`);
+    } catch {
+      setActionMsg('❌ Erreur lors du déblocage');
     }
   };
 
@@ -1668,6 +1689,71 @@ const AdminPage = () => {
           <p className="admin__config-hint">
             Ces paramètres affectent le comportement de la plateforme pour tous les joueurs.
           </p>
+
+          {(() => {
+            const rtpItem = config.find((c) => c.key === 'SLOTS_RTP_MODE');
+            const currentMode = rtpItem?.value === '85' ? '85' : '91';
+            return (
+              <div className="admin__config-category">
+                <h3 className="admin__config-category-title">🎰 RTP des machines à sous</h3>
+                <div className="admin__rtp-toggle">
+                  <p className="admin__config-hint">
+                    Ajuste le taux de redistribution des machines à sous <strong>sans changer les gains affichés</strong> (seule la fréquence des combinaisons change). Mode actuel : <strong>{currentMode === '85' ? '85 % (marge ~15 %)' : '91 % (marge ~9 %)'}</strong>.
+                  </p>
+                  <div className="admin__rtp-buttons">
+                    <button
+                      className={`admin__rtp-btn ${currentMode === '91' ? 'admin__rtp-btn--active' : ''}`}
+                      disabled={configLoading || currentMode === '91'}
+                      onClick={() => handleUpdateConfig('SLOTS_RTP_MODE', '91')}
+                    >
+                      91 % <span>marge ~9 %</span>
+                    </button>
+                    <button
+                      className={`admin__rtp-btn ${currentMode === '85' ? 'admin__rtp-btn--active' : ''}`}
+                      disabled={configLoading || currentMode === '85'}
+                      onClick={() => handleUpdateConfig('SLOTS_RTP_MODE', '85')}
+                    >
+                      85 % <span>marge ~15 %</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+
+          <div className="admin__config-category">
+            <h3 className="admin__config-category-title admin__section-title--with-action">
+              <span>🛠️ Parties bloquées</span>
+              <button className="admin__btn admin__btn--refresh" onClick={handleRefreshStuckRounds}>
+                🔄 Actualiser
+              </button>
+            </h3>
+            <p className="admin__config-hint">
+              Parties en attente depuis plus de 5 minutes (typiquement un blackjack abandonné). Débloquer rembourse la mise au joueur.
+            </p>
+            {stuckRounds.length === 0 ? (
+              <p className="admin__config-hint">✅ Aucune partie bloquée.</p>
+            ) : (
+              <div className="admin__stuck-list">
+                {stuckRounds.map((r) => (
+                  <div key={r.roundId} className="admin__stuck-row">
+                    <div className="admin__stuck-info">
+                      <strong>{r.username}</strong>
+                      <span className="admin__stuck-meta">
+                        {r.gameType} · {r.stake.toLocaleString()} 🪙 · depuis {r.ageMinutes} min
+                      </span>
+                    </div>
+                    <button
+                      className="admin__btn admin__btn--credit"
+                      onClick={() => handleResolveRound(r.roundId)}
+                    >
+                      Débloquer & rembourser
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {CONFIG_CATEGORIES.map((category) => {
             const categoryItems = config.filter((item) => category.keys.includes(item.key));

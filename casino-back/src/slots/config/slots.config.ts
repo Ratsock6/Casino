@@ -25,30 +25,55 @@ export interface SlotSymbolConfig {
 // ⚠️  Le front (SlotsPage.tsx → tableau RULES) réaffiche ces multiplicateurs
 //     en dur : toute modification ici doit être répercutée côté front.
 // ─────────────────────────────────────────────────────────────────────────────
+// Poids x10 (mêmes proportions qu'avant : 35/28/22/12/6 → 350/280/220/120/60)
+// pour permettre un réglage fin du RTP via un poids "blank".
 export const SLOT_SYMBOLS: SlotSymbolConfig[] = [
   {
     symbol: 'CHERRY',
-    weight: 35,
-    payoutMultiplier: 9,    // contrib RTP : 35.3 % | 1 combo sur 25
+    weight: 350,
+    payoutMultiplier: 9,
   },
   {
     symbol: 'LEMON',
-    weight: 28,
-    payoutMultiplier: 13,   // contrib RTP : 26.1 % | 1 combo sur 50
+    weight: 280,
+    payoutMultiplier: 13,
   },
   {
     symbol: 'BAR',
-    weight: 22,
-    payoutMultiplier: 20,   // contrib RTP : 19.5 % | 1 combo sur 103
+    weight: 220,
+    payoutMultiplier: 20,
   },
   {
     symbol: 'SEVEN',
-    weight: 12,
-    payoutMultiplier: 50,   // contrib RTP : 7.9 % | 1 combo sur 632
+    weight: 120,
+    payoutMultiplier: 50,
   },
   {
     symbol: 'DIAMOND',
-    weight: 6,
-    payoutMultiplier: 110,  // contrib RTP : 2.2 % | 1 combo sur 5 059
+    weight: 60,
+    payoutMultiplier: 110,
   },
 ];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Modes de RTP (réglables depuis le panel admin via la clé CasinoConfig SLOTS_RTP_MODE)
+// ─────────────────────────────────────────────────────────────────────────────
+// On NE TOUCHE PAS aux multiplicateurs. On ajoute un poids "blank" (non-gagnant)
+// au tirage de chaque rouleau, ce qui dilue la probabilité des combinaisons
+// gagnantes et fait donc baisser le RTP — sans changer les gains affichés.
+//
+//   Poids symboles total = 1030.
+//   blank = 0   → RTP 91.00 %  (mode '91')
+//   blank = 24  → RTP 84.92 %  (mode '85')
+//
+// Quand un rouleau tire le "blank", le backend lui assigne un symbole qui CASSE
+// la combinaison (non-gagnant garanti). Aucun nouveau symbole n'est exposé au front.
+// ─────────────────────────────────────────────────────────────────────────────
+export type SlotsRtpMode = '91' | '85';
+
+export const SLOTS_BLANK_WEIGHT: Record<SlotsRtpMode, number> = {
+  '91': 0,
+  '85': 24,
+};
+
+export const DEFAULT_SLOTS_RTP_MODE: SlotsRtpMode = '91';

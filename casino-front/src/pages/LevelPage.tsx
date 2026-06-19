@@ -206,6 +206,9 @@ const LevelPage = () => {
 
           <div className="level__xp-info">
             <h3>Comment gagner de l'XP ?</h3>
+            <p className="level__xp-min-notice">
+              ⚠️ Vous devez miser au minimum <strong>500 jetons</strong> par partie pour gagner de l'XP. En dessous de ce seuil, aucune XP n'est attribuée.
+            </p>
             <div className="level__xp-rules">
               <div className="level__xp-rule">
                 <span>🎮 Participation</span>

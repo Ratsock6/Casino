@@ -185,6 +185,21 @@ export class AdminController {
     return this.adminService.getVipSalesHistory(days ? parseInt(days) : 30);
   }
 
+  // Parties bloquées en attente (PENDING) depuis plus de X minutes
+  @Get('stuck-rounds')
+  getStuckRounds(@Query('minutes') minutes?: string) {
+    return this.adminService.getStuckRounds(minutes ? parseInt(minutes) : 5);
+  }
+
+  // Débloque une partie en remboursant la mise au joueur
+  @Post('rounds/:roundId/resolve')
+  forceResolveRound(
+    @CurrentUser() admin: { userId: string },
+    @Param('roundId') roundId: string,
+  ) {
+    return this.adminService.forceResolveRound(admin.userId, roundId);
+  }
+
   @Get('audit-logs')
   getAuditLogs(
     @Query('limit') limit?: string,

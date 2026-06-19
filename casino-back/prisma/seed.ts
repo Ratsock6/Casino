@@ -6,6 +6,7 @@ const client = new Client({ connectionString: process.env.DATABASE_URL });
 const configs = [
   { key: 'ENABLE_PLAYER_STATS', value: 'true' },
   { key: 'ENABLE_PUBLIC_STATS', value: 'true' },
+  { key: 'SLOTS_RTP_MODE', value: '91' },
   { key: 'MAINTENANCE_GLOBAL', value: 'false' },
   { key: 'MAINTENANCE_SLOTS', value: 'false' },
   { key: 'MAINTENANCE_ROULETTE', value: 'false' },

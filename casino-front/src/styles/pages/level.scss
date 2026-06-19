@@ -276,6 +276,19 @@
     }
   }
 
+  &__xp-min-notice {
+    margin: $spacing-sm 0 $spacing-md;
+    padding: $spacing-sm $spacing-md;
+    background: rgba(224, 168, 92, 0.12);
+    border-left: 3px solid $color-warning;
+    border-radius: $radius-sm;
+    font-size: 0.9rem;
+    color: $color-text;
+    line-height: 1.5;
+
+    strong { color: $color-warning; }
+  }
+
   &__xp-rules {
     display: flex;
     gap: $spacing-md;

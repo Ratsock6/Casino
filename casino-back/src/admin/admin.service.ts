@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { Prisma } from '../generated/prisma/client';
 import * as argon2 from 'argon2';
 import { randomUUID } from 'crypto';
 
@@ -335,6 +336,99 @@ export class AdminService {
         createdAt: true,
       },
     });
+  }
+
+  // ── Débogage des parties bloquées (PENDING) ──────────────────────────────
+  // Liste les parties restées en attente depuis plus de `minutes` minutes.
+  // Typiquement : blackjack abandonné en cours (le joueur n'a pas fini son tour).
+  async getStuckRounds(minutes = 5) {
+    const threshold = new Date(Date.now() - minutes * 60 * 1000);
+    const rounds = await this.prisma.gameRound.findMany({
+      where: {
+        status: 'PENDING',
+        createdAt: { lt: threshold },
+      },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        user: { select: { id: true, username: true } },
+      },
+    });
+
+    return rounds.map((r) => ({
+      roundId: r.id,
+      userId: r.userId,
+      username: r.user?.username ?? '—',
+      gameType: r.gameType,
+      stake: Number(r.stake),
+      createdAt: r.createdAt,
+      ageMinutes: Math.floor((Date.now() - r.createdAt.getTime()) / 60000),
+    }));
+  }
+
+  // Débloque une partie PENDING en remboursant la mise au joueur.
+  // Marque le round en REFUNDED et clôt l'éventuelle partie blackjack associée.
+  async forceResolveRound(adminId: string, roundId: string) {
+    return this.prisma.$transaction(async (tx) => {
+      const round = await tx.gameRound.findUnique({ where: { id: roundId } });
+      if (!round) throw new NotFoundException('Partie introuvable');
+      if (round.status !== 'PENDING') {
+        throw new BadRequestException('Cette partie n\'est pas en attente (déjà résolue)');
+      }
+
+      const wallet = await tx.wallet.findUnique({ where: { userId: round.userId } });
+      if (!wallet) throw new NotFoundException('Portefeuille introuvable');
+
+      const balanceBefore = wallet.balance;
+      const balanceAfter = balanceBefore + round.stake;
+
+      // Rembourse la mise
+      await tx.wallet.update({
+        where: { userId: round.userId },
+        data: { balance: balanceAfter },
+      });
+
+      await tx.gameRound.update({
+        where: { id: round.id },
+        data: { status: 'REFUNDED', settledAt: new Date() },
+      });
+
+      await tx.walletTransaction.create({
+        data: {
+          userId: round.userId,
+          type: 'REFUND',
+          amount: round.stake,
+          balanceBefore,
+          balanceAfter,
+          gameType: round.gameType,
+          gameRoundId: round.id,
+          reason: 'Déblocage partie bloquée (admin)',
+        },
+      });
+
+      // Clôt la partie blackjack associée si elle existe encore
+      if (round.gameType === 'BLACKJACK') {
+        await tx.blackjackGame.updateMany({
+          where: { gameRoundId: round.id },
+          data: { status: 'FINISHED' },
+        });
+      }
+
+      await tx.adminAction.create({
+        data: {
+          adminId: adminId === 'SYSTEM' ? null : adminId,
+          action: 'FORCE_RESOLVE_ROUND',
+          targetType: 'GAME_ROUND',
+          targetId: round.id,
+          metadata: { userId: round.userId, gameType: round.gameType, stake: Number(round.stake) },
+        },
+      });
+
+      return {
+        message: 'Partie débloquée et mise remboursée',
+        roundId: round.id,
+        refunded: Number(round.stake),
+      };
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
   }
 
   async getUserStats(userId: string) {

@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { BetService } from '../bet/bet.service';
 import { GameConfigService } from '../game-config/game-config.service';
 import { UserRole } from '../generated/prisma/client';
@@ -91,6 +92,18 @@ export class BlackjackService {
 
   async startGame(userId: string, role: UserRole, betAmount: number) {
     this.gameConfigService.assertBetAmountAllowed('BLACKJACK', role, betAmount);
+
+    // Si une partie est déjà en cours (PLAYER_TURN), on la REPREND au lieu de
+    // bloquer le joueur. Évite le cas "round already pending" après un abandon/refresh.
+    const existing = await this.getActiveGame(userId);
+    if (existing) {
+      return existing;
+    }
+
+    // Cas incohérent : un gameRound BLACKJACK est resté PENDING mais aucune partie
+    // n'est en PLAYER_TURN (partie orpheline). On le réconcilie en le remboursant,
+    // pour libérer le joueur et éviter le blocage "round already pending".
+    await this.reconcileOrphanPendingRounds(userId);
 
     const placedBet = await this.betService.placeBet({
       userId,
@@ -223,6 +236,65 @@ export class BlackjackService {
       playerScore: game.playerScore,
       dealerScore: game.dealerScore,
     });
+  }
+
+  // Nettoyage automatique : toutes les 10 min, rembourse les parties blackjack
+  // abandonnées (PLAYER_TURN depuis plus de 30 min). Évite l'accumulation de
+  // parties bloquées et de rounds PENDING orphelins.
+  @Cron(CronExpression.EVERY_10_MINUTES)
+  async cleanupAbandonedGames() {
+    const threshold = new Date(Date.now() - 30 * 60 * 1000);
+    const abandoned = await this.prisma.blackjackGame.findMany({
+      where: {
+        status: BlackjackGameStatus.PLAYER_TURN,
+        createdAt: { lt: threshold },
+      },
+    });
+
+    for (const game of abandoned) {
+      try {
+        await this.betService.refundBet({
+          roundId: game.gameRoundId,
+          reason: 'Partie blackjack abandonnée (nettoyage auto)',
+        });
+      } catch {
+        // round déjà résolu : on ignore
+      }
+      await this.prisma.blackjackGame.update({
+        where: { id: game.id },
+        data: { status: BlackjackGameStatus.FINISHED },
+      });
+    }
+  }
+
+  // Rembourse les rounds BLACKJACK restés PENDING sans partie active correspondante
+  // (états orphelins). Libère le joueur pour qu'il puisse rejouer.
+  private async reconcileOrphanPendingRounds(userId: string) {
+    const pendingRounds = await this.prisma.gameRound.findMany({
+      where: { userId, gameType: GameType.BLACKJACK, status: 'PENDING' },
+    });
+
+    for (const round of pendingRounds) {
+      // Y a-t-il une partie blackjack encore "jouable" liée à ce round ?
+      const activeGame = await this.prisma.blackjackGame.findFirst({
+        where: { gameRoundId: round.id, status: BlackjackGameStatus.PLAYER_TURN },
+      });
+      if (activeGame) continue; // partie réellement en cours → on n'y touche pas
+
+      // Sinon : round orphelin → remboursement (libère le verrou)
+      try {
+        await this.betService.refundBet({
+          roundId: round.id,
+          reason: 'Réconciliation partie blackjack orpheline',
+        });
+        await this.prisma.blackjackGame.updateMany({
+          where: { gameRoundId: round.id },
+          data: { status: BlackjackGameStatus.FINISHED },
+        });
+      } catch {
+        // si déjà résolu entre-temps, on ignore
+      }
+    }
   }
 
   private async handleHit(

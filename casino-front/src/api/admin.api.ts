@@ -479,3 +479,23 @@ export const getRaffleWinnersApi = async (campaignId?: string): Promise<AdminRaf
 export const markRaffleClaimedApi = async (ticketId: string): Promise<void> => {
   await axiosInstance.post(`/admin/raffle/tickets/${ticketId}/claim`);
 };
+
+export interface StuckRound {
+  roundId: string;
+  userId: string;
+  username: string;
+  gameType: string;
+  stake: number;
+  createdAt: string;
+  ageMinutes: number;
+}
+
+export const getStuckRoundsApi = async (minutes = 5): Promise<StuckRound[]> => {
+  const res = await axiosInstance.get(`/admin/stuck-rounds?minutes=${minutes}`);
+  return res.data;
+};
+
+export const forceResolveRoundApi = async (roundId: string): Promise<any> => {
+  const res = await axiosInstance.post(`/admin/rounds/${roundId}/resolve`);
+  return res.data;
+};
