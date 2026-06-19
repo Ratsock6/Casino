@@ -1603,4 +1603,28 @@
     line-height: 1.4;
   }
 
+
+  // Titre de section avec un bouton d'action à droite
+  &__section-title--with-action {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  // Bouton "Actualiser" de la fiche joueur
+  &__btn--refresh {
+    background: $color-surface;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: $color-text;
+    font-size: 0.85rem;
+    padding: $spacing-xs $spacing-md;
+    white-space: nowrap;
+
+    &:hover {
+      border-color: $color-gold;
+      color: $color-gold;
+    }
+  }
+
 }

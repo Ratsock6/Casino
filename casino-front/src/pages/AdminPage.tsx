@@ -446,6 +446,31 @@ const AdminPage = () => {
     setUserLoginHistory(loginHist);
   };
 
+  // Recharge les données du joueur sélectionné sans recharger toute la page (F5).
+  const handleRefreshUser = async () => {
+    if (!selectedUser) return;
+    setActionMsg('🔄 Actualisation...');
+    try {
+      const updated = await getAdminUsersApi();
+      const fresh = updated.find(u => u.id === selectedUser.id) || null;
+      setUsers(updated);
+      setSelectedUser(fresh);
+      if (fresh) {
+        const [txs, stats, loginHist] = await Promise.all([
+          getUserTransactionsApi(fresh.id, 30),
+          getUserStatsApi(fresh.id),
+          getUserLoginHistoryApi(fresh.id, 20),
+        ]);
+        setUserTransactions(txs);
+        setUserStats(stats);
+        setUserLoginHistory(loginHist);
+      }
+      setActionMsg('✅ Données actualisées');
+    } catch {
+      setActionMsg('❌ Erreur lors de l\'actualisation');
+    }
+  };
+
   const handleClaimIngame = async (rewardId: string) => {
     try {
       await claimIngameRewardApi(rewardId);
@@ -834,6 +859,32 @@ const AdminPage = () => {
           </div>
 
           <div className="admin__section">
+            <h2 className="admin__section-title">🎮 Bénéfice par jeu</h2>
+            <div className="admin__kpi-grid">
+              {(stats.profitByGame ?? []).map((g) => {
+                const GAME_LABELS: Record<string, string> = {
+                  SLOTS: '🎰 Machines à sous', ROULETTE: '🎡 Roulette',
+                  BLACKJACK: '🃏 Blackjack', BATTLE_BOX: '🎮 Battle Box',
+                };
+                return (
+                  <div key={g.gameType} className="admin__kpi-card admin__kpi-card--profit">
+                    <span className="admin__kpi-label">{GAME_LABELS[g.gameType] || g.gameType}</span>
+                    <strong className="admin__kpi-value" style={{ color: g.profit >= 0 ? '#4caf7d' : '#e05c5c' }}>
+                      {g.profit >= 0 ? '+' : ''}{g.profit.toLocaleString()} 🪙
+                    </strong>
+                    <span className="admin__kpi-hint">
+                      Misé {g.bets.toLocaleString()} 🪙 · Gains versés {g.wins.toLocaleString()} 🪙
+                      {g.gameType === 'BATTLE_BOX' && (
+                        <><br />Dont commission : {(stats.battleBoxCommission ?? 0).toLocaleString()} 🪙</>
+                      )}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="admin__section">
             <h2 className="admin__section-title">💰 Détail des revenus</h2>
             <div className="admin__stats-revenue-rows">
               <div className="admin__revenue-row">
@@ -1129,11 +1180,20 @@ const AdminPage = () => {
 
           {selectedUser && (
             <div className="admin__player-detail">
-              <h2 className="admin__section-title">
-                {selectedUser.username} - {selectedUser.firstName} {selectedUser.lastName}
-                <span className={`admin__player-role admin__player-role--${selectedUser.role.toLowerCase()}`}>
-                  {selectedUser.role}
+              <h2 className="admin__section-title admin__section-title--with-action">
+                <span>
+                  {selectedUser.username} - {selectedUser.firstName} {selectedUser.lastName}
+                  <span className={`admin__player-role admin__player-role--${selectedUser.role.toLowerCase()}`}>
+                    {selectedUser.role}
+                  </span>
                 </span>
+                <button
+                  className="admin__btn admin__btn--refresh"
+                  onClick={handleRefreshUser}
+                  title="Actualiser les données du joueur"
+                >
+                  🔄 Actualiser
+                </button>
               </h2>
 
               <div className="admin__player-stats">
@@ -1484,6 +1544,36 @@ const AdminPage = () => {
                       );
                     })}
                   </div>
+
+                  {userStats.moneyBreakdown && (
+                    <>
+                      <h3 className="admin__section-title" style={{ marginTop: '24px' }}>
+                        💵 Provenance des jetons reçus
+                      </h3>
+                      <div className="admin__kpi-grid">
+                        <div className="admin__kpi-card admin__kpi-card--cash">
+                          <span className="admin__kpi-label">Payé en RP (achats)</span>
+                          <strong className="admin__kpi-value">{userStats.moneyBreakdown.paid.toLocaleString()} 🪙</strong>
+                          <span className="admin__kpi-hint">Jetons achetés par le joueur (revenu casino).</span>
+                        </div>
+                        <div className="admin__kpi-card admin__kpi-card--debt">
+                          <span className="admin__kpi-label">Crédité par un admin</span>
+                          <strong className="admin__kpi-value">{userStats.moneyBreakdown.creditedByAdmin.toLocaleString()} 🪙</strong>
+                          <span className="admin__kpi-hint">Jetons offerts manuellement (hors codes promo).</span>
+                        </div>
+                        <div className="admin__kpi-card">
+                          <span className="admin__kpi-label">Codes promo</span>
+                          <strong className="admin__kpi-value">{userStats.moneyBreakdown.fromPromoCodes.toLocaleString()} 🪙</strong>
+                          <span className="admin__kpi-hint">Jetons obtenus via des codes promotionnels.</span>
+                        </div>
+                        <div className="admin__kpi-card admin__kpi-card--profit">
+                          <span className="admin__kpi-label">Récompenses de niveau</span>
+                          <strong className="admin__kpi-value">{userStats.moneyBreakdown.fromLevels.toLocaleString()} 🪙</strong>
+                          <span className="admin__kpi-hint">Jetons gagnés en montant de niveau.</span>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 

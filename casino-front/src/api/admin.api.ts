@@ -28,6 +28,8 @@ export interface GlobalStats {
   gameProfit: number;
   cashBalance: number;
   chipsInCirculation: number;
+  profitByGame: { gameType: string; bets: number; wins: number; profit: number }[];
+  battleBoxCommission: number;
   grossRevenue: number;
   netRevenue: number;
   casinoRevenue: number;
@@ -59,6 +61,12 @@ export interface UserStats {
     stake: number;
     payout: number;
   }[];
+  moneyBreakdown?: {
+    paid: number;
+    creditedByAdmin: number;
+    fromPromoCodes: number;
+    fromLevels: number;
+  };
 }
 
 export interface AdminTransaction {
