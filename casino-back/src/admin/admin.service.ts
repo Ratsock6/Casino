@@ -59,6 +59,9 @@ export class AdminService {
       adminDebitAgg,
       withdrawalAgg,
       walletsAgg,
+      betsByGame,
+      winsByGame,
+      battleBoxFinished,
       rewardCodesAgg,
       refundAgg,
       raffleTicketAgg,
@@ -110,6 +113,23 @@ export class AdminService {
       // Jetons actuellement en circulation (somme de tous les soldes joueurs = "dette")
       this.prisma.wallet.aggregate({
         _sum: { balance: true },
+      }),
+      // Mises (BET) groupées par jeu — pour le bénéfice par jeu
+      this.prisma.walletTransaction.groupBy({
+        by: ['gameType'],
+        _sum: { amount: true },
+        where: { type: 'BET', gameType: { not: null } },
+      }),
+      // Gains (WIN) groupés par jeu
+      this.prisma.walletTransaction.groupBy({
+        by: ['gameType'],
+        _sum: { amount: true },
+        where: { type: 'WIN', gameType: { not: null } },
+      }),
+      // Parties Battle Box terminées (pour isoler la commission)
+      this.prisma.battleBoxGame.findMany({
+        where: { status: 'FINISHED' },
+        select: { commissionPct: true, players: { select: { totalValue: true } } },
       }),
       // Sous-ensemble : codes promo (reason préfixé)
       this.prisma.walletTransaction.aggregate({
@@ -201,6 +221,27 @@ export class AdminService {
     // (3) JETONS EN CIRCULATION — la "dette" : total des soldes joueurs actuels.
     const chipsInCirculation = Number(walletsAgg._sum.balance || 0);
 
+    // ── Bénéfice par jeu (mises − gains versés, par gameType) ──
+    const betMap: Record<string, number> = {};
+    betsByGame.forEach((b) => { if (b.gameType) betMap[b.gameType] = Number(b._sum.amount || 0); });
+    const winMap: Record<string, number> = {};
+    winsByGame.forEach((w) => { if (w.gameType) winMap[w.gameType] = Number(w._sum.amount || 0); });
+
+    const GAMES = ['SLOTS', 'ROULETTE', 'BLACKJACK', 'BATTLE_BOX'];
+    const profitByGame = GAMES.map((game) => {
+      const bets = betMap[game] || 0;
+      const wins = winMap[game] || 0;
+      return { gameType: game, bets, wins, profit: bets - wins };
+    });
+
+    // Commission Battle Box isolée : commissionPct % de la valeur totale des objets,
+    // sommée sur toutes les parties terminées.
+    const battleBoxCommission = battleBoxFinished.reduce((sum, g) => {
+      const objectsValue = g.players.reduce((s, p) => s + Number(p.totalValue || 0), 0);
+      return sum + Math.floor((objectsValue * g.commissionPct) / 100);
+    }, 0);
+
+
     // Revenu net "global" historique (conservé pour compat) = bénéfice jeux + caisse.
     const sideIncome = totalRaffleTickets + totalVipSales + totalCreditPaid;
     const netRevenue = gameProfit + cashBalance;
@@ -224,6 +265,8 @@ export class AdminService {
       gameProfit,
       cashBalance,
       chipsInCirculation,
+      profitByGame,
+      battleBoxCommission,
       totalRewardCodes,
       totalRefund,
       totalRaffleTickets,
@@ -305,7 +348,7 @@ export class AdminService {
     const totalStake = rounds.reduce((acc, r) => acc + Number(r.stake), 0);
     const totalPayout = rounds.reduce((acc, r) => acc + Number(r.payout), 0);
 
-    const byGame = ['SLOTS', 'ROULETTE', 'BLACKJACK'].map((game) => {
+    const byGame = ['SLOTS', 'ROULETTE', 'BLACKJACK', 'BATTLE_BOX'].map((game) => {
       const gameRounds = rounds.filter(r => r.gameType === game);
       return {
         gameType: game,
@@ -317,6 +360,36 @@ export class AdminService {
       };
     });
 
+    // ── Ventilation des entrées d'argent du joueur ──
+    const [paidAgg, levelAgg, promoTx, creditTx] = await Promise.all([
+      // Jetons PAYÉS par le joueur (achats en RP)
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { userId, type: 'ADMIN_CREDIT_PAID' },
+      }),
+      // Jetons gagnés via les niveaux
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { userId, type: 'WIN_LEVEL' },
+      }),
+      // Codes promo : ADMIN_CREDIT dont la raison commence par "🎁 Code promo"
+      this.prisma.walletTransaction.findMany({
+        where: { userId, type: 'ADMIN_CREDIT', reason: { startsWith: '🎁 Code promo' } },
+        select: { amount: true },
+      }),
+      // Crédits admin offerts : tous les ADMIN_CREDIT (on retire les promo ensuite)
+      this.prisma.walletTransaction.aggregate({
+        _sum: { amount: true },
+        where: { userId, type: 'ADMIN_CREDIT' },
+      }),
+    ]);
+
+    const totalPaid = Number(paidAgg._sum.amount || 0);
+    const totalFromLevels = Number(levelAgg._sum.amount || 0);
+    const totalFromPromo = promoTx.reduce((acc, t) => acc + Number(t.amount), 0);
+    // Crédits offerts = tous les ADMIN_CREDIT − ceux qui sont des codes promo
+    const totalCreditedByAdmin = Number(creditTx._sum.amount || 0) - totalFromPromo;
+
     return {
       totalRounds,
       totalWon,
@@ -326,6 +399,13 @@ export class AdminService {
       totalPayout,
       netResult: totalPayout - totalStake,
       byGame,
+      // Ventilation des entrées d'argent
+      moneyBreakdown: {
+        paid: totalPaid,                  // payé en RP (achats)
+        creditedByAdmin: totalCreditedByAdmin, // offert par les admins
+        fromPromoCodes: totalFromPromo,   // codes promo
+        fromLevels: totalFromLevels,      // récompenses de niveau
+      },
     };
   }
 
