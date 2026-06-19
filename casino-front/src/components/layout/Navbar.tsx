@@ -6,6 +6,7 @@ import { getWalletApi } from '../../api/wallet.api';
 import '../../styles/components/navbar.scss';
 import { getUnclaimedRewardsApi } from '../../api/levels.api';
 import axiosInstance from '../../utils/axios.instance';
+import discordLogo from '../../assets/discord.png';
 
 
 const Navbar = () => {
@@ -134,6 +135,15 @@ const Navbar = () => {
       </div>
 
       <div className="navbar__right">
+        <a
+          href="https://discord.gg/VOTRE_LIEN_DISCORD"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="navbar__discord"
+          title="Rejoindre le Discord"
+        >
+          <img src={discordLogo} alt="Discord" className="navbar__discord-icon" />
+        </a>
         <div className="navbar__wallet">
           <span className="navbar__wallet-icon">🪙</span>
           <span className="navbar__wallet-balance">

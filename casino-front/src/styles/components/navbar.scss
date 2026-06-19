@@ -57,6 +57,23 @@
     gap: $spacing-lg;
   }
 
+  &__discord {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px) scale(1.08);
+    }
+
+    &-icon {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+  }
+
   &__wallet {
     display: flex;
     align-items: center;
