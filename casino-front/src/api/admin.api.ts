@@ -30,6 +30,7 @@ export interface GlobalStats {
   chipsInCirculation: number;
   profitByGame: { gameType: string; bets: number; wins: number; profit: number }[];
   battleBoxCommission: number;
+  slotsByMachine?: { machineId: string; name: string; bets: number; wins: number; profit: number }[];
   grossRevenue: number;
   netRevenue: number;
   casinoRevenue: number;

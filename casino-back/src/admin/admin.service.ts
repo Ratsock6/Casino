@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../generated/prisma/client';
+import { SLOT_MACHINES } from '../slots/config/machines.config';
 import * as argon2 from 'argon2';
 import { randomUUID } from 'crypto';
 
@@ -63,6 +64,7 @@ export class AdminService {
       betsByGame,
       winsByGame,
       battleBoxFinished,
+      slotsByMachineRaw,
       rewardCodesAgg,
       refundAgg,
       raffleTicketAgg,
@@ -132,6 +134,18 @@ export class AdminService {
         where: { status: 'FINISHED' },
         select: { commissionPct: true, players: { select: { totalValue: true } } },
       }),
+      // Profit des slots ventilé par machine (machineId stocké dans GameRound.metadata).
+      // BET − WIN groupés par machine.
+      this.prisma.$queryRaw<Array<{ machineId: string | null; bets: bigint | null; wins: bigint | null }>>`
+        SELECT
+          gr.metadata->>'machineId' AS "machineId",
+          COALESCE(SUM(CASE WHEN wt.type = 'BET' THEN wt.amount ELSE 0 END), 0) AS bets,
+          COALESCE(SUM(CASE WHEN wt.type = 'WIN' THEN wt.amount ELSE 0 END), 0) AS wins
+        FROM "GameRound" gr
+        JOIN "WalletTransaction" wt ON wt."gameRoundId" = gr.id
+        WHERE gr."gameType" = 'SLOTS'
+        GROUP BY gr.metadata->>'machineId'
+      `,
       // Sous-ensemble : codes promo (reason préfixé)
       this.prisma.walletTransaction.aggregate({
         _sum: { amount: true },
@@ -242,6 +256,22 @@ export class AdminService {
       return sum + Math.floor((objectsValue * g.commissionPct) / 100);
     }, 0);
 
+    // Profit des slots par machine (avec le nom lisible depuis le registre).
+    const slotsByMachine = slotsByMachineRaw.map((row) => {
+      const id = row.machineId ?? 'classic'; // anciens spins sans machineId = classique
+      const machineDef = SLOT_MACHINES.find((m) => m.id === id);
+      const bets = Number(row.bets ?? 0);
+      const wins = Number(row.wins ?? 0);
+      return {
+        machineId: id,
+        name: machineDef?.name ?? id,
+        bets,
+        wins,
+        profit: bets - wins,
+      };
+    }).sort((a, b) => b.profit - a.profit);
+
+
 
     // Revenu net "global" historique (conservé pour compat) = bénéfice jeux + caisse.
     const sideIncome = totalRaffleTickets + totalVipSales + totalCreditPaid;
@@ -268,6 +298,7 @@ export class AdminService {
       chipsInCirculation,
       profitByGame,
       battleBoxCommission,
+      slotsByMachine,
       totalRewardCodes,
       totalRefund,
       totalRaffleTickets,

@@ -905,6 +905,25 @@ const AdminPage = () => {
             </div>
           </div>
 
+          {(stats.slotsByMachine && stats.slotsByMachine.length > 0) && (
+            <div className="admin__section">
+              <h2 className="admin__section-title">🎰 Bénéfice par machine à sous</h2>
+              <div className="admin__kpi-grid">
+                {stats.slotsByMachine.map((m) => (
+                  <div key={m.machineId} className="admin__kpi-card admin__kpi-card--profit">
+                    <span className="admin__kpi-label">{m.name}</span>
+                    <strong className="admin__kpi-value" style={{ color: m.profit >= 0 ? '#4caf7d' : '#e05c5c' }}>
+                      {m.profit >= 0 ? '+' : ''}{m.profit.toLocaleString()} 🪙
+                    </strong>
+                    <span className="admin__kpi-hint">
+                      Misé {m.bets.toLocaleString()} 🪙 · Gains versés {m.wins.toLocaleString()} 🪙
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="admin__section">
             <h2 className="admin__section-title">💰 Détail des revenus</h2>
             <div className="admin__stats-revenue-rows">

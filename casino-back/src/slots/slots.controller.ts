@@ -12,6 +12,7 @@ import { IdempotencyService } from '../idempotency/idempotency.service';
 import { SpinSlotsDto } from './dto/spin-slots.dto';
 import { SlotsService } from './slots.service';
 import { MaintenanceGuard, Maintenance } from '../common/guards/maintenance.guard';
+import { Get } from '@nestjs/common';
 
 @Controller('slots')
 @UseGuards(JwtAuthGuard, MaintenanceGuard)
@@ -20,6 +21,12 @@ export class SlotsController {
     private readonly slotsService: SlotsService,
     private readonly idempotencyService: IdempotencyService,
   ) {}
+
+  // Liste des machines à sous disponibles (écran de sélection)
+  @Get('machines')
+  listMachines() {
+    return this.slotsService.listMachines();
+  }
 
   @Post('spin')
   @Maintenance('MAINTENANCE_SLOTS')
@@ -50,7 +57,7 @@ export class SlotsController {
     }
 
     try {
-      const result = await this.slotsService.spin(user.userId, user.role, dto.bet);
+      const result = await this.slotsService.spin(user.userId, user.role, dto.bet, dto.machineId);
       await this.idempotencyService.complete(idempotencyKey, result);
       return result;
     } catch (error) {

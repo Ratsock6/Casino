@@ -7,7 +7,12 @@ import MaintenanceScreen from '../components/ui/MaintenanceScreen';
 import MaintenanceBanner from '../components/ui/MaintenanceBanner';
 import { useMaintenance } from '../hooks/useMaintenance';
 import '../styles/pages/slots.scss';
+import '../styles/pages/slots-machines.scss';
 import JackpotBanner from '../components/ui/JackpotBanner';
+import { getSlotMachinesApi } from '../api/slots.api';
+import type { SlotMachineInfo } from '../api/slots.api';
+import SlotsSelection from '../components/slots/SlotsSelection';
+import CascadeSlotMachine from '../components/slots/CascadeSlotMachine';
 
 const SYMBOLS_LIST = ['🍒', '🍋', '🎰', '7️⃣', '💎'];
 
@@ -47,6 +52,14 @@ const SlotsPage = () => {
   const [spinHistory, setSpinHistory] = useState<SpinResult[]>([]);
   const [skipped, setSkipped] = useState(false);
   const skipRef = useRef(false);
+
+  // ── Sélection de machine ──
+  const [machines, setMachines] = useState<SlotMachineInfo[]>([]);
+  const [selectedMachineId, setSelectedMachineId] = useState<string | null>(null);
+
+  useEffect(() => {
+    getSlotMachinesApi().then(setMachines).catch(() => setMachines([]));
+  }, []);
 
   // ── Returns conditionnels après tous les hooks ──
   if (maintenanceLoading) return null;
@@ -119,17 +132,21 @@ const SlotsPage = () => {
     setReels(['🔄', '🔄', '🔄']);
 
     const idempotencyKey = crypto.randomUUID();
-    const data: SlotSpinResponse = await spinSlotsApi(bet, idempotencyKey);
+    const data: SlotSpinResponse = await spinSlotsApi(bet, idempotencyKey, selectedMachineId || 'classic');
+
+    // La réponse met les rouleaux dans display.reels (objets {id, display})
+    const reelIds: string[] = (data.display?.reels ?? []).map((r: any) => r.id);
+    const winningSymbol: string | null = data.display?.winningSymbol ?? null;
 
     await Promise.all([
-      animateReel(0, data.reels[0], 0, 2000),
-      animateReel(1, data.reels[1], 200, 2300),
-      animateReel(2, data.reels[2], 400, 2600),
+      animateReel(0, reelIds[0], 0, 2000),
+      animateReel(1, reelIds[1], 200, 2300),
+      animateReel(2, reelIds[2], 400, 2600),
     ]);
 
     setCurrentPayout(data.payout);
     setCurrentMultiplier(data.multiplier);
-    setWinSymbol(data.winningSymbol);
+    setWinSymbol(winningSymbol);
     setResult(data.isWin ? 'win' : 'loss');
 
     const newBalance = parseFloat(data.balanceAfterBet) + data.payout;
@@ -137,11 +154,11 @@ const SlotsPage = () => {
 
     setSpinHistory((prev) => [
       {
-        reels: data.reels,
+        reels: reelIds,
         isWin: data.isWin,
         payout: data.payout,
         multiplier: data.multiplier,
-        winningSymbol: data.winningSymbol,
+        winningSymbol: winningSymbol,
         bet,
       },
       ...prev.slice(0, 9),
@@ -186,10 +203,34 @@ const SlotsPage = () => {
   const totalWin = spinHistory.filter((s) => s.isWin).reduce((acc, s) => acc + s.payout, 0);
   const totalLoss = spinHistory.filter((s) => !s.isWin).reduce((acc, s) => acc + s.bet, 0);
 
+  // Écran de sélection si aucune machine choisie
+  if (!selectedMachineId) {
+    return (
+      <div className="slots">
+        {rawMaintenance && canBypass && <MaintenanceBanner scope="Les machines à sous" />}
+        <SlotsSelection machines={machines} onSelect={setSelectedMachineId} />
+      </div>
+    );
+  }
+
+  const selectedMachine = machines.find((m) => m.id === selectedMachineId);
+
+  // Machine à mécanique cascade (Gemstone)
+  if (selectedMachine && selectedMachine.mechanic === 'CASCADE_3X3') {
+    return (
+      <div className="slots">
+        {rawMaintenance && canBypass && <MaintenanceBanner scope="Les machines à sous" />}
+        <CascadeSlotMachine machine={selectedMachine} onBack={() => setSelectedMachineId(null)} />
+      </div>
+    );
+  }
+
+  // Sinon : machine classique (rendu existant ci-dessous)
   return (
     <div className="slots">
       {rawMaintenance && canBypass && <MaintenanceBanner scope="Les machines à sous" />}
       <div className="slots__header">
+        <button className="cascade-machine__back" onClick={() => setSelectedMachineId(null)}>← Machines</button>
         <h1 className="slots__title">Machines à Sous</h1>
         <p className="slots__balance">
           Solde : <strong>{balance.toLocaleString()} jetons</strong>
