@@ -19,6 +19,12 @@ export class JackpotService {
       await this.casinoConfigService.get('JACKPOT_MIN_PCT') || '2'
     );
 
+    // Plafond du plancher auto-calculé : évite que le jackpot offert au reset
+    // ne s'emballe quand le revenu du casino grandit.
+    const cap = parseInt(
+      await this.casinoConfigService.get('JACKPOT_MIN_CAP') || '500000'
+    );
+
     // Calcule le revenu net du casino
     const betsAgg = await this.prisma.walletTransaction.aggregate({
       _sum: { amount: true },
@@ -33,8 +39,8 @@ export class JackpotService {
     const netRevenue = Number(betsAgg._sum.amount || 0) - Number(winsAgg._sum.amount || 0);
     const calculated = Math.floor(netRevenue * pct / 100);
 
-    // Retourne le max entre le plancher et le calculé
-    return Math.max(floor, calculated);
+    // Plancher final = au moins le minimum fixe, au plus le plafond.
+    return Math.min(Math.max(floor, calculated), cap);
   }
 
   // Récupère le jackpot actuel
@@ -80,115 +86,109 @@ export class JackpotService {
     const winProbability = parseInt(
       await this.casinoConfigService.get('JACKPOT_WIN_PROBABILITY') || '10000'
     );
-    const minAmount = parseInt(
-      await this.casinoConfigService.get('JACKPOT_MIN_AMOUNT') || '100000'
+    const minStake = parseInt(
+      await this.casinoConfigService.get('JACKPOT_MIN_STAKE') || '5000'
     );
 
+    // Contribution de cette mise à la cagnotte (toujours prélevée, même si la
+    // mise est sous le seuil d'éligibilité au gain).
     const contribution = Math.floor(stake * contributionPct / 100);
 
     return this.prisma.$transaction(async (tx) => {
+      // Récupère (ou crée) le jackpot actif
       let jackpot = await tx.jackpot.findFirst({
         where: { isActive: true },
         orderBy: { createdAt: 'desc' },
       });
-
-      // 👇 Crée le jackpot s'il n'existe pas
       if (!jackpot) {
-        const minAmount = await this.calculateMinAmount();
+        const seed = await this.calculateMinAmount();
         jackpot = await tx.jackpot.create({
-          data: {
-            amount: BigInt(minAmount),
-            isActive: true,
-          },
+          data: { amount: BigInt(seed), isActive: true },
         });
       }
 
-      // Ajoute la contribution
-      const newAmount = jackpot.amount + BigInt(contribution);
+      // La cagnotte après ajout de la contribution de cette mise.
+      const amountWithContribution = jackpot.amount + BigInt(contribution);
 
-      // Vérifie si le joueur gagne
-      const roll = Math.floor(Math.random() * winProbability);
-      const won = roll === 0;
-
-      const minStake = parseInt(
-        await this.casinoConfigService.get('JACKPOT_MIN_STAKE') || '5000'
-      );
-
+      // ── Mise sous le seuil : on contribue mais on NE PEUT PAS gagner ──
       if (stake < minStake) {
-        const contribution = Math.floor(stake * contributionPct / 100);
-        if (contribution > 0) {
-          await this.prisma.jackpot.updateMany({
-            where: { isActive: true },
-            data: { amount: { increment: BigInt(contribution) } },
-          });
-        }
+        await tx.jackpot.update({
+          where: { id: jackpot.id },
+          data: { amount: amountWithContribution },
+        });
         return { won: false };
       }
 
-      if (won) {
-        const wonAmount = Number(newAmount);
-        const newMinAmount = await this.calculateMinAmount();
+      // ── Mise éligible : tirage de victoire ──
+      const won = Math.floor(Math.random() * winProbability) === 0;
 
+      if (!won) {
+        // Pas gagné : on enregistre juste la contribution.
         await tx.jackpot.update({
           where: { id: jackpot.id },
-          data: {
-            amount: BigInt(newMinAmount),
-            lastWonAt: new Date(),
-            lastWonBy: username,
-            lastWonAmount: newAmount,
-          },
-        });
-
-        // Crédite le joueur
-        const wallet = await tx.wallet.findUnique({ where: { userId } });
-        if (wallet) {
-          await tx.wallet.update({
-            where: { userId },
-            data: { balance: { increment: newAmount } },
-          });
-
-          await tx.walletTransaction.create({
-            data: {
-              userId,
-              type: 'WIN_JACKPOT',
-              amount: newAmount,
-              balanceBefore: wallet.balance,
-              balanceAfter: wallet.balance + newAmount,
-              reason: `🎰 JACKPOT PROGRESSIF REMPORTÉ !`,
-            },
-          });
-        }
-
-        // Enregistre le gain
-        await tx.jackpotWin.create({
-          data: { userId, amount: newAmount, gameType },
-        });
-
-        // Log d'audit
-        await tx.adminAction.create({
-          data: {
-            adminId: null,
-            action: 'JACKPOT_WIN',
-            targetType: 'USER',
-            targetId: userId,
-            metadata: {
-              username,
-              amount: wonAmount,
-              gameType,
-              probability: `1/${winProbability}`,
-            },
-          },
-        });
-
-        return { won: true, amount: wonAmount };
-      } else {
-        // Juste mettre à jour la cagnotte
-        await tx.jackpot.update({
-          where: { id: jackpot.id },
-          data: { amount: newAmount },
+          data: { amount: amountWithContribution },
         });
         return { won: false };
       }
+
+      // ── GAGNÉ : le joueur remporte la cagnotte (contribution incluse) ──
+      const wonAmount = amountWithContribution;
+      const seedAmount = await this.calculateMinAmount();
+
+      // Réinitialise la cagnotte au plancher (plafonné)
+      await tx.jackpot.update({
+        where: { id: jackpot.id },
+        data: {
+          amount: BigInt(seedAmount),
+          lastWonAt: new Date(),
+          lastWonBy: username,
+          lastWonAmount: wonAmount,
+        },
+      });
+
+      // Crédite le joueur
+      const wallet = await tx.wallet.findUnique({ where: { userId } });
+      if (wallet) {
+        await tx.wallet.update({
+          where: { userId },
+          data: { balance: { increment: wonAmount } },
+        });
+
+        await tx.walletTransaction.create({
+          data: {
+            userId,
+            type: 'WIN_JACKPOT',
+            amount: wonAmount,
+            balanceBefore: wallet.balance,
+            balanceAfter: wallet.balance + wonAmount,
+            gameType,
+            reason: `🎰 JACKPOT PROGRESSIF REMPORTÉ !`,
+          },
+        });
+      }
+
+      // Enregistre le gain
+      await tx.jackpotWin.create({
+        data: { userId, amount: wonAmount, gameType },
+      });
+
+      // Log d'audit
+      await tx.adminAction.create({
+        data: {
+          adminId: null,
+          action: 'JACKPOT_WIN',
+          targetType: 'USER',
+          targetId: userId,
+          metadata: {
+            username,
+            amount: Number(wonAmount),
+            gameType,
+            probability: `1/${winProbability}`,
+          },
+        },
+      });
+
+      return { won: true, amount: Number(wonAmount) };
     });
   }
 

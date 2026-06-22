@@ -27,6 +27,7 @@ const configs = [
   { key: 'JACKPOT_WIN_PROBABILITY', value: '10000' },
   { key: 'JACKPOT_MIN_AMOUNT', value: '100000' },
   { key: 'JACKPOT_MIN_PCT', value: '2' },
+  { key: 'JACKPOT_MIN_CAP', value: '500000' },
   { key: 'JACKPOT_MIN_STAKE', value: '5000' },
 
   { key: 'XP_MIN_STAKE', value: '500' },
