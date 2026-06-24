@@ -24,6 +24,7 @@ import { JackpotModule } from './jackpot/jackpot.module';
 import { BattleBoxModule } from './battle-box/battle-box.module';
 import { RewardCodesModule } from './reward-codes/reward-codes.module';
 import { RaffleModule } from './raffle/raffle.module';
+import { ChatModule } from './chat/chat.module';
 
 
 
@@ -61,6 +62,7 @@ import { RaffleModule } from './raffle/raffle.module';
     BattleBoxModule,
     RewardCodesModule,
     RaffleModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

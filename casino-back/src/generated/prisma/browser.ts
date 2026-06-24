@@ -63,6 +63,11 @@ export type BlackjackGame = Prisma.BlackjackGameModel
  */
 export type CasinoConfig = Prisma.CasinoConfigModel
 /**
+ * Model ChatMessage
+ * 
+ */
+export type ChatMessage = Prisma.ChatMessageModel
+/**
  * Model LoginHistory
  * 
  */

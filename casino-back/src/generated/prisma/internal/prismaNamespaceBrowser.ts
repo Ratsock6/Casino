@@ -60,6 +60,7 @@ export const ModelName = {
   IdempotencyRequest: 'IdempotencyRequest',
   BlackjackGame: 'BlackjackGame',
   CasinoConfig: 'CasinoConfig',
+  ChatMessage: 'ChatMessage',
   LoginHistory: 'LoginHistory',
   VipSubscription: 'VipSubscription',
   PlayerLevel: 'PlayerLevel',
@@ -233,6 +234,20 @@ export const CasinoConfigScalarFieldEnum = {
 } as const
 
 export type CasinoConfigScalarFieldEnum = (typeof CasinoConfigScalarFieldEnum)[keyof typeof CasinoConfigScalarFieldEnum]
+
+
+export const ChatMessageScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  username: 'username',
+  role: 'role',
+  content: 'content',
+  deleted: 'deleted',
+  deletedBy: 'deletedBy',
+  createdAt: 'createdAt'
+} as const
+
+export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
 export const LoginHistoryScalarFieldEnum = {

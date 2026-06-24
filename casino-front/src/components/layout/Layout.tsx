@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import '../../styles/components/layout.scss';
 import WinnersTicker from '../ui/WinnersTicker';
 import Notifications from '../ui/Notifications';
+import ChatWidget from '../chat/ChatWidget';
 import { useSocket } from '../../hooks/useSocket';
 import { useEffect } from 'react';
 
@@ -22,6 +23,7 @@ const Layout = () => {
       </main>
       <WinnersTicker />
       <Notifications />
+      <ChatWidget />
     </div>
   );
 };

@@ -1,0 +1,204 @@
+@import '../variables';
+
+// Bouton flottant
+.chat-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg, $color-gold, $color-gold-light);
+  color: #1a1340;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  transition: transform 0.15s ease;
+
+  &:hover { transform: scale(1.08); }
+
+  &__badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    border-radius: 10px;
+    background: $color-error;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// Fenêtre de chat
+.chat-window {
+  position: fixed;
+  bottom: 92px;
+  right: 24px;
+  width: 360px;
+  max-width: calc(100vw - 48px);
+  height: 480px;
+  max-height: calc(100vh - 140px);
+  display: flex;
+  flex-direction: column;
+  background: $color-surface;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: $radius-lg;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing-md;
+    background: linear-gradient(135deg, #1a1340, #241a52);
+    color: $color-gold;
+    font-weight: 700;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  &__close {
+    background: transparent;
+    border: none;
+    color: $color-text-muted;
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    &:hover { color: $color-text; }
+  }
+
+  &__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-md;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__empty {
+    color: $color-text-muted;
+    text-align: center;
+    margin: auto;
+    font-size: 0.9rem;
+  }
+
+  &__error {
+    color: $color-error;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: $spacing-xs;
+    margin: 0;
+  }
+
+  &__input {
+    display: flex;
+    gap: $spacing-xs;
+    padding: $spacing-sm;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+    input {
+      flex: 1;
+      padding: $spacing-sm;
+      background: $color-bg;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: $radius-sm;
+      color: $color-text;
+
+      &:focus { outline: none; border-color: $color-gold; }
+    }
+
+    button {
+      padding: $spacing-sm $spacing-md;
+      background: $color-gold;
+      color: #1a1340;
+      border: none;
+      border-radius: $radius-sm;
+      font-weight: 600;
+      cursor: pointer;
+
+      &:disabled { opacity: 0.5; cursor: not-allowed; }
+    }
+  }
+}
+
+// Message individuel
+.chat-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &--mine {
+    .chat-msg__content {
+      background: rgba(201, 168, 76, 0.15);
+    }
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: 0.78rem;
+  }
+
+  &__author {
+    font-weight: 700;
+    color: $color-text;
+
+    &--admin, &--super_admin { color: #e05c5c; }
+    &--vip { color: $color-gold; }
+  }
+
+  &__tag {
+    display: inline-block;
+    font-size: 0.62rem;
+    padding: 1px 5px;
+    border-radius: 4px;
+    margin-right: 4px;
+    background: rgba(224, 92, 92, 0.2);
+    color: #e05c5c;
+    vertical-align: middle;
+  }
+
+  &__author--vip &__tag {
+    background: rgba(201, 168, 76, 0.2);
+    color: $color-gold;
+  }
+
+  &__time {
+    color: $color-text-muted;
+    font-size: 0.7rem;
+  }
+
+  &__delete {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    opacity: 0.5;
+    margin-left: auto;
+    padding: 0 2px;
+
+    &:hover { opacity: 1; }
+  }
+
+  &__content {
+    margin: 0;
+    padding: $spacing-xs $spacing-sm;
+    background: $color-bg;
+    border-radius: $radius-sm;
+    color: $color-text;
+    font-size: 0.9rem;
+    word-break: break-word;
+    line-height: 1.4;
+  }
+}

@@ -3,10 +3,14 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { ChatService } from '../chat/chat.service';
 
 @WebSocketGateway({
   cors: {
@@ -24,6 +28,7 @@ export class CasinoGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly chatService: ChatService,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -78,5 +83,60 @@ export class CasinoGateway implements OnGatewayConnection, OnGatewayDisconnect {
   // Envoie à tout le monde
   broadcast(event: string, data: unknown) {
     this.server.emit(event, data);
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // CHAT
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // Un joueur envoie un message dans le chat global.
+  @SubscribeMessage('chat:send')
+  async handleChatSend(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { content: string },
+  ) {
+    const userId = client.data.userId;
+    const username = client.data.username;
+    const role = client.data.role;
+
+    if (!userId) return; // socket non authentifié
+
+    try {
+      const message = await this.chatService.createMessage(
+        userId,
+        username,
+        role,
+        body?.content,
+      );
+      // Diffuse le nouveau message à tous les clients connectés
+      this.server.emit('chat:message', message);
+    } catch (e: any) {
+      // Renvoie l'erreur uniquement à l'expéditeur
+      client.emit('chat:error', { message: e?.message || 'Erreur lors de l\'envoi' });
+    }
+  }
+
+  // Un admin supprime un message.
+  @SubscribeMessage('chat:delete')
+  async handleChatDelete(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() body: { messageId: string },
+  ) {
+    const role = client.data.role;
+    const adminId = client.data.userId;
+
+    // Seuls les admins peuvent supprimer
+    if (!['ADMIN', 'SUPER_ADMIN'].includes(role)) {
+      client.emit('chat:error', { message: 'Action réservée aux administrateurs' });
+      return;
+    }
+
+    try {
+      await this.chatService.deleteMessage(body?.messageId, adminId);
+      // Informe tous les clients que ce message est supprimé
+      this.server.emit('chat:deleted', { messageId: body.messageId });
+    } catch (e: any) {
+      client.emit('chat:error', { message: e?.message || 'Erreur lors de la suppression' });
+    }
   }
 }

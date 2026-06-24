@@ -105,6 +105,7 @@ model User {
   gameRounds          GameRound[]
   idempotencyRequests IdempotencyRequest[]
   blackjackGames      BlackjackGame[]
+  chatMessages        ChatMessage[]
 
   @@index([username])
   @@index([role, status])
@@ -237,6 +238,21 @@ model CasinoConfig {
   updatedBy String?
 
   @@index([key])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  username  String // dénormalisé : pseudo au moment de l'envoi
+  role      String // PLAYER / VIP / ADMIN / SUPER_ADMIN (pour le style côté front)
+  content   String
+  deleted   Boolean  @default(false)
+  deletedBy String? // id de l'admin qui a supprimé
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([createdAt])
 }
 
 model LoginHistory {

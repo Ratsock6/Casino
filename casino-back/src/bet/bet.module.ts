@@ -5,10 +5,9 @@ import { AlertsModule } from '../alerts/alerts.module';
 import { PrismaModule } from '../prisma/prisma.module';
 import { LevelsModule } from '../levels/levels.module';
 import { JackpotModule } from '../jackpot/jackpot.module';
-import { CasinoGateway } from 'src/gateway/casino.gateway';
 
 @Module({
-  imports: [PrismaModule, AlertsModule, LevelsModule, JackpotModule, CasinoGateway],
+  imports: [PrismaModule, AlertsModule, LevelsModule, JackpotModule],
   controllers: [BetController],
   providers: [BetService],
   exports: [BetService],

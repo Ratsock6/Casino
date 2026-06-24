@@ -45,5 +45,10 @@ export const useSocket = () => {
     socketInstance.off(event);
   }, []);
 
-  return { connect, disconnect, on, off, socket: socketInstance };
+  const emit = useCallback((event: string, data?: unknown) => {
+    if (!socketInstance) return;
+    socketInstance.emit(event, data);
+  }, []);
+
+  return { connect, disconnect, on, off, emit, socket: socketInstance };
 };

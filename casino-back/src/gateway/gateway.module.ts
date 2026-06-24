@@ -3,10 +3,12 @@ import { CasinoGateway } from './casino.gateway';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import type { StringValue } from 'ms';
+import { ChatModule } from '../chat/chat.module';
 
 @Global()
 @Module({
   imports: [
+    ChatModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.getOrThrow<string>('JWT_ACCESS_SECRET'),
