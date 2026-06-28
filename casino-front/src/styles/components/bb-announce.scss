@@ -1,0 +1,88 @@
+@import '../variables';
+
+.bb-announce {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md $spacing-lg;
+  background: linear-gradient(135deg, #1a1340, #2a1f5c);
+  border: 1px solid $color-gold;
+  border-radius: $radius-lg;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  max-width: 480px;
+  width: calc(100% - 40px);
+  opacity: 0;
+  transition: transform 0.4s ease, opacity 0.4s ease;
+
+  &--visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  &__icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    animation: bb-announce-pulse 1.5s ease-in-out infinite;
+  }
+
+  &__content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 0.95rem;
+    color: $color-text;
+
+    strong { color: $color-gold; }
+  }
+
+  &__details {
+    margin: 2px 0 0;
+    font-size: 0.82rem;
+    color: $color-text-muted;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    flex-shrink: 0;
+  }
+
+  &__btn {
+    border: none;
+    cursor: pointer;
+    border-radius: $radius-sm;
+    font-weight: 600;
+
+    &--join {
+      padding: $spacing-sm $spacing-md;
+      background: $color-gold;
+      color: #1a1340;
+      font-size: 0.85rem;
+
+      &:hover { background: $color-gold-light; }
+    }
+
+    &--close {
+      padding: $spacing-xs $spacing-sm;
+      background: transparent;
+      color: $color-text-muted;
+      font-size: 1rem;
+
+      &:hover { color: $color-text; }
+    }
+  }
+}
+
+@keyframes bb-announce-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}

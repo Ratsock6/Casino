@@ -890,3 +890,428 @@
     transform: scale(1.1);
   }
 }
+/* ─── Améliorations création de partie ─────────────────────────────── */
+
+.battlebox__catalog-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+
+  h3 { margin: 0; }
+}
+
+.battlebox__sort {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 0.85rem;
+  color: $color-text-muted;
+
+  select {
+    padding: $spacing-xs $spacing-sm;
+    background: $color-surface-2;
+    color: $color-text;
+    border: 1px solid $color-border;
+    border-radius: $radius-sm;
+    cursor: pointer;
+
+    &:focus { outline: none; border-color: $color-gold; }
+  }
+}
+
+/* Jauge de sécurité sur chaque carte */
+.battlebox__box-safety {
+  margin: $spacing-sm 0;
+
+  &-head {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: $color-text-muted;
+    margin-bottom: 4px;
+  }
+
+  &-bar {
+    height: 6px;
+    background: $color-surface-2;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  &-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width $transition-base;
+  }
+}
+
+/* Bouton "voir les stats" */
+.battlebox__box-details {
+  width: 100%;
+  padding: $spacing-xs;
+  margin-bottom: $spacing-sm;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  color: $color-gold;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover { background: rgba(201, 168, 76, 0.1); }
+}
+
+/* Résumé : détail des box ajoutées */
+.battlebox__summary-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding-bottom: $spacing-sm;
+  margin-bottom: $spacing-sm;
+  border-bottom: 1px solid $color-border;
+}
+
+.battlebox__summary-box-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.82rem;
+  color: $color-text-muted;
+}
+
+.battlebox__summary-row--total {
+  font-size: 1.05rem;
+  padding-top: 2px;
+}
+
+/* Modal détails */
+.battlebox__modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: $spacing-md;
+}
+
+.battlebox__modal {
+  position: relative;
+  width: 480px;
+  max-width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+
+  &-close {
+    position: absolute;
+    top: $spacing-md;
+    right: $spacing-md;
+    background: transparent;
+    border: none;
+    color: $color-text-muted;
+    font-size: 1.2rem;
+    cursor: pointer;
+
+    &:hover { color: $color-text; }
+  }
+
+  &-head {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    margin-bottom: $spacing-lg;
+
+    h3 { margin: 0; }
+  }
+
+  &-emoji { font-size: 2.5rem; }
+
+  &-desc {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: $color-text-muted;
+  }
+
+  &-stats {
+    display: flex;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+  }
+
+  &-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: $spacing-sm;
+    background: $color-surface-2;
+    border-radius: $radius-sm;
+    text-align: center;
+
+    span { font-size: 0.7rem; color: $color-text-muted; }
+    strong { font-size: 0.9rem; }
+  }
+
+  &-subtitle {
+    margin: 0 0 $spacing-sm;
+    font-size: 0.9rem;
+    color: $color-text;
+  }
+
+  &-items {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-lg;
+  }
+
+  &-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+
+    &-emoji { font-size: 1.3rem; width: 28px; text-align: center; }
+
+    &-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 130px;
+      flex-shrink: 0;
+    }
+
+    &-name { font-size: 0.82rem; font-weight: 600; }
+    &-value { font-size: 0.72rem; color: $color-text-muted; }
+
+    &-chance {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: $spacing-sm;
+
+      &-bar {
+        flex: 1;
+        height: 6px;
+        background: $color-surface-2;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      &-fill { height: 100%; border-radius: 3px; }
+
+      span { font-size: 0.72rem; color: $color-text-muted; min-width: 38px; text-align: right; }
+    }
+  }
+}
+
+/* ─── Onglets du lobby ─────────────────────────────────────────────── */
+.battlebox__tabs {
+  display: flex;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+  border-bottom: 1px solid $color-border;
+}
+
+.battlebox__tab {
+  padding: $spacing-sm $spacing-lg;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: $color-text-muted;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover { color: $color-text; }
+
+  &--active {
+    color: $color-gold;
+    border-bottom-color: $color-gold;
+  }
+}
+
+/* ─── Vue Mes Stats ────────────────────────────────────────────────── */
+.battlebox__stats-view {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.battlebox__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: $spacing-md;
+}
+
+.battlebox__stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  text-align: center;
+
+  &--win { border-color: rgba(76, 175, 125, 0.5); }
+  &--loss { border-color: rgba(224, 92, 92, 0.5); }
+
+  &-label { font-size: 0.78rem; color: $color-text-muted; }
+  &-value { font-size: 1.4rem; font-weight: 700; color: $color-text; }
+
+  &--win &-value { color: $color-success; }
+  &--loss &-value { color: $color-error; }
+}
+
+/* ─── Historique ───────────────────────────────────────────────────── */
+.battlebox__history-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.battlebox__history-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  background: $color-surface-2;
+  border: 1px solid $color-border;
+  border-left: 3px solid $color-border;
+  border-radius: $radius-md;
+
+  &--win { border-left-color: $color-success; }
+  &--loss { border-left-color: $color-error; }
+}
+
+.battlebox__history-result { font-size: 1.4rem; }
+
+.battlebox__history-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .battlebox__history-players { font-weight: 600; font-size: 0.9rem; }
+  .battlebox__history-meta { font-size: 0.78rem; color: $color-text-muted; }
+}
+
+.battlebox__history-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: $color-text-muted;
+}
+
+/* ─── Classement ───────────────────────────────────────────────────── */
+.battlebox__leaderboard-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.battlebox__leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  background: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+
+  &--me {
+    border-color: $color-gold;
+    background: rgba(201, 168, 76, 0.08);
+  }
+}
+
+.battlebox__leaderboard-rank {
+  font-size: 1rem;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+  color: $color-text-muted;
+
+  &--1, &--2, &--3 { font-size: 1.3rem; }
+}
+
+.battlebox__leaderboard-name {
+  flex: 1;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.battlebox__leaderboard-stat {
+  font-size: 0.85rem;
+  min-width: 90px;
+  text-align: right;
+
+  &--muted { color: $color-text-muted; min-width: 50px; }
+}
+
+.battlebox__leaderboard-won {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $color-gold;
+  min-width: 110px;
+  text-align: right;
+}
+
+/* ─── Filtres par catégorie ────────────────────────────────────────── */
+.battlebox__categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+}
+
+.battlebox__category {
+  padding: $spacing-xs $spacing-md;
+  background: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: 999px;
+  color: $color-text-muted;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover { color: $color-text; border-color: $color-gold; }
+
+  &--active {
+    background: $color-gold;
+    border-color: $color-gold;
+    color: #1a1340;
+  }
+}
+
+/* ─── Boutons d'attente (annonce + bots) ───────────────────────────── */
+.battlebox__waiting-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+  justify-content: center;
+  margin: $spacing-md 0;
+}
+
+.battlebox__btn--gold {
+  background: linear-gradient(135deg, $color-gold, $color-gold-light);
+  color: #1a1340;
+  border: none;
+  font-weight: 700;
+
+  &:hover { filter: brightness(1.1); }
+}
+
+.battlebox__announce-confirm {
+  text-align: center;
+  color: $color-gold;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin: $spacing-sm 0;
+}

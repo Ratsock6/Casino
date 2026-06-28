@@ -42,6 +42,8 @@ export type BattleBoxPlayerMinAggregateOutputType = {
   id: string | null
   gameId: string | null
   userId: string | null
+  isBot: boolean | null
+  botName: string | null
   teamIndex: number | null
   stake: bigint | null
   totalValue: bigint | null
@@ -53,6 +55,8 @@ export type BattleBoxPlayerMaxAggregateOutputType = {
   id: string | null
   gameId: string | null
   userId: string | null
+  isBot: boolean | null
+  botName: string | null
   teamIndex: number | null
   stake: bigint | null
   totalValue: bigint | null
@@ -64,6 +68,8 @@ export type BattleBoxPlayerCountAggregateOutputType = {
   id: number
   gameId: number
   userId: number
+  isBot: number
+  botName: number
   teamIndex: number
   stake: number
   items: number
@@ -90,6 +96,8 @@ export type BattleBoxPlayerMinAggregateInputType = {
   id?: true
   gameId?: true
   userId?: true
+  isBot?: true
+  botName?: true
   teamIndex?: true
   stake?: true
   totalValue?: true
@@ -101,6 +109,8 @@ export type BattleBoxPlayerMaxAggregateInputType = {
   id?: true
   gameId?: true
   userId?: true
+  isBot?: true
+  botName?: true
   teamIndex?: true
   stake?: true
   totalValue?: true
@@ -112,6 +122,8 @@ export type BattleBoxPlayerCountAggregateInputType = {
   id?: true
   gameId?: true
   userId?: true
+  isBot?: true
+  botName?: true
   teamIndex?: true
   stake?: true
   items?: true
@@ -210,7 +222,9 @@ export type BattleBoxPlayerGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type BattleBoxPlayerGroupByOutputType = {
   id: string
   gameId: string
-  userId: string
+  userId: string | null
+  isBot: boolean
+  botName: string | null
   teamIndex: number
   stake: bigint
   items: runtime.JsonValue | null
@@ -245,7 +259,9 @@ export type BattleBoxPlayerWhereInput = {
   NOT?: Prisma.BattleBoxPlayerWhereInput | Prisma.BattleBoxPlayerWhereInput[]
   id?: Prisma.StringFilter<"BattleBoxPlayer"> | string
   gameId?: Prisma.StringFilter<"BattleBoxPlayer"> | string
-  userId?: Prisma.StringFilter<"BattleBoxPlayer"> | string
+  userId?: Prisma.StringNullableFilter<"BattleBoxPlayer"> | string | null
+  isBot?: Prisma.BoolFilter<"BattleBoxPlayer"> | boolean
+  botName?: Prisma.StringNullableFilter<"BattleBoxPlayer"> | string | null
   teamIndex?: Prisma.IntFilter<"BattleBoxPlayer"> | number
   stake?: Prisma.BigIntFilter<"BattleBoxPlayer"> | bigint | number
   items?: Prisma.JsonNullableFilter<"BattleBoxPlayer">
@@ -253,13 +269,15 @@ export type BattleBoxPlayerWhereInput = {
   isWinner?: Prisma.BoolFilter<"BattleBoxPlayer"> | boolean
   joinedAt?: Prisma.DateTimeFilter<"BattleBoxPlayer"> | Date | string
   game?: Prisma.XOR<Prisma.BattleBoxGameScalarRelationFilter, Prisma.BattleBoxGameWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type BattleBoxPlayerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   gameId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botName?: Prisma.SortOrderInput | Prisma.SortOrder
   teamIndex?: Prisma.SortOrder
   stake?: Prisma.SortOrder
   items?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -272,12 +290,13 @@ export type BattleBoxPlayerOrderByWithRelationInput = {
 
 export type BattleBoxPlayerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  gameId_userId?: Prisma.BattleBoxPlayerGameIdUserIdCompoundUniqueInput
   AND?: Prisma.BattleBoxPlayerWhereInput | Prisma.BattleBoxPlayerWhereInput[]
   OR?: Prisma.BattleBoxPlayerWhereInput[]
   NOT?: Prisma.BattleBoxPlayerWhereInput | Prisma.BattleBoxPlayerWhereInput[]
   gameId?: Prisma.StringFilter<"BattleBoxPlayer"> | string
-  userId?: Prisma.StringFilter<"BattleBoxPlayer"> | string
+  userId?: Prisma.StringNullableFilter<"BattleBoxPlayer"> | string | null
+  isBot?: Prisma.BoolFilter<"BattleBoxPlayer"> | boolean
+  botName?: Prisma.StringNullableFilter<"BattleBoxPlayer"> | string | null
   teamIndex?: Prisma.IntFilter<"BattleBoxPlayer"> | number
   stake?: Prisma.BigIntFilter<"BattleBoxPlayer"> | bigint | number
   items?: Prisma.JsonNullableFilter<"BattleBoxPlayer">
@@ -285,13 +304,15 @@ export type BattleBoxPlayerWhereUniqueInput = Prisma.AtLeast<{
   isWinner?: Prisma.BoolFilter<"BattleBoxPlayer"> | boolean
   joinedAt?: Prisma.DateTimeFilter<"BattleBoxPlayer"> | Date | string
   game?: Prisma.XOR<Prisma.BattleBoxGameScalarRelationFilter, Prisma.BattleBoxGameWhereInput>
-  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-}, "id" | "gameId_userId">
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
+}, "id">
 
 export type BattleBoxPlayerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   gameId?: Prisma.SortOrder
-  userId?: Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botName?: Prisma.SortOrderInput | Prisma.SortOrder
   teamIndex?: Prisma.SortOrder
   stake?: Prisma.SortOrder
   items?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -311,7 +332,9 @@ export type BattleBoxPlayerScalarWhereWithAggregatesInput = {
   NOT?: Prisma.BattleBoxPlayerScalarWhereWithAggregatesInput | Prisma.BattleBoxPlayerScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"BattleBoxPlayer"> | string
   gameId?: Prisma.StringWithAggregatesFilter<"BattleBoxPlayer"> | string
-  userId?: Prisma.StringWithAggregatesFilter<"BattleBoxPlayer"> | string
+  userId?: Prisma.StringNullableWithAggregatesFilter<"BattleBoxPlayer"> | string | null
+  isBot?: Prisma.BoolWithAggregatesFilter<"BattleBoxPlayer"> | boolean
+  botName?: Prisma.StringNullableWithAggregatesFilter<"BattleBoxPlayer"> | string | null
   teamIndex?: Prisma.IntWithAggregatesFilter<"BattleBoxPlayer"> | number
   stake?: Prisma.BigIntWithAggregatesFilter<"BattleBoxPlayer"> | bigint | number
   items?: Prisma.JsonNullableWithAggregatesFilter<"BattleBoxPlayer">
@@ -322,6 +345,8 @@ export type BattleBoxPlayerScalarWhereWithAggregatesInput = {
 
 export type BattleBoxPlayerCreateInput = {
   id?: string
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -329,13 +354,15 @@ export type BattleBoxPlayerCreateInput = {
   isWinner?: boolean
   joinedAt?: Date | string
   game: Prisma.BattleBoxGameCreateNestedOneWithoutPlayersInput
-  user: Prisma.UserCreateNestedOneWithoutBattleBoxPlayersInput
+  user?: Prisma.UserCreateNestedOneWithoutBattleBoxPlayersInput
 }
 
 export type BattleBoxPlayerUncheckedCreateInput = {
   id?: string
   gameId: string
-  userId: string
+  userId?: string | null
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -346,6 +373,8 @@ export type BattleBoxPlayerUncheckedCreateInput = {
 
 export type BattleBoxPlayerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -353,13 +382,15 @@ export type BattleBoxPlayerUpdateInput = {
   isWinner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   game?: Prisma.BattleBoxGameUpdateOneRequiredWithoutPlayersNestedInput
-  user?: Prisma.UserUpdateOneRequiredWithoutBattleBoxPlayersNestedInput
+  user?: Prisma.UserUpdateOneWithoutBattleBoxPlayersNestedInput
 }
 
 export type BattleBoxPlayerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gameId?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -371,7 +402,9 @@ export type BattleBoxPlayerUncheckedUpdateInput = {
 export type BattleBoxPlayerCreateManyInput = {
   id?: string
   gameId: string
-  userId: string
+  userId?: string | null
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -382,6 +415,8 @@ export type BattleBoxPlayerCreateManyInput = {
 
 export type BattleBoxPlayerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -393,7 +428,9 @@ export type BattleBoxPlayerUpdateManyMutationInput = {
 export type BattleBoxPlayerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gameId?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -412,15 +449,12 @@ export type BattleBoxPlayerOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type BattleBoxPlayerGameIdUserIdCompoundUniqueInput = {
-  gameId: string
-  userId: string
-}
-
 export type BattleBoxPlayerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gameId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botName?: Prisma.SortOrder
   teamIndex?: Prisma.SortOrder
   stake?: Prisma.SortOrder
   items?: Prisma.SortOrder
@@ -439,6 +473,8 @@ export type BattleBoxPlayerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gameId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botName?: Prisma.SortOrder
   teamIndex?: Prisma.SortOrder
   stake?: Prisma.SortOrder
   totalValue?: Prisma.SortOrder
@@ -450,6 +486,8 @@ export type BattleBoxPlayerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   gameId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  isBot?: Prisma.SortOrder
+  botName?: Prisma.SortOrder
   teamIndex?: Prisma.SortOrder
   stake?: Prisma.SortOrder
   totalValue?: Prisma.SortOrder
@@ -549,6 +587,8 @@ export type BattleBoxPlayerUncheckedUpdateManyWithoutGameNestedInput = {
 
 export type BattleBoxPlayerCreateWithoutUserInput = {
   id?: string
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -561,6 +601,8 @@ export type BattleBoxPlayerCreateWithoutUserInput = {
 export type BattleBoxPlayerUncheckedCreateWithoutUserInput = {
   id?: string
   gameId: string
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -601,7 +643,9 @@ export type BattleBoxPlayerScalarWhereInput = {
   NOT?: Prisma.BattleBoxPlayerScalarWhereInput | Prisma.BattleBoxPlayerScalarWhereInput[]
   id?: Prisma.StringFilter<"BattleBoxPlayer"> | string
   gameId?: Prisma.StringFilter<"BattleBoxPlayer"> | string
-  userId?: Prisma.StringFilter<"BattleBoxPlayer"> | string
+  userId?: Prisma.StringNullableFilter<"BattleBoxPlayer"> | string | null
+  isBot?: Prisma.BoolFilter<"BattleBoxPlayer"> | boolean
+  botName?: Prisma.StringNullableFilter<"BattleBoxPlayer"> | string | null
   teamIndex?: Prisma.IntFilter<"BattleBoxPlayer"> | number
   stake?: Prisma.BigIntFilter<"BattleBoxPlayer"> | bigint | number
   items?: Prisma.JsonNullableFilter<"BattleBoxPlayer">
@@ -612,18 +656,22 @@ export type BattleBoxPlayerScalarWhereInput = {
 
 export type BattleBoxPlayerCreateWithoutGameInput = {
   id?: string
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalValue?: bigint | number | null
   isWinner?: boolean
   joinedAt?: Date | string
-  user: Prisma.UserCreateNestedOneWithoutBattleBoxPlayersInput
+  user?: Prisma.UserCreateNestedOneWithoutBattleBoxPlayersInput
 }
 
 export type BattleBoxPlayerUncheckedCreateWithoutGameInput = {
   id?: string
-  userId: string
+  userId?: string | null
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -661,6 +709,8 @@ export type BattleBoxPlayerUpdateManyWithWhereWithoutGameInput = {
 export type BattleBoxPlayerCreateManyUserInput = {
   id?: string
   gameId: string
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -671,6 +721,8 @@ export type BattleBoxPlayerCreateManyUserInput = {
 
 export type BattleBoxPlayerUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -683,6 +735,8 @@ export type BattleBoxPlayerUpdateWithoutUserInput = {
 export type BattleBoxPlayerUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gameId?: Prisma.StringFieldUpdateOperationsInput | string
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -694,6 +748,8 @@ export type BattleBoxPlayerUncheckedUpdateWithoutUserInput = {
 export type BattleBoxPlayerUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   gameId?: Prisma.StringFieldUpdateOperationsInput | string
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -704,7 +760,9 @@ export type BattleBoxPlayerUncheckedUpdateManyWithoutUserInput = {
 
 export type BattleBoxPlayerCreateManyGameInput = {
   id?: string
-  userId: string
+  userId?: string | null
+  isBot?: boolean
+  botName?: string | null
   teamIndex?: number
   stake: bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -715,18 +773,22 @@ export type BattleBoxPlayerCreateManyGameInput = {
 
 export type BattleBoxPlayerUpdateWithoutGameInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   totalValue?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
   isWinner?: Prisma.BoolFieldUpdateOperationsInput | boolean
   joinedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  user?: Prisma.UserUpdateOneRequiredWithoutBattleBoxPlayersNestedInput
+  user?: Prisma.UserUpdateOneWithoutBattleBoxPlayersNestedInput
 }
 
 export type BattleBoxPlayerUncheckedUpdateWithoutGameInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -737,7 +799,9 @@ export type BattleBoxPlayerUncheckedUpdateWithoutGameInput = {
 
 export type BattleBoxPlayerUncheckedUpdateManyWithoutGameInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isBot?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   teamIndex?: Prisma.IntFieldUpdateOperationsInput | number
   stake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   items?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -752,6 +816,8 @@ export type BattleBoxPlayerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   id?: boolean
   gameId?: boolean
   userId?: boolean
+  isBot?: boolean
+  botName?: boolean
   teamIndex?: boolean
   stake?: boolean
   items?: boolean
@@ -759,13 +825,15 @@ export type BattleBoxPlayerSelect<ExtArgs extends runtime.Types.Extensions.Inter
   isWinner?: boolean
   joinedAt?: boolean
   game?: boolean | Prisma.BattleBoxGameDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.BattleBoxPlayer$userArgs<ExtArgs>
 }, ExtArgs["result"]["battleBoxPlayer"]>
 
 export type BattleBoxPlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   gameId?: boolean
   userId?: boolean
+  isBot?: boolean
+  botName?: boolean
   teamIndex?: boolean
   stake?: boolean
   items?: boolean
@@ -773,13 +841,15 @@ export type BattleBoxPlayerSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   isWinner?: boolean
   joinedAt?: boolean
   game?: boolean | Prisma.BattleBoxGameDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.BattleBoxPlayer$userArgs<ExtArgs>
 }, ExtArgs["result"]["battleBoxPlayer"]>
 
 export type BattleBoxPlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   gameId?: boolean
   userId?: boolean
+  isBot?: boolean
+  botName?: boolean
   teamIndex?: boolean
   stake?: boolean
   items?: boolean
@@ -787,13 +857,15 @@ export type BattleBoxPlayerSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   isWinner?: boolean
   joinedAt?: boolean
   game?: boolean | Prisma.BattleBoxGameDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.BattleBoxPlayer$userArgs<ExtArgs>
 }, ExtArgs["result"]["battleBoxPlayer"]>
 
 export type BattleBoxPlayerSelectScalar = {
   id?: boolean
   gameId?: boolean
   userId?: boolean
+  isBot?: boolean
+  botName?: boolean
   teamIndex?: boolean
   stake?: boolean
   items?: boolean
@@ -802,30 +874,32 @@ export type BattleBoxPlayerSelectScalar = {
   joinedAt?: boolean
 }
 
-export type BattleBoxPlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gameId" | "userId" | "teamIndex" | "stake" | "items" | "totalValue" | "isWinner" | "joinedAt", ExtArgs["result"]["battleBoxPlayer"]>
+export type BattleBoxPlayerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gameId" | "userId" | "isBot" | "botName" | "teamIndex" | "stake" | "items" | "totalValue" | "isWinner" | "joinedAt", ExtArgs["result"]["battleBoxPlayer"]>
 export type BattleBoxPlayerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   game?: boolean | Prisma.BattleBoxGameDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.BattleBoxPlayer$userArgs<ExtArgs>
 }
 export type BattleBoxPlayerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   game?: boolean | Prisma.BattleBoxGameDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.BattleBoxPlayer$userArgs<ExtArgs>
 }
 export type BattleBoxPlayerIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   game?: boolean | Prisma.BattleBoxGameDefaultArgs<ExtArgs>
-  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.BattleBoxPlayer$userArgs<ExtArgs>
 }
 
 export type $BattleBoxPlayerPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "BattleBoxPlayer"
   objects: {
     game: Prisma.$BattleBoxGamePayload<ExtArgs>
-    user: Prisma.$UserPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     gameId: string
-    userId: string
+    userId: string | null
+    isBot: boolean
+    botName: string | null
     teamIndex: number
     stake: bigint
     items: runtime.JsonValue | null
@@ -1227,7 +1301,7 @@ readonly fields: BattleBoxPlayerFieldRefs;
 export interface Prisma__BattleBoxPlayerClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   game<T extends Prisma.BattleBoxGameDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BattleBoxGameDefaultArgs<ExtArgs>>): Prisma.Prisma__BattleBoxGameClient<runtime.Types.Result.GetResult<Prisma.$BattleBoxGamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.BattleBoxPlayer$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.BattleBoxPlayer$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1260,6 +1334,8 @@ export interface BattleBoxPlayerFieldRefs {
   readonly id: Prisma.FieldRef<"BattleBoxPlayer", 'String'>
   readonly gameId: Prisma.FieldRef<"BattleBoxPlayer", 'String'>
   readonly userId: Prisma.FieldRef<"BattleBoxPlayer", 'String'>
+  readonly isBot: Prisma.FieldRef<"BattleBoxPlayer", 'Boolean'>
+  readonly botName: Prisma.FieldRef<"BattleBoxPlayer", 'String'>
   readonly teamIndex: Prisma.FieldRef<"BattleBoxPlayer", 'Int'>
   readonly stake: Prisma.FieldRef<"BattleBoxPlayer", 'BigInt'>
   readonly items: Prisma.FieldRef<"BattleBoxPlayer", 'Json'>
@@ -1664,6 +1740,25 @@ export type BattleBoxPlayerDeleteManyArgs<ExtArgs extends runtime.Types.Extensio
    * Limit how many BattleBoxPlayers to delete.
    */
   limit?: number
+}
+
+/**
+ * BattleBoxPlayer.user
+ */
+export type BattleBoxPlayer$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

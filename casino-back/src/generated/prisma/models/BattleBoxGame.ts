@@ -31,6 +31,7 @@ export type BattleBoxGameAvgAggregateOutputType = {
   teamSize: number | null
   totalStake: number | null
   commissionPct: number | null
+  botProfit: number | null
   winnerTeam: number | null
 }
 
@@ -39,6 +40,7 @@ export type BattleBoxGameSumAggregateOutputType = {
   teamSize: number | null
   totalStake: bigint | null
   commissionPct: number | null
+  botProfit: bigint | null
   winnerTeam: number | null
 }
 
@@ -51,6 +53,8 @@ export type BattleBoxGameMinAggregateOutputType = {
   inviteCode: string | null
   totalStake: bigint | null
   commissionPct: number | null
+  hasBots: boolean | null
+  botProfit: bigint | null
   winnerId: string | null
   winnerTeam: number | null
   createdAt: Date | null
@@ -67,6 +71,8 @@ export type BattleBoxGameMaxAggregateOutputType = {
   inviteCode: string | null
   totalStake: bigint | null
   commissionPct: number | null
+  hasBots: boolean | null
+  botProfit: bigint | null
   winnerId: string | null
   winnerTeam: number | null
   createdAt: Date | null
@@ -84,6 +90,8 @@ export type BattleBoxGameCountAggregateOutputType = {
   boxTypes: number
   totalStake: number
   commissionPct: number
+  hasBots: number
+  botProfit: number
   winnerId: number
   winnerTeam: number
   createdAt: number
@@ -98,6 +106,7 @@ export type BattleBoxGameAvgAggregateInputType = {
   teamSize?: true
   totalStake?: true
   commissionPct?: true
+  botProfit?: true
   winnerTeam?: true
 }
 
@@ -106,6 +115,7 @@ export type BattleBoxGameSumAggregateInputType = {
   teamSize?: true
   totalStake?: true
   commissionPct?: true
+  botProfit?: true
   winnerTeam?: true
 }
 
@@ -118,6 +128,8 @@ export type BattleBoxGameMinAggregateInputType = {
   inviteCode?: true
   totalStake?: true
   commissionPct?: true
+  hasBots?: true
+  botProfit?: true
   winnerId?: true
   winnerTeam?: true
   createdAt?: true
@@ -134,6 +146,8 @@ export type BattleBoxGameMaxAggregateInputType = {
   inviteCode?: true
   totalStake?: true
   commissionPct?: true
+  hasBots?: true
+  botProfit?: true
   winnerId?: true
   winnerTeam?: true
   createdAt?: true
@@ -151,6 +165,8 @@ export type BattleBoxGameCountAggregateInputType = {
   boxTypes?: true
   totalStake?: true
   commissionPct?: true
+  hasBots?: true
+  botProfit?: true
   winnerId?: true
   winnerTeam?: true
   createdAt?: true
@@ -255,6 +271,8 @@ export type BattleBoxGameGroupByOutputType = {
   boxTypes: runtime.JsonValue
   totalStake: bigint
   commissionPct: number
+  hasBots: boolean
+  botProfit: bigint
   winnerId: string | null
   winnerTeam: number | null
   createdAt: Date
@@ -295,6 +313,8 @@ export type BattleBoxGameWhereInput = {
   boxTypes?: Prisma.JsonFilter<"BattleBoxGame">
   totalStake?: Prisma.BigIntFilter<"BattleBoxGame"> | bigint | number
   commissionPct?: Prisma.FloatFilter<"BattleBoxGame"> | number
+  hasBots?: Prisma.BoolFilter<"BattleBoxGame"> | boolean
+  botProfit?: Prisma.BigIntFilter<"BattleBoxGame"> | bigint | number
   winnerId?: Prisma.StringNullableFilter<"BattleBoxGame"> | string | null
   winnerTeam?: Prisma.IntNullableFilter<"BattleBoxGame"> | number | null
   createdAt?: Prisma.DateTimeFilter<"BattleBoxGame"> | Date | string
@@ -313,6 +333,8 @@ export type BattleBoxGameOrderByWithRelationInput = {
   boxTypes?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  hasBots?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   winnerTeam?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -334,6 +356,8 @@ export type BattleBoxGameWhereUniqueInput = Prisma.AtLeast<{
   boxTypes?: Prisma.JsonFilter<"BattleBoxGame">
   totalStake?: Prisma.BigIntFilter<"BattleBoxGame"> | bigint | number
   commissionPct?: Prisma.FloatFilter<"BattleBoxGame"> | number
+  hasBots?: Prisma.BoolFilter<"BattleBoxGame"> | boolean
+  botProfit?: Prisma.BigIntFilter<"BattleBoxGame"> | bigint | number
   winnerId?: Prisma.StringNullableFilter<"BattleBoxGame"> | string | null
   winnerTeam?: Prisma.IntNullableFilter<"BattleBoxGame"> | number | null
   createdAt?: Prisma.DateTimeFilter<"BattleBoxGame"> | Date | string
@@ -352,6 +376,8 @@ export type BattleBoxGameOrderByWithAggregationInput = {
   boxTypes?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  hasBots?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerId?: Prisma.SortOrderInput | Prisma.SortOrder
   winnerTeam?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -377,6 +403,8 @@ export type BattleBoxGameScalarWhereWithAggregatesInput = {
   boxTypes?: Prisma.JsonWithAggregatesFilter<"BattleBoxGame">
   totalStake?: Prisma.BigIntWithAggregatesFilter<"BattleBoxGame"> | bigint | number
   commissionPct?: Prisma.FloatWithAggregatesFilter<"BattleBoxGame"> | number
+  hasBots?: Prisma.BoolWithAggregatesFilter<"BattleBoxGame"> | boolean
+  botProfit?: Prisma.BigIntWithAggregatesFilter<"BattleBoxGame"> | bigint | number
   winnerId?: Prisma.StringNullableWithAggregatesFilter<"BattleBoxGame"> | string | null
   winnerTeam?: Prisma.IntNullableWithAggregatesFilter<"BattleBoxGame"> | number | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"BattleBoxGame"> | Date | string
@@ -394,6 +422,8 @@ export type BattleBoxGameCreateInput = {
   boxTypes: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: bigint | number
   commissionPct?: number
+  hasBots?: boolean
+  botProfit?: bigint | number
   winnerId?: string | null
   winnerTeam?: number | null
   createdAt?: Date | string
@@ -412,6 +442,8 @@ export type BattleBoxGameUncheckedCreateInput = {
   boxTypes: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: bigint | number
   commissionPct?: number
+  hasBots?: boolean
+  botProfit?: bigint | number
   winnerId?: string | null
   winnerTeam?: number | null
   createdAt?: Date | string
@@ -430,6 +462,8 @@ export type BattleBoxGameUpdateInput = {
   boxTypes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   commissionPct?: Prisma.FloatFieldUpdateOperationsInput | number
+  hasBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botProfit?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   winnerTeam?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -448,6 +482,8 @@ export type BattleBoxGameUncheckedUpdateInput = {
   boxTypes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   commissionPct?: Prisma.FloatFieldUpdateOperationsInput | number
+  hasBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botProfit?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   winnerTeam?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -466,6 +502,8 @@ export type BattleBoxGameCreateManyInput = {
   boxTypes: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: bigint | number
   commissionPct?: number
+  hasBots?: boolean
+  botProfit?: bigint | number
   winnerId?: string | null
   winnerTeam?: number | null
   createdAt?: Date | string
@@ -483,6 +521,8 @@ export type BattleBoxGameUpdateManyMutationInput = {
   boxTypes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   commissionPct?: Prisma.FloatFieldUpdateOperationsInput | number
+  hasBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botProfit?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   winnerTeam?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -500,6 +540,8 @@ export type BattleBoxGameUncheckedUpdateManyInput = {
   boxTypes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   commissionPct?: Prisma.FloatFieldUpdateOperationsInput | number
+  hasBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botProfit?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   winnerTeam?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -517,6 +559,8 @@ export type BattleBoxGameCountOrderByAggregateInput = {
   boxTypes?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  hasBots?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerId?: Prisma.SortOrder
   winnerTeam?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -529,6 +573,7 @@ export type BattleBoxGameAvgOrderByAggregateInput = {
   teamSize?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerTeam?: Prisma.SortOrder
 }
 
@@ -541,6 +586,8 @@ export type BattleBoxGameMaxOrderByAggregateInput = {
   inviteCode?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  hasBots?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerId?: Prisma.SortOrder
   winnerTeam?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -557,6 +604,8 @@ export type BattleBoxGameMinOrderByAggregateInput = {
   inviteCode?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  hasBots?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerId?: Prisma.SortOrder
   winnerTeam?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -569,6 +618,7 @@ export type BattleBoxGameSumOrderByAggregateInput = {
   teamSize?: Prisma.SortOrder
   totalStake?: Prisma.SortOrder
   commissionPct?: Prisma.SortOrder
+  botProfit?: Prisma.SortOrder
   winnerTeam?: Prisma.SortOrder
 }
 
@@ -613,6 +663,8 @@ export type BattleBoxGameCreateWithoutPlayersInput = {
   boxTypes: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: bigint | number
   commissionPct?: number
+  hasBots?: boolean
+  botProfit?: bigint | number
   winnerId?: string | null
   winnerTeam?: number | null
   createdAt?: Date | string
@@ -630,6 +682,8 @@ export type BattleBoxGameUncheckedCreateWithoutPlayersInput = {
   boxTypes: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: bigint | number
   commissionPct?: number
+  hasBots?: boolean
+  botProfit?: bigint | number
   winnerId?: string | null
   winnerTeam?: number | null
   createdAt?: Date | string
@@ -663,6 +717,8 @@ export type BattleBoxGameUpdateWithoutPlayersInput = {
   boxTypes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   commissionPct?: Prisma.FloatFieldUpdateOperationsInput | number
+  hasBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botProfit?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   winnerTeam?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -680,6 +736,8 @@ export type BattleBoxGameUncheckedUpdateWithoutPlayersInput = {
   boxTypes?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   totalStake?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   commissionPct?: Prisma.FloatFieldUpdateOperationsInput | number
+  hasBots?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  botProfit?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   winnerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   winnerTeam?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -728,6 +786,8 @@ export type BattleBoxGameSelect<ExtArgs extends runtime.Types.Extensions.Interna
   boxTypes?: boolean
   totalStake?: boolean
   commissionPct?: boolean
+  hasBots?: boolean
+  botProfit?: boolean
   winnerId?: boolean
   winnerTeam?: boolean
   createdAt?: boolean
@@ -747,6 +807,8 @@ export type BattleBoxGameSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   boxTypes?: boolean
   totalStake?: boolean
   commissionPct?: boolean
+  hasBots?: boolean
+  botProfit?: boolean
   winnerId?: boolean
   winnerTeam?: boolean
   createdAt?: boolean
@@ -764,6 +826,8 @@ export type BattleBoxGameSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   boxTypes?: boolean
   totalStake?: boolean
   commissionPct?: boolean
+  hasBots?: boolean
+  botProfit?: boolean
   winnerId?: boolean
   winnerTeam?: boolean
   createdAt?: boolean
@@ -781,6 +845,8 @@ export type BattleBoxGameSelectScalar = {
   boxTypes?: boolean
   totalStake?: boolean
   commissionPct?: boolean
+  hasBots?: boolean
+  botProfit?: boolean
   winnerId?: boolean
   winnerTeam?: boolean
   createdAt?: boolean
@@ -788,7 +854,7 @@ export type BattleBoxGameSelectScalar = {
   settledAt?: boolean
 }
 
-export type BattleBoxGameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "maxPlayers" | "teamSize" | "isPrivate" | "inviteCode" | "boxTypes" | "totalStake" | "commissionPct" | "winnerId" | "winnerTeam" | "createdAt" | "startedAt" | "settledAt", ExtArgs["result"]["battleBoxGame"]>
+export type BattleBoxGameOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "status" | "maxPlayers" | "teamSize" | "isPrivate" | "inviteCode" | "boxTypes" | "totalStake" | "commissionPct" | "hasBots" | "botProfit" | "winnerId" | "winnerTeam" | "createdAt" | "startedAt" | "settledAt", ExtArgs["result"]["battleBoxGame"]>
 export type BattleBoxGameInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   players?: boolean | Prisma.BattleBoxGame$playersArgs<ExtArgs>
   _count?: boolean | Prisma.BattleBoxGameCountOutputTypeDefaultArgs<ExtArgs>
@@ -811,6 +877,8 @@ export type $BattleBoxGamePayload<ExtArgs extends runtime.Types.Extensions.Inter
     boxTypes: runtime.JsonValue
     totalStake: bigint
     commissionPct: number
+    hasBots: boolean
+    botProfit: bigint
     winnerId: string | null
     winnerTeam: number | null
     createdAt: Date
@@ -1249,6 +1317,8 @@ export interface BattleBoxGameFieldRefs {
   readonly boxTypes: Prisma.FieldRef<"BattleBoxGame", 'Json'>
   readonly totalStake: Prisma.FieldRef<"BattleBoxGame", 'BigInt'>
   readonly commissionPct: Prisma.FieldRef<"BattleBoxGame", 'Float'>
+  readonly hasBots: Prisma.FieldRef<"BattleBoxGame", 'Boolean'>
+  readonly botProfit: Prisma.FieldRef<"BattleBoxGame", 'BigInt'>
   readonly winnerId: Prisma.FieldRef<"BattleBoxGame", 'String'>
   readonly winnerTeam: Prisma.FieldRef<"BattleBoxGame", 'Int'>
   readonly createdAt: Prisma.FieldRef<"BattleBoxGame", 'DateTime'>

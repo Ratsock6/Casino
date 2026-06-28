@@ -23,16 +23,26 @@ export class BattleBoxService {
 
   // ─── Catalogue ────────────────────────────────────────────────────────────
   getCatalog() {
-    return Object.entries(BOX_CATALOG).map(([type, config]) => ({
-      type,
-      ...config,
-      items: BOX_ITEMS[type as BoxType].map((item) => ({
-        name: item.name,
-        emoji: item.emoji,
-        rarity: item.rarity,
-        value: item.value,
-      })),
-    }));
+    return Object.entries(BOX_CATALOG).map(([type, config]) => {
+      const items = BOX_ITEMS[type as BoxType];
+      const totalWeight = items.reduce((sum, i) => sum + i.weight, 0);
+      // Valeur moyenne pondérée (sert à la jauge de sécurité côté front)
+      const avgValue = items.reduce((sum, i) => sum + i.value * i.weight, 0) / totalWeight;
+
+      return {
+        type,
+        ...config,
+        avgValue: Math.round(avgValue),
+        items: items.map((item) => ({
+          name: item.name,
+          emoji: item.emoji,
+          rarity: item.rarity,
+          value: item.value,
+          // Probabilité de tomber sur cet item (en %)
+          chance: Math.round((item.weight / totalWeight) * 1000) / 10,
+        })),
+      };
+    });
   }
 
   // ─── Lobby ────────────────────────────────────────────────────────────────
@@ -57,8 +67,8 @@ export class BattleBoxService {
       totalStake: Number(g.totalStake),
       playerCount: g.players.length,
       players: g.players.map((p) => ({
-        username: p.user.username,
-        role: p.user.role,
+        username: p.user?.username ?? p.botName ?? 'Bot Casino',
+        role: p.user?.role ?? 'BOT',
       })),
       createdAt: g.createdAt,
     }));
@@ -79,13 +89,6 @@ export class BattleBoxService {
 
     // Calcule la mise
     const stake = calculateStake(dto.boxSelection);
-    const maxStake = userRole === 'VIP' || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN'
-      ? parseInt(await this.casinoConfigService.get('BATTLEBOX_MAX_STAKE_VIP') || '100000')
-      : parseInt(await this.casinoConfigService.get('BATTLEBOX_MAX_STAKE_PLAYER') || '50000');
-
-    if (stake > maxStake) {
-      throw new BadRequestException(`Mise totale trop élevée. Maximum : ${maxStake.toLocaleString()} jetons.`);
-    }
 
     // Vérifie le solde
     const wallet = await this.prisma.wallet.findUnique({ where: { userId } });
@@ -236,6 +239,96 @@ export class BattleBoxService {
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
   }
 
+  // ─── Remplir les places vides avec des bots (VIP uniquement) ──────────────
+  async addBots(userId: string, userRole: string, gameId: string) {
+    // Réservé aux VIP / admins
+    if (!['VIP', 'ADMIN', 'SUPER_ADMIN'].includes(userRole)) {
+      throw new BadRequestException('Seuls les membres VIP peuvent ajouter des bots.');
+    }
+
+    const game = await this.prisma.battleBoxGame.findUnique({
+      where: { id: gameId },
+      include: { players: true },
+    });
+
+    if (!game) throw new NotFoundException('Partie introuvable.');
+    if (game.status !== 'WAITING') throw new BadRequestException('Cette partie n\'est plus en attente.');
+
+    // Seul l'hôte (le premier joueur) peut ajouter des bots
+    const host = game.players.find((p) => p.teamIndex === 0);
+    if (!host || host.userId !== userId) {
+      throw new BadRequestException('Seul l\'hôte de la partie peut ajouter des bots.');
+    }
+
+    const emptySlots = game.maxPlayers - game.players.length;
+    if (emptySlots <= 0) throw new BadRequestException('La partie est déjà complète.');
+
+    // Le bot mise la même chose que l'hôte (mêmes box → même mise)
+    const stakePerPlayer = Number(game.totalStake) / Math.max(game.players.length, 1);
+
+    await this.prisma.$transaction(async (tx) => {
+      // Crée un bot par place vide
+      for (let i = 0; i < emptySlots; i++) {
+        await tx.battleBoxPlayer.create({
+          data: {
+            gameId: game.id,
+            userId: null,
+            isBot: true,
+            botName: emptySlots > 1 ? `Bot Casino #${i + 1}` : 'Bot Casino',
+            teamIndex: game.players.length + i,
+            stake: BigInt(Math.floor(stakePerPlayer)),
+          },
+        });
+      }
+
+      // Marque la partie comme contenant des bots et la démarre
+      await tx.battleBoxGame.update({
+        where: { id: game.id },
+        data: { status: 'PLAYING', startedAt: new Date(), hasBots: true },
+      });
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+
+    // Notifie + lance la résolution
+    this.gateway.broadcast(`battlebox:game_start_${game.id}`, { gameId: game.id });
+    setTimeout(() => this.resolveGame(game.id), 3000);
+
+    return { gameId: game.id, botsAdded: emptySlots, message: `${emptySlots} bot(s) ajouté(s) — partie lancée !` };
+  }
+
+  // ─── Annoncer sa partie à tous les joueurs (pop-up) ───────────────────────
+  async announceGame(userId: string, gameId: string) {
+    const game = await this.prisma.battleBoxGame.findUnique({
+      where: { id: gameId },
+      include: { players: { include: { user: { select: { username: true } } } } },
+    });
+
+    if (!game) throw new NotFoundException('Partie introuvable.');
+    if (game.status !== 'WAITING') throw new BadRequestException('Cette partie n\'est plus en attente.');
+    if (game.isPrivate) throw new BadRequestException('Une partie privée ne peut pas être annoncée.');
+
+    // Seul l'hôte peut annoncer
+    const host = game.players.find((p) => p.teamIndex === 0);
+    if (!host || host.userId !== userId) {
+      throw new BadRequestException('Seul l\'hôte peut annoncer la partie.');
+    }
+
+    const hostName = host.user?.username ?? 'Un joueur';
+    const stakePerPlayer = Number(game.totalStake) / Math.max(game.players.length, 1);
+
+    // Diffuse l'annonce à TOUS les joueurs connectés (pop-up)
+    this.gateway.broadcast('battlebox:announcement', {
+      gameId: game.id,
+      host: hostName,
+      stakePerPlayer: Math.floor(stakePerPlayer),
+      boxTypes: game.boxTypes,
+      maxPlayers: game.maxPlayers,
+      playerCount: game.players.length,
+      slotsLeft: game.maxPlayers - game.players.length,
+    });
+
+    return { message: 'Annonce diffusée à tous les joueurs !' };
+  }
+
   // ─── Résolution de la partie ──────────────────────────────────────────────
   async resolveGame(gameId: string) {
     const game = await this.prisma.battleBoxGame.findUnique({
@@ -279,6 +372,23 @@ export class BattleBoxService {
     const payout = totalObjectsValue - commission; // ce que touche réellement le gagnant
     const totalMises = game.players.reduce((sum, p) => sum + Number(p.stake), 0);
 
+    // Le gagnant est-il un bot ? (un bot n'a pas de userId)
+    const winnerIsBot = winner.player.isBot;
+
+    // ── Calcul du bénéfice casino réalisé grâce aux bots ──
+    // Pertinent uniquement si la partie contient des bots.
+    // Trésorerie réelle du casino sur cette partie (les bots = argent du casino) :
+    //   + il encaisse les mises des VRAIS joueurs
+    //   - il verse le payout au gagnant SEULEMENT si c'est un vrai joueur
+    //   (si le bot gagne, rien n'est versé à l'extérieur)
+    let botProfit = 0;
+    if (game.hasBots) {
+      const realPlayersStake = game.players
+        .filter((p) => !p.isBot)
+        .reduce((sum, p) => sum + Number(p.stake), 0);
+      botProfit = winnerIsBot ? realPlayersStake : realPlayersStake - payout;
+    }
+
     // Transaction atomique + anti-rejeu : on verrouille le passage en FINISHED.
     const settled = await this.prisma.$transaction(
       async (tx) => {
@@ -286,7 +396,12 @@ export class BattleBoxService {
         // Si une autre exécution a déjà résolu la partie, count = 0 → on abandonne.
         const lock = await tx.battleBoxGame.updateMany({
           where: { id: gameId, status: 'PLAYING' },
-          data: { status: 'FINISHED', winnerId: winner.player.userId, settledAt: new Date() },
+          data: {
+            status: 'FINISHED',
+            winnerId: winner.player.userId,
+            settledAt: new Date(),
+            botProfit: BigInt(botProfit),
+          },
         });
         if (lock.count === 0) {
           return false; // déjà résolue par un autre appel
@@ -306,27 +421,31 @@ export class BattleBoxService {
         }
 
         // Crédite le gagnant (valeur des objets − commission)
-        const winnerWallet = await tx.wallet.findUnique({
-          where: { userId: winner.player.userId },
-        });
-        if (winnerWallet) {
-          const before = winnerWallet.balance;
-          const after = before + BigInt(payout);
-          await tx.wallet.update({
-            where: { userId: winner.player.userId },
-            data: { balance: after },
+        // UNIQUEMENT si c'est un vrai joueur : un bot ne reçoit pas de jetons.
+        const winnerUserId = winner.player.userId;
+        if (!winnerIsBot && winnerUserId) {
+          const winnerWallet = await tx.wallet.findUnique({
+            where: { userId: winnerUserId },
           });
-          await tx.walletTransaction.create({
-            data: {
-              userId: winner.player.userId,
-              type: 'WIN',
-              amount: BigInt(payout),
-              balanceBefore: before,
-              balanceAfter: after,
-              gameType: 'BATTLE_BOX',
-              reason: `Battle Box — victoire (${payout.toLocaleString()} jetons, commission ${game.commissionPct}% = ${commission.toLocaleString()})`,
-            },
-          });
+          if (winnerWallet) {
+            const before = winnerWallet.balance;
+            const after = before + BigInt(payout);
+            await tx.wallet.update({
+              where: { userId: winnerUserId },
+              data: { balance: after },
+            });
+            await tx.walletTransaction.create({
+              data: {
+                userId: winnerUserId,
+                type: 'WIN',
+                amount: BigInt(payout),
+                balanceBefore: before,
+                balanceAfter: after,
+                gameType: 'BATTLE_BOX',
+                reason: `Battle Box — victoire (${payout.toLocaleString()} jetons, commission ${game.commissionPct}% = ${commission.toLocaleString()})`,
+              },
+            });
+          }
         }
 
         return true;
@@ -342,15 +461,17 @@ export class BattleBoxService {
       gameId,
       isTie,
       players: playerResults.map((r) => ({
-        username: r.player.user.username,
+        username: r.player.user?.username ?? r.player.botName ?? 'Bot Casino',
         userId: r.player.userId,
+        isBot: r.player.isBot,
         items: r.items,
         totalValue: r.totalValue,
-        isWinner: r.player.userId === winner.player.userId,
+        isWinner: r.player.id === winner.player.id,
       })),
       winner: {
-        username: winner.player.user.username,
+        username: winner.player.user?.username ?? winner.player.botName ?? 'Bot Casino',
         userId: winner.player.userId,
+        isBot: winner.player.isBot,
         payout,
         commission,
         totalMises,
@@ -361,10 +482,13 @@ export class BattleBoxService {
 
     this.gateway.broadcast(`battlebox:result_${gameId}`, resultPayload);
 
-    // XP pour tous les joueurs — via le service centralisé (applique le seuil XP_MIN_STAKE).
+    // XP pour tous les VRAIS joueurs — via le service centralisé (applique le seuil XP_MIN_STAKE).
+    // Les bots ne reçoivent pas d'XP.
     for (const result of playerResults) {
+      if (result.player.isBot || !result.player.userId) continue;
+      const xpUserId = result.player.userId;
       await this.levelsService
-        .addXp(result.player.userId, Number(result.player.stake))
+        .addXp(xpUserId, Number(result.player.stake))
         .catch(console.error);
     }
   }
@@ -383,17 +507,19 @@ export class BattleBoxService {
     if (creator.userId !== userId) throw new BadRequestException('Seul le créateur peut annuler la partie.');
 
     return this.prisma.$transaction(async (tx) => {
-      // Rembourse tous les joueurs
+      // Rembourse tous les VRAIS joueurs (les bots n'ont pas de wallet).
       for (const player of game.players) {
-        const wallet = await tx.wallet.findUnique({ where: { userId: player.userId } });
+        if (player.isBot || !player.userId) continue;
+        const playerUserId = player.userId;
+        const wallet = await tx.wallet.findUnique({ where: { userId: playerUserId } });
         if (wallet) {
           await tx.wallet.update({
-            where: { userId: player.userId },
+            where: { userId: playerUserId },
             data: { balance: { increment: player.stake } },
           });
           await tx.walletTransaction.create({
             data: {
-              userId: player.userId,
+              userId: playerUserId,
               type: 'REFUND',
               amount: player.stake,
               balanceBefore: wallet.balance,
@@ -431,6 +557,7 @@ export class BattleBoxService {
     return {
       ...game,
       totalStake: Number(game.totalStake),
+      botProfit: Number(game.botProfit),
       players: game.players.map((p) => ({
         ...p,
         stake: Number(p.stake),
@@ -463,9 +590,95 @@ export class BattleBoxService {
       isWinner: p.isWinner,
       items: p.items,
       totalValue: Number(p.totalValue || 0),
-      players: p.game.players.map((pl) => pl.user.username),
+      players: p.game.players.map((pl) => pl.user?.username ?? pl.botName ?? 'Bot Casino'),
       settledAt: p.game.settledAt,
     }));
+  }
+
+  // ─── Statistiques personnelles du joueur ──────────────────────────────────
+  async getMyStats(userId: string) {
+    // On ne compte que les parties terminées pour des stats fiables.
+    const players = await this.prisma.battleBoxPlayer.findMany({
+      where: { userId, game: { status: 'FINISHED' } },
+      include: { game: { select: { totalStake: true, commissionPct: true } } },
+    });
+
+    const gamesPlayed = players.length;
+    const wins = players.filter((p) => p.isWinner).length;
+    const losses = gamesPlayed - wins;
+    const winRate = gamesPlayed > 0 ? Math.round((wins / gamesPlayed) * 1000) / 10 : 0;
+
+    let totalStaked = 0;
+    let totalWon = 0; // ce que le joueur a réellement encaissé en victoires
+    let biggestWin = 0;
+
+    for (const p of players) {
+      totalStaked += Number(p.stake);
+      if (p.isWinner) {
+        // Gain net = valeur totale du pot (totalStake) − commission
+        const pot = Number(p.game.totalStake);
+        const payout = Math.floor(pot - (pot * p.game.commissionPct) / 100);
+        totalWon += payout;
+        if (payout > biggestWin) biggestWin = payout;
+      }
+    }
+
+    const netProfit = totalWon - totalStaked;
+
+    return {
+      gamesPlayed,
+      wins,
+      losses,
+      winRate,
+      totalStaked,
+      totalWon,
+      biggestWin,
+      netProfit, // peut être négatif
+    };
+  }
+
+  // ─── Classement des joueurs (leaderboard) ─────────────────────────────────
+  // Top joueurs par nombre de victoires sur les parties terminées.
+  async getLeaderboard(limit = 20) {
+    const players = await this.prisma.battleBoxPlayer.findMany({
+      where: { game: { status: 'FINISHED' }, isBot: false, userId: { not: null } },
+      include: {
+        game: { select: { totalStake: true, commissionPct: true } },
+        user: { select: { id: true, username: true, role: true } },
+      },
+    });
+
+    // Agrège par joueur
+    const byUser = new Map<string, {
+      userId: string; username: string; role: string;
+      wins: number; games: number; totalWon: number; biggestWin: number;
+    }>();
+
+    for (const p of players) {
+      if (!p.user) continue; // sécurité : ignore les bots
+      const key = p.user.id;
+      const entry = byUser.get(key) ?? {
+        userId: key, username: p.user.username, role: p.user.role,
+        wins: 0, games: 0, totalWon: 0, biggestWin: 0,
+      };
+      entry.games += 1;
+      if (p.isWinner) {
+        entry.wins += 1;
+        const pot = Number(p.game.totalStake);
+        const payout = Math.floor(pot - (pot * p.game.commissionPct) / 100);
+        entry.totalWon += payout;
+        if (payout > entry.biggestWin) entry.biggestWin = payout;
+      }
+      byUser.set(key, entry);
+    }
+
+    return Array.from(byUser.values())
+      .map((e) => ({
+        ...e,
+        winRate: e.games > 0 ? Math.round((e.wins / e.games) * 1000) / 10 : 0,
+      }))
+      .sort((a, b) => b.wins - a.wins || b.totalWon - a.totalWon)
+      .slice(0, limit);
   }
 
   // ─── Validation ───────────────────────────────────────────────────────────
@@ -522,6 +735,7 @@ export class BattleBoxService {
     return {
       ...player.game,
       totalStake: Number(player.game.totalStake),
+      botProfit: Number(player.game.botProfit),
       players: player.game.players.map((p) => ({
         ...p,
         stake: Number(p.stake),
@@ -566,8 +780,8 @@ export class BattleBoxService {
       createdAt: g.createdAt,
       settledAt: g.settledAt,
       players: g.players.map((p) => ({
-        username: p.user.username,
-        role: p.user.role,
+        username: p.user?.username ?? p.botName ?? 'Bot Casino',
+        role: p.user?.role ?? 'BOT',
         userId: p.userId,
         stake: Number(p.stake),
         totalValue: p.totalValue ? Number(p.totalValue) : null,

@@ -9,7 +9,11 @@ import Confetti from '../components/ui/Confetti';
 import {
   getBattleBoxCatalogApi, getBattleBoxLobbyApi, getBattleBoxGameApi,
   createBattleBoxGameApi, joinBattleBoxGameApi, cancelBattleBoxGameApi,
+  getMyBattleBoxStatsApi, getMyBattleBoxHistoryApi, getBattleBoxLeaderboardApi,
+  addBotsApi, announceGameApi,
   type BoxConfig, type LobbyGame, type BattleBoxGame,
+  type MyBattleBoxStats, type BattleBoxHistoryEntry, type LeaderboardEntry,
+  type BattleBoxAnnouncement,
 } from '../api/battle-box.api';
 import '../styles/pages/battle-box.scss';
 import MaintenanceScreen from '../components/ui/MaintenanceScreen';
@@ -26,6 +30,20 @@ const RARITY_COLORS: Record<string, string> = {
   LEGENDARY: '#e05c5c',
 };
 
+// Catégories de box pour le filtre (sinon "Autres")
+const BOX_CATEGORIES: Record<string, string[]> = {
+  Classiques: ['STANDARD', 'PREMIUM', 'ELITE', 'VIP'],
+  Thématiques: ['QUARTIER', 'FETE', 'TROPICALE', 'CASSE', 'VEGAS', 'COLLECTIONNEUR', 'PARRAIN', 'DIAMANT_NOIR', 'PRESIDENTIELLE', 'COFFRE_ROYAL'],
+  GTA: ['LOS_SANTOS', 'GROVE_STREET', 'VINEWOOD', 'BRAQUAGE_PACIFIC', 'IMPORT_EXPORT', 'CARTEL', 'COURSE_ILLEGALE', 'MAZE_BANK', 'CASINO_DIAMOND', 'MONT_CHILIAD'],
+};
+
+const categoryOf = (type: string): string => {
+  for (const [cat, types] of Object.entries(BOX_CATEGORIES)) {
+    if (types.includes(type)) return cat;
+  }
+  return 'Autres';
+};
+
 const BattleBoxPage = () => {
   const { balance, setBalance } = useWalletStore();
   const { user } = useAuthStore();
@@ -34,8 +52,15 @@ const BattleBoxPage = () => {
   const [view, setView] = useState<View>('lobby');
   const [catalog, setCatalog] = useState<BoxConfig[]>([]);
   const [lobby, setLobby] = useState<LobbyGame[]>([]);
+  const [lobbyTab, setLobbyTab] = useState<'games' | 'stats' | 'leaderboard'>('games');
+  const [myStats, setMyStats] = useState<MyBattleBoxStats | null>(null);
+  const [myHistory, setMyHistory] = useState<BattleBoxHistoryEntry[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [currentGame, setCurrentGame] = useState<BattleBoxGame | null>(null);
   const [boxSelection, setBoxSelection] = useState<Record<string, number>>({});
+  const [sortBy, setSortBy] = useState<'price-asc' | 'price-desc' | 'safety-desc' | 'safety-asc'>('price-asc');
+  const [categoryFilter, setCategoryFilter] = useState<string>('Toutes');
+  const [detailBox, setDetailBox] = useState<BoxConfig | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [maxPlayers, setMaxPlayers] = useState(2);
   const [loading, setLoading] = useState(false);
@@ -94,9 +119,11 @@ const BattleBoxPage = () => {
     on(`battlebox:result_${currentGame.id}`, async (data: any) => {
       setResult(data);
       setView('result');
-      axiosInstance.get('/wallet/me').then((res) => setBalance(parseFloat(res.data.balance)));
-      // Lance l'animation
+      // Lance l'animation AVANT de mettre à jour le solde,
+      // sinon la navbar révèle le gain et spoile le résultat.
       await animateReveal(data);
+      // Une fois l'animation terminée, on rafraîchit le solde réel.
+      axiosInstance.get('/wallet/me').then((res) => setBalance(parseFloat(res.data.balance)));
     });
 
     return () => {
@@ -176,7 +203,40 @@ const BattleBoxPage = () => {
     }
   };
 
+  const [announceMsg, setAnnounceMsg] = useState('');
+
+  const handleAddBots = async () => {
+    if (!currentGame) return;
+    try {
+      await addBotsApi(currentGame.id);
+      // La partie démarre automatiquement (le serveur émet game_start)
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de l\'ajout de bots');
+    }
+  };
+
+  const handleAnnounce = async () => {
+    if (!currentGame) return;
+    try {
+      const res = await announceGameApi(currentGame.id);
+      setAnnounceMsg(res.message);
+      setTimeout(() => setAnnounceMsg(''), 3000);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Erreur lors de l\'annonce');
+    }
+  };
+
   const animateReveal = async (resultData: any) => {
+    // Réinitialise TOUS les états d'animation au début, pour éviter qu'un
+    // état resté de la partie précédente (revealComplete, isWinner...) ne
+    // spoile le résultat dès l'ouverture (bug intermittent quand on enchaîne
+    // les parties sans repasser par "Retour au lobby").
+    setRevealComplete(false);
+    setAnimatingValues(false);
+    setIsWinner(false);
+    setRevealedItems({});
+    setRunningTotals({});
+
     // Compte à rebours 3-2-1
     for (let i = 3; i >= 1; i--) {
       setCountdown(i);
@@ -246,22 +306,54 @@ const BattleBoxPage = () => {
     }
   };
 
-  const [maxStakePlayer, setMaxStakePlayer] = useState(50000);
-  const [maxStakeVip, setMaxStakeVip] = useState(100000);
-
-  // Charge la configuration des mises maximales
-  useEffect(() => {
-    axiosInstance.get('/public/battlebox-max-bet')
-      .then((res) => {
-        setMaxStakePlayer(res.data.maxBetPlayer);
-        setMaxStakeVip(res.data.maxBetVip);
-      })
-      .catch(console.error);
-  }, []);
-
-  const totalStake = calculateTotalStake();
+  // Rôle VIP
   const isVip = user?.role === 'VIP' || user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
-  const maxStake = isVip ? maxStakeVip : maxStakePlayer;
+  const totalStake = calculateTotalStake();
+
+  // Charge les données de l'onglet lobby sélectionné (stats / classement / historique)
+  const loadLobbyTab = async (tab: 'games' | 'stats' | 'leaderboard') => {
+    setLobbyTab(tab);
+    try {
+      if (tab === 'stats') {
+        const [s, h] = await Promise.all([
+          getMyBattleBoxStatsApi(),
+          getMyBattleBoxHistoryApi(),
+        ]);
+        setMyStats(s);
+        setMyHistory(h);
+      } else if (tab === 'leaderboard') {
+        setLeaderboard(await getBattleBoxLeaderboardApi(20));
+      }
+    } catch (e) {
+      console.error('Erreur chargement onglet lobby', e);
+    }
+  };
+
+  // Sécurité d'une box = taux de retour moyen (valeur moyenne / prix), en %.
+  const boxSafety = (box: BoxConfig) =>
+    box.price > 0 ? (box.avgValue / box.price) * 100 : 0;
+
+  // Catalogue trié selon le critère choisi (filtré VIP + catégorie).
+  const sortedCatalog = [...catalog]
+    .filter((b) => !b.vipOnly || isVip)
+    .filter((b) => categoryFilter === 'Toutes' || categoryOf(b.type) === categoryFilter)
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price-asc': return a.price - b.price;
+        case 'price-desc': return b.price - a.price;
+        case 'safety-desc': return boxSafety(b) - boxSafety(a);
+        case 'safety-asc': return boxSafety(a) - boxSafety(b);
+        default: return 0;
+      }
+    });
+
+  // Libellé + couleur de la jauge de sécurité.
+  const safetyLabel = (safety: number) => {
+    if (safety >= 92) return { text: 'Très sûre', color: '#4caf7d' };
+    if (safety >= 86) return { text: 'Équilibrée', color: '#c9a84c' };
+    if (safety >= 78) return { text: 'Risquée', color: '#e0a85c' };
+    return { text: 'Extrême', color: '#e05c5c' };
+  };
 
   if (isMaintenance) {
     return <MaintenanceScreen game="Le battle box" />;
@@ -314,6 +406,29 @@ const BattleBoxPage = () => {
         </div>
       )}
 
+      {/* Onglets du lobby */}
+      <div className="battlebox__tabs">
+        <button
+          className={`battlebox__tab ${lobbyTab === 'games' ? 'battlebox__tab--active' : ''}`}
+          onClick={() => loadLobbyTab('games')}
+        >
+          🏟️ Parties
+        </button>
+        <button
+          className={`battlebox__tab ${lobbyTab === 'stats' ? 'battlebox__tab--active' : ''}`}
+          onClick={() => loadLobbyTab('stats')}
+        >
+          📊 Mes stats
+        </button>
+        <button
+          className={`battlebox__tab ${lobbyTab === 'leaderboard' ? 'battlebox__tab--active' : ''}`}
+          onClick={() => loadLobbyTab('leaderboard')}
+        >
+          🏆 Classement
+        </button>
+      </div>
+
+      {lobbyTab === 'games' && (
       <div className="battlebox__lobby">
         <h2 className="battlebox__section-title">
           🏟️ Parties disponibles
@@ -368,6 +483,91 @@ const BattleBoxPage = () => {
           </div>
         )}
       </div>
+      )}
+
+      {/* Onglet : Mes statistiques */}
+      {lobbyTab === 'stats' && (
+        <div className="battlebox__stats-view">
+          {myStats && (
+            <div className="battlebox__stats-grid">
+              <div className="battlebox__stat-card">
+                <span className="battlebox__stat-label">Parties jouées</span>
+                <span className="battlebox__stat-value">{myStats.gamesPlayed}</span>
+              </div>
+              <div className="battlebox__stat-card battlebox__stat-card--win">
+                <span className="battlebox__stat-label">Victoires</span>
+                <span className="battlebox__stat-value">{myStats.wins}</span>
+              </div>
+              <div className="battlebox__stat-card battlebox__stat-card--loss">
+                <span className="battlebox__stat-label">Défaites</span>
+                <span className="battlebox__stat-value">{myStats.losses}</span>
+              </div>
+              <div className="battlebox__stat-card">
+                <span className="battlebox__stat-label">Taux de victoire</span>
+                <span className="battlebox__stat-value">{myStats.winRate}%</span>
+              </div>
+              <div className="battlebox__stat-card">
+                <span className="battlebox__stat-label">Plus gros gain</span>
+                <span className="battlebox__stat-value">{myStats.biggestWin.toLocaleString()} 🪙</span>
+              </div>
+              <div className={`battlebox__stat-card ${myStats.netProfit >= 0 ? 'battlebox__stat-card--win' : 'battlebox__stat-card--loss'}`}>
+                <span className="battlebox__stat-label">Bénéfice net</span>
+                <span className="battlebox__stat-value">{myStats.netProfit >= 0 ? '+' : ''}{myStats.netProfit.toLocaleString()} 🪙</span>
+              </div>
+            </div>
+          )}
+
+          <h3 className="battlebox__section-title">📜 Historique récent</h3>
+          {myHistory.length === 0 ? (
+            <div className="battlebox__lobby-empty"><p>Aucune partie jouée pour le moment.</p></div>
+          ) : (
+            <div className="battlebox__history-list">
+              {myHistory.map((h) => (
+                <div key={h.gameId} className={`battlebox__history-row ${h.status === 'FINISHED' ? (h.isWinner ? 'battlebox__history-row--win' : 'battlebox__history-row--loss') : ''}`}>
+                  <span className="battlebox__history-result">
+                    {h.status !== 'FINISHED' ? '⏳' : h.isWinner ? '🏆' : '❌'}
+                  </span>
+                  <div className="battlebox__history-info">
+                    <span className="battlebox__history-players">vs {h.players.filter((p) => p !== user?.username).join(', ') || '—'}</span>
+                    <span className="battlebox__history-meta">
+                      Mise {h.stake.toLocaleString()} 🪙 · Valeur tirée {h.totalValue.toLocaleString()} 🪙
+                    </span>
+                  </div>
+                  <span className="battlebox__history-status">
+                    {h.status !== 'FINISHED' ? 'En cours' : h.isWinner ? 'Gagné' : 'Perdu'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Onglet : Classement */}
+      {lobbyTab === 'leaderboard' && (
+        <div className="battlebox__leaderboard">
+          <h2 className="battlebox__section-title">🏆 Meilleurs joueurs</h2>
+          {leaderboard.length === 0 ? (
+            <div className="battlebox__lobby-empty"><p>Aucune donnée de classement pour le moment.</p></div>
+          ) : (
+            <div className="battlebox__leaderboard-list">
+              {leaderboard.map((entry, i) => (
+                <div key={entry.userId} className={`battlebox__leaderboard-row ${entry.username === user?.username ? 'battlebox__leaderboard-row--me' : ''}`}>
+                  <span className={`battlebox__leaderboard-rank ${i < 3 ? `battlebox__leaderboard-rank--${i + 1}` : ''}`}>
+                    {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `#${i + 1}`}
+                  </span>
+                  <span className="battlebox__leaderboard-name">
+                    {entry.role === 'VIP' ? '👑 ' : ''}{entry.username}
+                  </span>
+                  <span className="battlebox__leaderboard-stat">{entry.wins} victoires</span>
+                  <span className="battlebox__leaderboard-stat battlebox__leaderboard-stat--muted">{entry.winRate}%</span>
+                  <span className="battlebox__leaderboard-won">{entry.totalWon.toLocaleString()} 🪙</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
     </>
   );
@@ -425,9 +625,34 @@ const BattleBoxPage = () => {
       <div className="battlebox__create">
         {/* Sélection des box */}
         <div className="battlebox__catalog">
-          <h3>📦 Choisissez vos box</h3>
+          <div className="battlebox__catalog-head">
+            <h3>📦 Choisissez vos box</h3>
+            <div className="battlebox__sort">
+              <label>Trier :</label>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)}>
+                <option value="price-asc">Prix croissant</option>
+                <option value="price-desc">Prix décroissant</option>
+                <option value="safety-desc">Plus sûres d'abord</option>
+                <option value="safety-asc">Plus risquées d'abord</option>
+              </select>
+            </div>
+          </div>
+          <div className="battlebox__categories">
+            {['Toutes', ...Object.keys(BOX_CATEGORIES)].map((cat) => (
+              <button
+                key={cat}
+                className={`battlebox__category ${categoryFilter === cat ? 'battlebox__category--active' : ''}`}
+                onClick={() => setCategoryFilter(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
           <div className="battlebox__boxes">
-            {catalog.filter((b) => !b.vipOnly || isVip).map((box) => (
+            {sortedCatalog.map((box) => {
+              const safety = boxSafety(box);
+              const sLabel = safetyLabel(safety);
+              return (
               <div key={box.type} className={`battlebox__box ${(boxSelection[box.type] || 0) > 0 ? 'battlebox__box--selected' : ''}`}>
                 <div className="battlebox__box-header">
                   <span className="battlebox__box-emoji">{box.emoji}</span>
@@ -437,22 +662,33 @@ const BattleBoxPage = () => {
                   </div>
                   {box.vipOnly && <span className="battlebox__box-vip">VIP</span>}
                 </div>
-                <p className="battlebox__box-desc">{box.description}</p>
-                <div className="battlebox__box-items">
-                  {box.items.slice(0, 3).map((item) => (
-                    <span key={item.name} className="battlebox__box-item" style={{ color: RARITY_COLORS[item.rarity] }}>
-                      {item.emoji} {item.name}
-                    </span>
-                  ))}
-                  {box.items.length > 3 && <span className="battlebox__box-more">+{box.items.length - 3} autres...</span>}
+
+                {/* Jauge de sécurité */}
+                <div className="battlebox__box-safety">
+                  <div className="battlebox__box-safety-head">
+                    <span>Sécurité</span>
+                    <span style={{ color: sLabel.color }}>{sLabel.text} · {safety.toFixed(0)}%</span>
+                  </div>
+                  <div className="battlebox__box-safety-bar">
+                    <div
+                      className="battlebox__box-safety-fill"
+                      style={{ width: `${Math.min(safety, 100)}%`, background: sLabel.color }}
+                    />
+                  </div>
                 </div>
+
+                <p className="battlebox__box-desc">{box.description}</p>
+                <button className="battlebox__box-details" onClick={() => setDetailBox(box)}>
+                  📊 Voir toutes les stats
+                </button>
                 <div className="battlebox__box-counter">
                   <button onClick={() => handleBoxChange(box.type, -1)} disabled={(boxSelection[box.type] || 0) === 0}>−</button>
                   <span>{boxSelection[box.type] || 0}</span>
-                  <button onClick={() => handleBoxChange(box.type, 1)} disabled={totalStake + box.price > maxStake}>+</button>
+                  <button onClick={() => handleBoxChange(box.type, 1)} disabled={totalStake + box.price > balance}>+</button>
                 </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
 
@@ -486,7 +722,21 @@ const BattleBoxPage = () => {
 
         {/* Résumé */}
         <div className="battlebox__summary">
-          <div className="battlebox__summary-row">
+          {Object.keys(boxSelection).length > 0 && (
+            <div className="battlebox__summary-boxes">
+              {Object.entries(boxSelection).map(([type, count]) => {
+                const box = catalog.find((b) => b.type === type);
+                if (!box) return null;
+                return (
+                  <div key={type} className="battlebox__summary-box-row">
+                    <span>{box.emoji} {box.label} ×{count}</span>
+                    <span>{(box.price * count).toLocaleString()} 🪙</span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          <div className="battlebox__summary-row battlebox__summary-row--total">
             <span>Mise totale</span>
             <strong style={{ color: totalStake > balance ? '#e05c5c' : '#c9a84c' }}>
               {totalStake.toLocaleString()} 🪙
@@ -509,11 +759,73 @@ const BattleBoxPage = () => {
         <button
           className="battlebox__btn battlebox__btn--primary battlebox__btn--lg"
           onClick={handleCreate}
-          disabled={loading || totalStake === 0 || totalStake > balance || totalStake > maxStake}
+          disabled={loading || totalStake === 0 || totalStake > balance}
         >
           {loading ? 'Création...' : `⚔️ Créer la partie (${totalStake.toLocaleString()} 🪙)`}
         </button>
       </div>
+
+      {/* Modal détails d'une box */}
+      {detailBox && (
+        <div className="battlebox__modal-overlay" onClick={() => setDetailBox(null)}>
+          <div className="battlebox__modal" onClick={(e) => e.stopPropagation()}>
+            <button className="battlebox__modal-close" onClick={() => setDetailBox(null)}>✕</button>
+
+            <div className="battlebox__modal-head">
+              <span className="battlebox__modal-emoji">{detailBox.emoji}</span>
+              <div>
+                <h3>{detailBox.label}{detailBox.vipOnly && <span className="battlebox__box-vip"> VIP</span>}</h3>
+                <p className="battlebox__modal-desc">{detailBox.description}</p>
+              </div>
+            </div>
+
+            <div className="battlebox__modal-stats">
+              <div className="battlebox__modal-stat">
+                <span>Prix</span>
+                <strong>{detailBox.price.toLocaleString()} 🪙</strong>
+              </div>
+              <div className="battlebox__modal-stat">
+                <span>Sécurité</span>
+                <strong style={{ color: safetyLabel(boxSafety(detailBox)).color }}>
+                  {safetyLabel(boxSafety(detailBox)).text} · {boxSafety(detailBox).toFixed(0)}%
+                </strong>
+              </div>
+            </div>
+
+            <h4 className="battlebox__modal-subtitle">Objets possibles ({detailBox.items.length})</h4>
+            <div className="battlebox__modal-items">
+              {[...detailBox.items].sort((a, b) => b.chance - a.chance).map((item) => (
+                <div key={item.name} className="battlebox__modal-item">
+                  <span className="battlebox__modal-item-emoji">{item.emoji}</span>
+                  <div className="battlebox__modal-item-info">
+                    <span className="battlebox__modal-item-name" style={{ color: RARITY_COLORS[item.rarity] }}>
+                      {item.name}
+                    </span>
+                    <span className="battlebox__modal-item-value">{item.value.toLocaleString()} 🪙</span>
+                  </div>
+                  <div className="battlebox__modal-item-chance">
+                    <div className="battlebox__modal-item-chance-bar">
+                      <div
+                        className="battlebox__modal-item-chance-fill"
+                        style={{ width: `${item.chance}%`, background: RARITY_COLORS[item.rarity] }}
+                      />
+                    </div>
+                    <span>{item.chance}%</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button
+              className="battlebox__btn battlebox__btn--primary"
+              onClick={() => { handleBoxChange(detailBox.type, 1); }}
+              disabled={totalStake + detailBox.price > balance}
+            >
+              ➕ Ajouter cette box
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 
@@ -538,8 +850,8 @@ const BattleBoxPage = () => {
         <div className="battlebox__waiting-players">
           {currentGame.players.map((p) => (
             <div key={p.id} className="battlebox__waiting-player">
-              <span>{p.user.role === 'VIP' ? '👑' : '👤'}</span>
-              <span>{p.user.username}</span>
+              <span>{p.user?.role === 'VIP' ? '👑' : '👤'}</span>
+              <span>{p.user?.username ?? 'Joueur'}</span>
               <span className="battlebox__waiting-ready">✅ Prêt</span>
             </div>
           ))}
@@ -549,6 +861,21 @@ const BattleBoxPage = () => {
               <span>En attente...</span>
             </div>
           ))}
+        </div>
+
+        {announceMsg && <p className="battlebox__announce-confirm">📢 {announceMsg}</p>}
+
+        <div className="battlebox__waiting-actions">
+          {!currentGame.isPrivate && (
+            <button className="battlebox__btn battlebox__btn--secondary" onClick={handleAnnounce}>
+              📢 Annoncer la partie
+            </button>
+          )}
+          {isVip && currentGame.maxPlayers > currentGame.players.length && (
+            <button className="battlebox__btn battlebox__btn--gold" onClick={handleAddBots}>
+              🤖 Jouer contre le casino (bots)
+            </button>
+          )}
         </div>
 
         <button className="battlebox__btn battlebox__btn--danger" onClick={handleCancel}>
@@ -572,9 +899,11 @@ const BattleBoxPage = () => {
 
       <div className="battlebox__result">
         <div className="battlebox__result-header">
-          <h2>{isWinner ? '🏆 Victoire !' : '💸 Défaite'}</h2>
+          <h2>{!revealComplete ? '🎲 Ouverture des box...' : isWinner ? '🏆 Victoire !' : '💸 Défaite'}</h2>
           <p>
-            {isWinner
+            {!revealComplete
+              ? 'Que la chance soit avec vous...'
+              : isWinner
               ? 'Félicitations ! Vous remportez le pot !'
               : 'Meilleure chance la prochaine fois !'}
           </p>
@@ -611,11 +940,11 @@ const BattleBoxPage = () => {
                   ))}
                 </div>
                 <div className={`battlebox__result-total ${runningTotals[player.userId] ? 'battlebox__result-total--animate' : ''}`}>
-                  Total : <strong style={{ color: player.isWinner ? '#c9a84c' : '#888' }}>
+                  Total : <strong style={{ color: revealComplete && player.isWinner ? '#c9a84c' : '#888' }}>
                     {(runningTotals[player.userId] || 0).toLocaleString()} 🪙
                   </strong>
                 </div>
-                {player.isWinner && animatingValues && (
+                {player.isWinner && revealComplete && (
                   <div className="battlebox__result-payout">
                     💰 Gain : <strong>{result.winner.payout.toLocaleString()} 🪙</strong>
                   </div>

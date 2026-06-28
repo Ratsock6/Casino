@@ -500,3 +500,27 @@ export const forceResolveRoundApi = async (roundId: string): Promise<any> => {
   const res = await axiosInstance.post(`/admin/rounds/${roundId}/resolve`);
   return res.data;
 };
+
+export interface BattleBoxStats {
+  totalGames: number;
+  finishedGames: number;
+  inProgressGames: number;
+  totalCommission: number;
+  totalStakeBrassed: number;
+  avgStake: number;
+  avgCommission: number;
+  boxRanking: { type: string; label: string; emoji: string; count: number }[];
+  bots: {
+    gamesCount: number;
+    netProfit: number;
+    avgProfit: number;
+    botWins: number;
+    playerWins: number;
+    botWinRate: number;
+  };
+}
+
+export const getBattleBoxStatsApi = async (): Promise<BattleBoxStats> => {
+  const res = await axiosInstance.get('/admin/battlebox-stats');
+  return res.data;
+};

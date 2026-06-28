@@ -108,6 +108,11 @@ export class AdminController {
     return this.adminService.getGlobalStats();
   }
 
+  @Get('battlebox-stats')
+  getBattleBoxStats() {
+    return this.adminService.getBattleBoxStats();
+  }
+
   @Get('transactions')
   getAllTransactions(
     @Query('limit') limit?: string,

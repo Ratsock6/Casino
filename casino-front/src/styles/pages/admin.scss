@@ -1713,3 +1713,116 @@
   }
 
 }
+
+/* ─── Panneau stats Battle Box ─────────────────────────────────────── */
+.admin__bb-stats {
+  margin-bottom: $spacing-xl;
+}
+
+.admin__bb-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: $spacing-md;
+  margin-bottom: $spacing-xl;
+}
+
+.admin__bb-stat {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  padding: $spacing-md;
+  background: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+
+  &--highlight {
+    border-color: $color-gold;
+    background: rgba(201, 168, 76, 0.08);
+  }
+
+  &-label {
+    font-size: 0.8rem;
+    color: $color-text-muted;
+  }
+
+  &-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &--highlight &-value {
+    color: $color-gold;
+  }
+}
+
+.admin__bb-ranking {
+  padding: $spacing-lg;
+  background: $color-surface-2;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+
+  &-title {
+    margin: 0 0 $spacing-md;
+    font-size: 1rem;
+    color: $color-text;
+  }
+
+  &-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+  }
+
+  &-rank {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: $color-gold;
+    min-width: 32px;
+  }
+
+  &-name {
+    font-size: 0.85rem;
+    min-width: 180px;
+    flex-shrink: 0;
+  }
+
+  &-bar {
+    flex: 1;
+    height: 8px;
+    background: $color-bg;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  &-fill {
+    height: 100%;
+    background: linear-gradient(90deg, $color-gold, $color-gold-light);
+    border-radius: 4px;
+  }
+
+  &-count {
+    font-size: 0.85rem;
+    color: $color-text-muted;
+    min-width: 50px;
+    text-align: right;
+  }
+}
+
+/* ─── Détail bots Battle Box ───────────────────────────────────────── */
+.admin__bb-bots {
+  margin-top: $spacing-xl;
+}
+
+.admin__bb-stat--loss {
+  border-color: $color-error;
+  background: rgba(224, 92, 92, 0.08);
+
+  .admin__bb-stat-value { color: $color-error; }
+}

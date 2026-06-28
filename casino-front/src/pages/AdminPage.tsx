@@ -10,6 +10,8 @@ import {
 import {
   getAdminUsersApi,
   getGlobalStatsApi,
+  getBattleBoxStatsApi,
+  type BattleBoxStats,
   getAdminTransactionsApi,
   getAdminGameRoundsApi,
   getLeaderboardApi,
@@ -145,6 +147,7 @@ const AdminPage = () => {
   const [ingameRewards, setIngameRewards] = useState<IngameReward[]>([]);
   const [ingameFilter, setIngameFilter] = useState<'all' | 'pending' | 'claimed'>('pending');
   const [battleBoxGames, setBattleBoxGames] = useState<AdminBattleBoxGame[]>([]);
+  const [battleBoxStats, setBattleBoxStats] = useState<BattleBoxStats | null>(null);
   const [battleBoxFilter, setBattleBoxFilter] = useState('');
   const [selectedBattleBoxGame, setSelectedBattleBoxGame] = useState<AdminBattleBoxGame | null>(null);
   const [rewardCodes, setRewardCodes] = useState<RewardCode[]>([]);
@@ -315,6 +318,9 @@ const AdminPage = () => {
       }
       if (tab === 'battlebox' && battleBoxGames.length === 0) {
         setBattleBoxGames(await getAdminBattleBoxGamesApi());
+      }
+      if (tab === 'battlebox' && !battleBoxStats) {
+        setBattleBoxStats(await getBattleBoxStatsApi());
       }
       if (tab === 'codes' && rewardCodes.length === 0) {
         setRewardCodes(await getRewardCodesApi());
@@ -2397,6 +2403,95 @@ const AdminPage = () => {
               )}
             </div>
           </div>
+
+          {/* Panneau de statistiques Battle Box */}
+          {battleBoxStats && (
+            <div className="admin__bb-stats">
+              <div className="admin__bb-stats-grid">
+                <div className="admin__bb-stat admin__bb-stat--highlight">
+                  <span className="admin__bb-stat-label">💰 Commission totale (bénéfice)</span>
+                  <span className="admin__bb-stat-value">{battleBoxStats.totalCommission.toLocaleString()} 🪙</span>
+                </div>
+                <div className="admin__bb-stat">
+                  <span className="admin__bb-stat-label">🎰 Volume total misé</span>
+                  <span className="admin__bb-stat-value">{battleBoxStats.totalStakeBrassed.toLocaleString()} 🪙</span>
+                </div>
+                <div className="admin__bb-stat">
+                  <span className="admin__bb-stat-label">⚔️ Parties terminées</span>
+                  <span className="admin__bb-stat-value">{battleBoxStats.finishedGames.toLocaleString()}</span>
+                </div>
+                <div className="admin__bb-stat">
+                  <span className="admin__bb-stat-label">⏳ Parties en cours</span>
+                  <span className="admin__bb-stat-value">{battleBoxStats.inProgressGames.toLocaleString()}</span>
+                </div>
+                <div className="admin__bb-stat">
+                  <span className="admin__bb-stat-label">📊 Mise moyenne / partie</span>
+                  <span className="admin__bb-stat-value">{battleBoxStats.avgStake.toLocaleString()} 🪙</span>
+                </div>
+                <div className="admin__bb-stat">
+                  <span className="admin__bb-stat-label">💵 Commission moyenne / partie</span>
+                  <span className="admin__bb-stat-value">{battleBoxStats.avgCommission.toLocaleString()} 🪙</span>
+                </div>
+              </div>
+
+              {battleBoxStats.boxRanking.length > 0 && (
+                <div className="admin__bb-ranking">
+                  <h3 className="admin__bb-ranking-title">📦 Box les plus jouées</h3>
+                  <div className="admin__bb-ranking-list">
+                    {battleBoxStats.boxRanking.slice(0, 10).map((box, i) => {
+                      const max = battleBoxStats.boxRanking[0].count;
+                      return (
+                        <div key={box.type} className="admin__bb-ranking-row">
+                          <span className="admin__bb-ranking-rank">#{i + 1}</span>
+                          <span className="admin__bb-ranking-name">{box.emoji} {box.label}</span>
+                          <div className="admin__bb-ranking-bar">
+                            <div
+                              className="admin__bb-ranking-fill"
+                              style={{ width: `${(box.count / max) * 100}%` }}
+                            />
+                          </div>
+                          <span className="admin__bb-ranking-count">{box.count.toLocaleString()}×</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Détail des bots (parties contre le casino) */}
+              {battleBoxStats.bots.gamesCount > 0 && (
+                <div className="admin__bb-bots">
+                  <h3 className="admin__bb-ranking-title">🤖 Parties contre le casino (bots)</h3>
+                  <div className="admin__bb-stats-grid">
+                    <div className={`admin__bb-stat ${battleBoxStats.bots.netProfit >= 0 ? 'admin__bb-stat--highlight' : 'admin__bb-stat--loss'}`}>
+                      <span className="admin__bb-stat-label">💰 Bénéfice net via bots</span>
+                      <span className="admin__bb-stat-value">
+                        {battleBoxStats.bots.netProfit >= 0 ? '+' : ''}{battleBoxStats.bots.netProfit.toLocaleString()} 🪙
+                      </span>
+                    </div>
+                    <div className="admin__bb-stat">
+                      <span className="admin__bb-stat-label">🎮 Parties contre bot</span>
+                      <span className="admin__bb-stat-value">{battleBoxStats.bots.gamesCount}</span>
+                    </div>
+                    <div className="admin__bb-stat">
+                      <span className="admin__bb-stat-label">📊 Bénéfice moyen / partie</span>
+                      <span className="admin__bb-stat-value">
+                        {battleBoxStats.bots.avgProfit >= 0 ? '+' : ''}{battleBoxStats.bots.avgProfit.toLocaleString()} 🪙
+                      </span>
+                    </div>
+                    <div className="admin__bb-stat">
+                      <span className="admin__bb-stat-label">🤖 Victoires du casino</span>
+                      <span className="admin__bb-stat-value">{battleBoxStats.bots.botWins} ({battleBoxStats.bots.botWinRate}%)</span>
+                    </div>
+                    <div className="admin__bb-stat">
+                      <span className="admin__bb-stat-label">😎 Victoires des joueurs</span>
+                      <span className="admin__bb-stat-value">{battleBoxStats.bots.playerWins}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="admin__table-wrapper">
             <table className="admin__table">

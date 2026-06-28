@@ -1001,10 +1001,12 @@ export type UserCreateNestedOneWithoutBattleBoxPlayersInput = {
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutBattleBoxPlayersNestedInput = {
+export type UserUpdateOneWithoutBattleBoxPlayersNestedInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutBattleBoxPlayersInput, Prisma.UserUncheckedCreateWithoutBattleBoxPlayersInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutBattleBoxPlayersInput
   upsert?: Prisma.UserUpsertWithoutBattleBoxPlayersInput
+  disconnect?: Prisma.UserWhereInput | boolean
+  delete?: Prisma.UserWhereInput | boolean
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutBattleBoxPlayersInput, Prisma.UserUpdateWithoutBattleBoxPlayersInput>, Prisma.UserUncheckedUpdateWithoutBattleBoxPlayersInput>
 }

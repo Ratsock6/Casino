@@ -359,6 +359,8 @@ model BattleBoxGame {
   boxTypes     Json              // { STANDARD: 2, PREMIUM: 1 } etc...
   totalStake   BigInt            @default(0)
   commissionPct Float            @default(5)
+  hasBots      Boolean           @default(false)
+  botProfit    BigInt            @default(0) // net casino réalisé grâce aux bots sur cette partie
   winnerId     String?
   winnerTeam   Int?
   createdAt    DateTime          @default(now())
@@ -374,7 +376,9 @@ model BattleBoxGame {
 model BattleBoxPlayer {
   id          String        @id @default(cuid())
   gameId      String
-  userId      String
+  userId      String?
+  isBot       Boolean       @default(false)
+  botName     String? // nom affiché du bot (ex: "Bot Casino #1")
   teamIndex   Int           @default(0)
   stake       BigInt
   items       Json?         // objets obtenus après ouverture
@@ -383,9 +387,8 @@ model BattleBoxPlayer {
   joinedAt    DateTime      @default(now())
 
   game        BattleBoxGame @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([gameId, userId])
   @@index([gameId])
   @@index([userId])
 }

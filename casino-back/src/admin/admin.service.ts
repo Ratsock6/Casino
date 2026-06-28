@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../generated/prisma/client';
 import { SLOT_MACHINES } from '../slots/config/machines.config';
+import { BOX_CATALOG, BoxType } from '../battle-box/battle-box.catalog';
 import * as argon2 from 'argon2';
 import { randomUUID } from 'crypto';
 
@@ -1006,6 +1007,94 @@ export class AdminService {
     return {
       message: `Mot de passe réinitialisé pour ${user.username}.`,
       newPassword,
+    };
+  }
+
+  // ─── Statistiques détaillées du Battle Box ────────────────────────────────
+  async getBattleBoxStats() {
+    const [allGames, finishedGames] = await Promise.all([
+      this.prisma.battleBoxGame.count(),
+      this.prisma.battleBoxGame.findMany({
+        where: { status: 'FINISHED' },
+        include: { players: true },
+      }),
+    ]);
+
+    const inProgress = await this.prisma.battleBoxGame.count({
+      where: { status: { in: ['WAITING', 'READY', 'PLAYING'] } },
+    });
+
+    // Agrégats sur les parties terminées
+    let totalCommission = 0;
+    let totalStakeBrassed = 0;
+    const boxPlayCount: Record<string, number> = {};
+
+    // Agrégats spécifiques aux parties AVEC BOTS
+    let botGamesCount = 0;
+    let botNetProfit = 0; // bénéfice net total du casino grâce aux bots
+    let botWins = 0; // nombre de fois où un bot a gagné
+    let botGamesWonByPlayer = 0;
+
+    for (const game of finishedGames) {
+      // Commission = commissionPct % de la valeur totale des objets
+      const objectsValue = game.players.reduce((s, p) => s + Number(p.totalValue || 0), 0);
+      totalCommission += Math.floor((objectsValue * game.commissionPct) / 100);
+      totalStakeBrassed += Number(game.totalStake || 0);
+
+      // Comptage des box jouées (boxTypes = { TYPE: count })
+      const boxTypes = (game.boxTypes as Record<string, number>) || {};
+      for (const [type, count] of Object.entries(boxTypes)) {
+        boxPlayCount[type] = (boxPlayCount[type] || 0) + count;
+      }
+
+      // Stats bots
+      if (game.hasBots) {
+        botGamesCount += 1;
+        botNetProfit += Number(game.botProfit || 0);
+        // Le gagnant était-il un bot ?
+        const winnerPlayer = game.players.find((p) => p.userId === game.winnerId && !p.isBot);
+        if (winnerPlayer) botGamesWonByPlayer += 1;
+        else botWins += 1;
+      }
+    }
+
+    // Classement des box les plus ouvertes
+    const boxRanking = Object.entries(boxPlayCount)
+      .map(([type, count]) => {
+        const config = BOX_CATALOG[type as BoxType];
+        return {
+          type,
+          label: config?.label ?? type,
+          emoji: config?.emoji ?? '📦',
+          count,
+        };
+      })
+      .sort((a, b) => b.count - a.count);
+
+    const finishedCount = finishedGames.length;
+    const avgStake = finishedCount > 0 ? Math.round(totalStakeBrassed / finishedCount) : 0;
+    const avgCommission = finishedCount > 0 ? Math.round(totalCommission / finishedCount) : 0;
+    const botWinRate = botGamesCount > 0 ? Math.round((botWins / botGamesCount) * 1000) / 10 : 0;
+    const avgBotProfit = botGamesCount > 0 ? Math.round(botNetProfit / botGamesCount) : 0;
+
+    return {
+      totalGames: allGames,
+      finishedGames: finishedCount,
+      inProgressGames: inProgress,
+      totalCommission, // bénéfice net du casino sur le Battle Box (commission)
+      totalStakeBrassed, // volume total misé par les joueurs
+      avgStake, // mise moyenne par partie
+      avgCommission, // commission moyenne par partie
+      boxRanking, // box triées par popularité
+      // ── Détail des bots ──
+      bots: {
+        gamesCount: botGamesCount, // nombre de parties avec bots
+        netProfit: botNetProfit, // bénéfice net total du casino via les bots (peut être négatif)
+        avgProfit: avgBotProfit, // bénéfice moyen par partie avec bot
+        botWins, // parties gagnées par le casino (bot)
+        playerWins: botGamesWonByPlayer, // parties gagnées par le joueur contre un bot
+        botWinRate, // % de victoires du bot
+      },
     };
   }
 }

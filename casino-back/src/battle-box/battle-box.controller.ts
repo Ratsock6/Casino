@@ -28,6 +28,16 @@ export class BattleBoxController {
     return this.battleBoxService.getMyGames(user.userId);
   }
 
+  @Get('my-stats')
+  getMyStats(@CurrentUser() user: { userId: string }) {
+    return this.battleBoxService.getMyStats(user.userId);
+  }
+
+  @Get('leaderboard')
+  getLeaderboard(@Query('limit') limit?: string) {
+    return this.battleBoxService.getLeaderboard(limit ? parseInt(limit) : 20);
+  }
+
   @Get('active')
   getActiveGame(@CurrentUser() user: { userId: string }) {
     return this.battleBoxService.getActiveGame(user.userId);
@@ -49,6 +59,22 @@ export class BattleBoxController {
     @Body() dto: JoinBattleBoxGameDto,
   ) {
     return this.battleBoxService.joinGame(user.userId, user.role, dto);
+  }
+
+  @Post(':gameId/add-bots')
+  addBots(
+    @CurrentUser() user: { userId: string; role: string },
+    @Param('gameId') gameId: string,
+  ) {
+    return this.battleBoxService.addBots(user.userId, user.role, gameId);
+  }
+
+  @Post(':gameId/announce')
+  announceGame(
+    @CurrentUser() user: { userId: string },
+    @Param('gameId') gameId: string,
+  ) {
+    return this.battleBoxService.announceGame(user.userId, gameId);
   }
 
   @Delete(':gameId')

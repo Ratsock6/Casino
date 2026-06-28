@@ -4,6 +4,7 @@ import '../../styles/components/layout.scss';
 import WinnersTicker from '../ui/WinnersTicker';
 import Notifications from '../ui/Notifications';
 import ChatWidget from '../chat/ChatWidget';
+import BattleBoxAnnouncePopup from '../ui/BattleBoxAnnouncePopup';
 import { useSocket } from '../../hooks/useSocket';
 import { useEffect } from 'react';
 
@@ -24,6 +25,7 @@ const Layout = () => {
       <WinnersTicker />
       <Notifications />
       <ChatWidget />
+      <BattleBoxAnnouncePopup />
     </div>
   );
 };
